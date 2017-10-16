@@ -1,4 +1,6 @@
 import numpy as np
+
+
 class Landscape(object):
     def __init__(self, filename):
         self.landscape = self.load_landscape(filename)
@@ -11,6 +13,7 @@ class Landscape(object):
     def find_dry_squares(self):
         print('calculating number of dry squares')
         return []
+
 
 class Population(object):
     def __init__(self, Landscape, birth, death, diffusion, min_ro, max_ro):
@@ -26,7 +29,8 @@ class Population(object):
         max_ro = self.max_ro
         grid = Landscape.landscape
         print('Random distribution')
-        return np.array([[1,2], [3,4]])
+        return np.array([[1, 2], [3, 4]])
+
 
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=1.01, death=2.02, diffusion=3.03,
@@ -45,13 +49,14 @@ class PumaPopulation(Population):
         # this should allow computation to proceed (verify that)
         zero_density_arr = np.zeros(self.density.shape)
         puma_pop = next((pop.density for pop in populations if
-                    pop.kind=='PumaPopulation'), zero_density_arr)
+                         pop.kind == 'PumaPopulation'), zero_density_arr)
         hare_pop = next((pop.density for pop in populations if
-                    pop.kind=='HarePopulation'), zero_density_arr)
+                         pop.kind == 'HarePopulation'), zero_density_arr)
         print(hare_pop)
         print(puma_pop)
-        print(self.kind +' density updated')
+        print(self.kind + ' density updated')
         # set ro=0 if ro<0
+
 
 # class Environment() ?
 class Simulation():
