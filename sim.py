@@ -1,3 +1,4 @@
+import numpy as np
 class Landscape(object):
     def __init__(self, filename):
         self.landscape = self.load_landscape(filename)
@@ -25,6 +26,7 @@ class Population(object):
         max_ro = self.max_ro
         grid = Landscape.landscape
         print('Random distribution')
+        return np.array([[1,2], [3,4]])
 
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=1.01, death=2.02, diffusion=3.03,
@@ -39,12 +41,15 @@ class PumaPopulation(Population):
     # which is slightly more messy to implement as you need to keep track of
     # arguments and their order but is arguably more efficient (how much?)
     def update_density(self, populations):
-        puma_pop = next((pop for pop in populations if
-                    pop.kind=='PumaPopulation'), None)
-        print(puma_pop.kind)
-        hare_pop = next((pop for pop in populations if
-                    pop.kind=='HarePopulation'), None) # None is default value
         # set X_pop.density to zeroes if no pop in populations
+        # this should allow computation to proceed (verify that)
+        zero_density_arr = np.zeros(self.density.shape)
+        puma_pop = next((pop.density for pop in populations if
+                    pop.kind=='PumaPopulation'), zero_density_arr)
+        hare_pop = next((pop.density for pop in populations if
+                    pop.kind=='HarePopulation'), zero_density_arr)
+        print(hare_pop)
+        print(puma_pop)
         print(self.kind +' density updated')
         # set ro=0 if ro<0
 
