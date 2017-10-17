@@ -1,5 +1,15 @@
 import numpy as np
+     
 
+    # Chloe
+class Config():
+    def __init__(self, config_file):
+        self.r = 0.0 
+        self.d = 0.0 
+
+    def load_from_file(self):
+        parse config file and assign self.r etc
+        
 
 class Landscape(object):
     def __init__(self, filename):
@@ -8,7 +18,7 @@ class Landscape(object):
 
     def load_landscape(self, filename):
         print('Loading landscape')
-        return []
+        return np.array(M x N)
 
     def find_dry_squares(self):
         print('calculating number of dry squares')
@@ -23,15 +33,16 @@ class Population(object):
         self.death = death
         self.diffusion = diffusion
         self.density = self.random_density(Landscape)
-
+        
+    Elen
     def random_density(self, Landscape):
         min_ro = self.min_ro
         max_ro = self.max_ro
         grid = Landscape.landscape
         print('Random distribution')
-        return np.array([[1, 2], [3, 4]])
+        return np.array(of size landscape)
 
-
+Marcin
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=1.01, death=2.02, diffusion=3.03,
                  min_ro=0, max_ro=5):
@@ -60,6 +71,7 @@ class PumaPopulation(Population):
 
 # class Environment() ?
 class Simulation():
+Marcin
     def __init__(self, Landscape, *args):
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
@@ -68,14 +80,20 @@ class Simulation():
     # not sure is this function required
     def add_population(self, pop):
         return self.populations.append(pop)
-
+Marcin
     # not sure is this function required
     def remove_population(self, pop):
         print(pop.kind + ' removed')
-
+    Marcin
     def update(self):
         for pop in self.populations:
             pop.update_density(self.populations)
+     
+    def run(self):
+        for loop
+    Elen
+    def save_state(self):
+        save densities to ppm file
 
 # create new landscape from the file 'my_land'
 env = Landscape('my_land')
