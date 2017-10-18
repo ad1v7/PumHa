@@ -94,9 +94,13 @@ Marcin
      
     def run(self):
         for loop
+
     # Elen
-    def save_state(self):
-        save densities to ppm file
+    def save_state(timestep, population):
+        # creating a new file in directory "Densities", assuming it has been
+        # created through a makefile (?)
+        with open('Densities/' + str(timestep), 'w+') as density_file:
+            density_file.write(str(population))
 
 # create new landscape from the file 'my_land'
 env = Landscape('my_land')
