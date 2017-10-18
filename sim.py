@@ -26,21 +26,24 @@ class Landscape(object):
 
 
 class Population(object):
-    def __init__(self, Landscape, birth, death, diffusion, min_ro, max_ro):
+    def __init__(self, landscape_in, birth, death, diffusion, min_ro, max_ro):
         self.min_ro = min_ro
         self.max_ro = max_ro
         self.birth = birth
         self.death = death
         self.diffusion = diffusion
-        self.density = self.random_density(Landscape)
+        self.density = self.random_density(landscape_in)
         
-    Elen
-    def random_density(self, Landscape):
+    # Elen
+    def random_density(self, landscape_in):
         min_ro = self.min_ro
         max_ro = self.max_ro
-        grid = Landscape.landscape
-        print('Random distribution')
-        return np.array(of size landscape)
+        # turning the array of integers into an array of floats
+        grid = landscape_in.landscape.astype(np.float32)
+        # assigning a random density to every cell between min_ro and max_ro
+        grid[grid == 1] = np.random.uniform(min_ro, max_ro,
+                                            grid[grid == 1].shape)
+        return grid
 
 Marcin
 class PumaPopulation(Population):
@@ -91,7 +94,7 @@ Marcin
      
     def run(self):
         for loop
-    Elen
+    # Elen
     def save_state(self):
         save densities to ppm file
 
