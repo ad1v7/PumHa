@@ -1,4 +1,7 @@
 import numpy as np
+"""
+This is module docstring
+"""
      
 
     # Chloe
@@ -25,13 +28,15 @@ class Landscape(object):
 
 
 class Population(object):
-    def __init__(self, Landscape, birth, death, diffusion, min_ro, max_ro):
+    def __init__(self, Landscape, birth, death, diffusion, min_ro, max_ro, dt):
         self.min_ro = min_ro
         self.max_ro = max_ro
         self.birth = birth
         self.death = death
         self.diffusion = diffusion
         self.density = self.random_density(Landscape)
+        self.dt = dt
+        self._N = Landscape.dry_squares
         
     #Elen
     def random_density(self, Landscape):
@@ -40,16 +45,20 @@ class Population(object):
         grid = Landscape.landscape
         print('Random distribution')
 
-# ToDo
-# where N array is comming from?
-# where dT is stored?
-# apart from that it is almost there...
+    def load_config(self, Config):
+        self.min_ro = Config.min_ro
+        self.max_ro = Config.max_ro
+        self.birth = Config.birth
+        self.death = Config.death
+        self.diffusion = Config.diffusion
+        self.dt = Config.dt
+
 
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=.02, death=.06, diffusion=.02,
-                 min_ro=0., max_ro=5.):
+                 min_ro=0., max_ro=5., dt=.4):
         super(PumaPopulation, self).__init__(Landscape, birth, death,
-                                             diffusion, min_ro, max_ro)
+                                             diffusion, min_ro, max_ro, dt=.4)
         print('Puma population created')
 
     def update_density(self, old_populations, populations):
@@ -73,15 +82,17 @@ class PumaPopulation(Population):
         b = self.birh
         m = self.death
         l = self.diffusion
-        return P[i][j] + dT * (b * H[i][j] * P[i][i] - m * P[i][j]
+        dt = self.dt
+        N = self._N
+        return P[i][j] + dt * (b * H[i][j] * P[i][i] - m * P[i][j]
                                + l * ((P[i-1][j] + P[i+1][j] + P[i][j-1] + P[i][j+1])
                                       - N[i][j] * P[i][j]))
 
 class HarePopulation(Population):
     def __init__(self, Landscape, birth=.08, death=.04, diffusion=.02,
-                 min_ro=0., max_ro=5.):
+                 min_ro=0., max_ro=5., dt=.4):
         super(HarePopulation, self).__init__(Landscape, birth, death,
-                                             diffusion, min_ro, max_ro)
+                                             diffusion, min_ro, max_ro, dt=.4)
         print('Hare population created')
 
     def update_density(self, old_populations, populations):
@@ -108,30 +119,46 @@ class HarePopulation(Population):
         r = self.birh
         a = self.death
         k = self.diffusion
-        return H[i][j] + dT * (r * H[i][j] - a * H[i][j] * P[i][j]
+        dt = self.dt
+        N = self._N
+        return H[i][j] + dt * (r * H[i][j] - a * H[i][j] * P[i][j]
                                + k * ((H[i-1][j] + H[i+1][j] + H[i][j-1] + H[i][j+1])
                                       - N[i][j] * H[i][j]))
 
 
 
 class Simulation():
+    """This is class docstring
+    Blaaa
+    """
     def __init__(self, Landscape, *args):
+        """ This is constructor docstring
+        Blaaa
+        """
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
 
-    # not sure is this function required
     def add_population(self, pop):
+        """This is public method docstring
+        ("Do this", "Return that")
+        """
         self.populations.append(pop)
 
-    # not sure is this function required
     def remove_population(self, pop):
+        """This is public method docstring
+        ("Do this", "Return that")
+        """
         self.populations.remove(pop)
 
+    # not public method - no dosctring
     def update(self, old_populations, populations):
         for pop in populations:
             pop.update_density(old_populations, populations)
 
     def run(self, num_steps):
+        """This is public method docstring
+        ("Do this", "Return that")
+        """
         print('Running simulation')
         old_populations = np.copy(self.populations)
         for i in range(num_steps):
@@ -151,19 +178,20 @@ class Simulation():
 # create new landscape from the file 'my_land'
 env = Landscape('my_land')
 
-# create new population using default values
+# create new populations using default values
 puma_pop = PumaPopulation(env)
 print(puma_pop.birth)
 print(puma_pop.death)
 print(puma_pop.max_ro)
 print('#######')
 
-# create new population using specific values (config file...)
 hare_pop = HarePopulation(env)
 print(hare_pop.birth)
 print(hare_pop.death)
 print(hare_pop.max_ro)
 
+# create new population using specific values (config file...)
+#......
 # create new simulation with the landscape env and puma population
 sim = Simulation(env, puma_pop)
 # update one step
