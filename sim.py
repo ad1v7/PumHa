@@ -35,11 +35,11 @@ class Population(object):
         self.density = self.random_density(landscape_in)
         
     # Elen
-    def random_density(self, landscape_in):
+    def random_density(self, landscape_inp):
         min_ro = self.min_ro
         max_ro = self.max_ro
         # turning the array of integers into an array of floats
-        grid = landscape_in.landscape.astype(np.float32)
+        grid = landscape_inp.landscape.astype(np.float32)
         # assigning a random density to every cell between min_ro and max_ro
         grid[grid == 1] = np.random.uniform(min_ro, max_ro,
                                             grid[grid == 1].shape)
@@ -103,10 +103,10 @@ Marcin
         # PumaPopulation. Assuming that somewhere
         # in these classes there is a variable self.density which is a numpy
         # array that holds the array that needs to go to the file.
-        for pop in args:
-            with open('Densities/t=' + str(timestep) + '_' + pop.kind + '.ppm',
+        for population in args:
+            with open('Densities/t=' + str(timestep) + '_' + population.kind + '.ppm',
                       'w+') as density_file:
-                density_file.write(str(pop.density))
+                density_file.write(str(population.density))
 
     def save_average_density(self, timestep, *args):
         # args again PumaPopulation or HarePopulation class instances.
@@ -115,11 +115,11 @@ Marcin
         with open('average_densities.txt',
                           'a+') as average_density_file:
             average_density_file.write('t = ' + str(timestep) + '\n')
-            for pop in args:
-                average_pop = np.sum(pop) / (
-                (pop.shape[0]-2) * (pop.shape[1]-2))
+            for population in args:
+                average_population = np.sum(population) / (
+                (population.shape[0]-2) * (population.shape[1]-2))
                 average_density_file.write(
-                            pop.kind + ' ' + str(average_pop) + '\n')
+                            population.kind + ' ' + str(average_population) + '\n')
 
 # create new landscape from the file 'my_land'
 env = Landscape('my_land')
