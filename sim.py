@@ -26,6 +26,19 @@ class Landscape(object):
         print('calculating number of dry squares')
         return []
 
+    # find and save indices of an landscape array
+    # as tuples
+    # eg [(0,0), (1,1), (2,3)]
+    # Why bother?
+    # Any iteration over landscape can be replaced
+    # with iteration over land idices which will make
+    # life easier (no need to check each time are we on land)
+    # and way faster
+    # also add new Landscape class variable to store it
+    # so other classes can access it
+    def find_land_squares_indices():
+        return []
+
 
 class Population(object):
     def __init__(self, Landscape, birth, death, diffusion, min_ro, max_ro, dt):
