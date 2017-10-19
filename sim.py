@@ -1,14 +1,27 @@
 import numpy as np
-     
+import simplejson as json
+from scipy.ndimage import convolve
 
     # Chloe
 class Config():
     def __init__(self, config_file):
         self.r = 0.0 
-        self.d = 0.0 
+        self.a = 0.0
+        self.b = 0.0
+        self.m = 0.0
+        self.k = 0.0
+        self.l = 0.0
 
     def load_from_file(self):
-        parse config file and assign self.r etc
+        #parse config file and assign self.r etc
+        d = {
+            'first_name': 'Guido',
+            'second_name': 'Rossum',
+            'titles': ['BDFL', 'Developer'],
+        }
+
+        print(json.dumps(d))
+        '{"first_name": "Guido", "last_name": "Rossum", "titles": ["BDFL", "Developer"]}'
         
 
 class Landscape(object):
@@ -18,11 +31,12 @@ class Landscape(object):
 
     def load_landscape(self, filename):
         print('Loading landscape')
-        return np.array(M x N)
+	return np.pad(np.loadtxt(filename,skiprows=1), ((1,1),(1,1)), mode='constant', constant_values=0)
 
     def find_dry_squares(self):
         print('calculating number of dry squares')
-        return []
+        kernel =  [[0,1,0], [1,0,1], [0,1,0]]
+        return convolve(self.landscape, kernel, mode='constant')
 
 
 class Population(object):
@@ -34,15 +48,15 @@ class Population(object):
         self.diffusion = diffusion
         self.density = self.random_density(Landscape)
         
-    Elen
+    #Elen
     def random_density(self, Landscape):
         min_ro = self.min_ro
         max_ro = self.max_ro
         grid = Landscape.landscape
         print('Random distribution')
-        return np.array(of size landscape)
+        #return np.array(of size landscape)
 
-Marcin
+#Marcin
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=1.01, death=2.02, diffusion=3.03,
                  min_ro=0, max_ro=5):
@@ -71,7 +85,7 @@ class PumaPopulation(Population):
 
 # class Environment() ?
 class Simulation():
-Marcin
+#Marcin
     def __init__(self, Landscape, *args):
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
@@ -80,23 +94,25 @@ Marcin
     # not sure is this function required
     def add_population(self, pop):
         return self.populations.append(pop)
-Marcin
+#Marcin
     # not sure is this function required
     def remove_population(self, pop):
         print(pop.kind + ' removed')
-    Marcin
+    #Marcin
     def update(self):
         for pop in self.populations:
             pop.update_density(self.populations)
      
     def run(self):
-        for loop
-    Elen
+        print('run')
+        #for loop
+    #Elen
     def save_state(self):
-        save densities to ppm file
+        print('save')
+        #save densities to ppm file
 
 # create new landscape from the file 'my_land'
-env = Landscape('my_land')
+env = Landscape('islands.dat')
 
 # create new population using default values
 puma_pop = PumaPopulation(env)
