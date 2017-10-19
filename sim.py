@@ -96,11 +96,30 @@ Marcin
         for loop
 
     # Elen
-    def save_state(timestep, population):
+    def save_density_grid(self, timestep, *args):
         # creating a new file in directory "Densities", assuming it has been
         # created through a makefile (?)
-        with open('Densities/' + str(timestep), 'w+') as density_file:
-            density_file.write(str(population))
+        # args consists of class instances of either HarePopulation or
+        # PumaPopulation. Assuming that somewhere
+        # in these classes there is a variable self.density which is a numpy
+        # array that holds the array that needs to go to the file.
+        for pop in args:
+            with open('Densities/t=' + str(timestep) + '_' + pop.kind + '.ppm',
+                      'w+') as density_file:
+                density_file.write(str(pop.density))
+
+    def save_average_density(self, timestep, *args):
+        # args again PumaPopulation or HarePopulation class instances.
+        # Creating a file for average densities in the same folder, no new
+        # folder needed for one file, I think
+        with open('average_densities.txt',
+                          'a+') as average_density_file:
+            average_density_file.write('t = ' + str(timestep) + '\n')
+            for pop in args:
+                average_pop = np.sum(pop) / (
+                (pop.shape[0]-2) * (pop.shape[1]-2))
+                average_density_file.write(
+                            pop.kind + ' ' + str(average_pop) + '\n')
 
 # create new landscape from the file 'my_land'
 env = Landscape('my_land')
