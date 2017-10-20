@@ -76,21 +76,26 @@ class Landscape(object):
 
 
 class Population(object):
-    def __init__(self, Landscape, birth, death, diffusion, min_ro, max_ro):
+    def __init__(self, landscape_in, birth, death, diffusion, min_ro, max_ro):
         self.min_ro = min_ro
         self.max_ro = max_ro
         self.birth = birth
         self.death = death
         self.diffusion = diffusion
-        self.density = self.random_density(Landscape)
+        self.density = self.random_density(landscape_in)
         
-    #Elen
-    def random_density(self, Landscape):
+
+    # Elen
+    def random_density(self, landscape_inp):
         min_ro = self.min_ro
         max_ro = self.max_ro
-        grid = Landscape.landscape
-        print('Random distribution')
-        #return np.array(of size landscape)
+        # turning the array of integers into an array of floats
+        grid = landscape_inp.landscape.astype(np.float32)
+        # assigning a random density to every cell between min_ro and max_ro
+        grid[grid == 1] = np.random.uniform(min_ro, max_ro,
+                                            grid[grid == 1].shape)
+        return grid
+
 
 #Marcin
 class PumaPopulation(Population):
@@ -139,13 +144,34 @@ class Simulation():
         for pop in self.populations:
             pop.update_density(self.populations)
      
-    def run(self):
-        print('run')
-        #for loop
-    #Elen
-    def save_state(self):
-        print('save')
-        #save densities to ppm file
+
+
+    # Elen
+    def save_density_grid(self, timestep, *args):
+        # creating a new file in directory "Densities", assuming it has been
+        # created through a makefile (?)
+        # args consists of class instances of either HarePopulation or
+        # PumaPopulation. Assuming that somewhere
+        # in these classes there is a variable self.density which is a numpy
+        # array that holds the array that needs to go to the file.
+        for population in args:
+            with open('Densities/t=' + str(timestep) + '_' + population.kind + '.ppm',
+                      'w+') as density_file:
+                density_file.write(str(population.density))
+
+    def save_average_density(self, timestep, *args):
+        # args again PumaPopulation or HarePopulation class instances.
+        # Creating a file for average densities in the same folder, no new
+        # folder needed for one file, I think
+        with open('average_densities.txt',
+                          'a+') as average_density_file:
+            average_density_file.write('t = ' + str(timestep) + '\n')
+            for population in args:
+                average_population = np.sum(population) / (
+                (population.shape[0]-2) * (population.shape[1]-2))
+                average_density_file.write(
+                            population.kind + ' ' + str(average_population) + '\n')
+
 
 # create new landscape from the file 'my_land'
 env = Landscape('islands.dat')
