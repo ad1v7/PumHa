@@ -29,7 +29,7 @@ class Config():
         if Accept_Default == "":
             print('Continuing with defaults.')
         else:
-            print('Enter a value or press enter to keep default:'
+            print('Enter a value or press enter to keep default:')
             for key in Config:
                 value = Config[key]
                 User_Setting = raw_input("{} ({}): ".format(key, value))
@@ -222,6 +222,22 @@ class Simulation():
     def update(self):
         for pop in self.populations:
             pop.update_density(self.populations)
+
+    def run(self, num_steps):
+        """This is public method docstring
+        ("Do this", "Return that")
+        """
+        print('Running simulation')
+        old_populations = np.copy(self.populations)
+        for i in range(num_steps):
+            if i % 2 == 0:
+                self.update(old_populations, self.populations)
+            else:
+                self.update(self.populations, old_populations)
+
+        # make sure we return last updated array
+        if num_steps % 2 == 0:
+self.populations = np.copy(old_populations)
 		  
 
 def save_density_grid(self, timestep, *args):
