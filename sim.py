@@ -1,15 +1,64 @@
 import numpy as np
-     
+import simplejson as json
+from scipy.ndimage import convolve
+from collections import OrderedDict
 
     # Chloe
 class Config():
     def __init__(self, config_file):
-        self.r = 0.0 
-        self.d = 0.0 
+        try:
+            My_File = open('data.cfg')
+        except IOError:
+            self.create_config()
+
+	self.config = self.load_from_file()
 
     def load_from_file(self):
-        parse config file and assign self.r etc
+        #parse config file and assign self.r etc
+
+        with open('data.cfg', 'r') as My_File:
+            Config = json.load(My_File, object_pairs_hook=OrderedDict)
         
+        for key in Config:
+            value = Config[key]
+            print("{} ({})".format(key, value))
+        
+        Accept_Default = raw_input('Accept default values? (Enter to accept, anything else to configure simulation.')
+        if Accept_Default == "":
+            print('Continuing with defaults.')
+        else:
+            print('Enter a value or press enter to keep default:'
+            for key in Config:
+                value = Config[key]
+                User_Setting = raw_input("{} ({}): ".format(key, value))
+                if not User_Setting == "":
+                    Config[key] = User_Setting
+
+        self.r = Config["Hare_birth"]
+        self.a = Config["Hare_predation"]
+        self.b = Config["Hare_diffusion"]
+        self.m = Config["Puma_birth"]
+        self.k = Config["Puma_mortality"]
+        self.l = Config["Puma_diffusion"]
+        self.deltat = Config["Time_Step"]
+	
+        return Config
+
+    def create_config(self):
+        default = {
+            'Hare_birth': 0.08,
+            'Hare_predation': 0.04,
+            'Hare_diffusion': 0.2,
+            'Puma_birth': 0.02,
+            'Puma_mortality': 0.06,
+            'Puma_diffusion': 0.2,
+            'Time_Step': 0.4
+        }
+
+        with open('data.cfg', 'w') as outfile:
+            json.dump(default, outfile, sort_keys=True)
+
+        return
 
 class Landscape(object):
     def __init__(self, filename):
@@ -18,11 +67,12 @@ class Landscape(object):
 
     def load_landscape(self, filename):
         print('Loading landscape')
-        return np.array(M x N)
+	return np.pad(np.loadtxt(filename,skiprows=1), ((1,1),(1,1)), mode='constant', constant_values=0)
 
     def find_dry_squares(self):
         print('calculating number of dry squares')
-        return []
+        kernel =  [[0,1,0], [1,0,1], [0,1,0]]
+        return convolve(self.landscape, kernel, mode='constant')
 
 
 class Population(object):
@@ -34,6 +84,7 @@ class Population(object):
         self.diffusion = diffusion
         self.density = self.random_density(landscape_in)
         
+
     # Elen
     def random_density(self, landscape_inp):
         min_ro = self.min_ro
@@ -45,7 +96,8 @@ class Population(object):
                                             grid[grid == 1].shape)
         return grid
 
-Marcin
+
+#Marcin
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=1.01, death=2.02, diffusion=3.03,
                  min_ro=0, max_ro=5):
@@ -74,7 +126,7 @@ class PumaPopulation(Population):
 
 # class Environment() ?
 class Simulation():
-Marcin
+#Marcin
     def __init__(self, Landscape, *args):
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
@@ -83,17 +135,16 @@ Marcin
     # not sure is this function required
     def add_population(self, pop):
         return self.populations.append(pop)
-Marcin
+#Marcin
     # not sure is this function required
     def remove_population(self, pop):
         print(pop.kind + ' removed')
-    Marcin
+    #Marcin
     def update(self):
         for pop in self.populations:
             pop.update_density(self.populations)
      
-    def run(self):
-        for loop
+
 
     # Elen
     def save_density_grid(self, timestep, *args):
@@ -121,8 +172,10 @@ Marcin
                 average_density_file.write(
                             population.kind + ' ' + str(average_population) + '\n')
 
+
 # create new landscape from the file 'my_land'
-env = Landscape('my_land')
+env = Landscape('islands.dat')
+config = Config('config.dat')
 
 # create new population using default values
 puma_pop = PumaPopulation(env)
