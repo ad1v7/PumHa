@@ -114,6 +114,14 @@ class Population(object):
                                             grid[grid == 1].shape)
         return grid
 
+    def load_config(self, Config):
+        self.min_ro = Config.min_ro
+        self.max_ro = Config.max_ro
+        self.birth = Config.birth
+        self.death = Config.death
+        self.diffusion = Config.diffusion
+	self.dt = Config.dt
+
 
 #Marcin
 
