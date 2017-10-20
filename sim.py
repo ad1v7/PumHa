@@ -23,11 +23,11 @@ class Config():
             value = Config[key]
             print("{} ({})".format(key, value))
         
-        Accept_Default = raw_input("Accept default values? (Enter to accept, anything else to configure simulation.")
+        Accept_Default = raw_input('Accept default values? (Enter to accept, anything else to configure simulation.')
         if Accept_Default == "":
-            print "Continuing with defaults."
+            print('Continuing with defaults.')
         else:
-            print "Enter a value or press enter to keep default:"
+            print('Enter a value or press enter to keep default:'
             for key in Config:
                 value = Config[key]
                 User_Setting = raw_input("{} ({}): ".format(key, value))
