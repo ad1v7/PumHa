@@ -222,6 +222,32 @@ class Simulation():
     def update(self):
         for pop in self.populations:
             pop.update_density(self.populations)
+		  
+
+def save_density_grid(self, timestep, *args):
+        # creating a new file in directory "Densities", assuming it has been
+        # created through a makefile (?)
+        # args consists of class instances of either HarePopulation or
+        # PumaPopulation. Assuming that somewhere
+        # in these classes there is a variable self.density which is a numpy
+        # array that holds the array that needs to go to the file.
+        for population in args:
+            with open('Densities/t=' + str(timestep) + '_' + population.kind + '.ppm',
+                      'w+') as density_file:
+                density_file.write(str(population.density))
+
+    def save_average_density(self, timestep, *args):
+        # args again PumaPopulation or HarePopulation class instances.
+        # Creating a file for average densities in the same folder, no new
+        # folder needed for one file, I think
+        with open('average_densities.txt',
+                          'a+') as average_density_file:
+            average_density_file.write('t = ' + str(timestep) + '\n')
+            for population in args:
+                average_population = np.sum(population) / (
+                (population.shape[0]-2) * (population.shape[1]-2))
+                average_density_file.write(population.kind + ' ' + str(average_population) + '\n')		  
+		  
      
 # create new landscape from the file 'my_land'
 env = Landscape('islands.dat')
