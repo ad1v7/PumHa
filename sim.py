@@ -5,26 +5,26 @@ from collections import OrderedDict
 
 
     # Chloe
-class Config():
-    def __init__(self, config_file):
+    class Config():
+        def __init__(self, config_file):
 
         try:
             My_File = open('data.cfg')
         except IOError:
             self.create_config()
 
-	self.config = self.load_from_file()
+    self.config = self.load_from_file()
 
     def load_from_file(self):
         #parse config file and assign self.r etc
 
         with open('data.cfg', 'r') as My_File:
             Config = json.load(My_File, object_pairs_hook=OrderedDict)
-        
+
         for key in Config:
             value = Config[key]
             print("{} ({})".format(key, value))
-        
+
         Accept_Default = raw_input('Accept default values? (Enter to accept, anything else to configure simulation.')
         if Accept_Default == "":
             print('Continuing with defaults.')
@@ -43,7 +43,7 @@ class Config():
         self.k = Config["Puma_mortality"]
         self.l = Config["Puma_diffusion"]
         self.deltat = Config["Time_Step"]
-	
+
         return Config
 
     def create_config(self):
@@ -71,7 +71,7 @@ class Landscape(object):
     def load_landscape(self, filename):
         print('Loading landscape')
 
-	return np.pad(np.loadtxt(filename,skiprows=1), ((1,1),(1,1)), mode='constant', constant_values=0)
+    return np.pad(np.loadtxt(filename,skiprows=1), ((1,1),(1,1)), mode='constant', constant_values=0)
 
 
     def find_dry_squares(self):
@@ -120,7 +120,7 @@ class Population(object):
         self.birth = Config.birth
         self.death = Config.death
         self.diffusion = Config.diffusion
-	self.dt = Config.dt
+        self.dt = Config.dt
 
 
 #Marcin
@@ -218,13 +218,13 @@ class Simulation():
 
     def remove_population(self, pop):
         print(pop.kind + ' removed')
-  
+
 
         return self.populations.append(pop)
 #Marcin
-    # not sure is this function required
-    def remove_population(self, pop):
-        print(pop.kind + ' removed')
+# not sure is this function required
+def remove_population(self, pop):
+    print(pop.kind + ' removed')
     #Marcin
 
     def update(self):
@@ -245,10 +245,10 @@ class Simulation():
 
         # make sure we return last updated array
         if num_steps % 2 == 0:
-self.populations = np.copy(old_populations)
-		  
+            self.populations = np.copy(old_populations)
 
-def save_density_grid(self, timestep, *args):
+
+    def save_density_grid(self, timestep, *args):
         # creating a new file in directory "Densities", assuming it has been
         # created through a makefile (?)
         # args consists of class instances of either HarePopulation or
@@ -265,14 +265,14 @@ def save_density_grid(self, timestep, *args):
         # Creating a file for average densities in the same folder, no new
         # folder needed for one file, I think
         with open('average_densities.txt',
-                          'a+') as average_density_file:
+                  'a+') as average_density_file:
             average_density_file.write('t = ' + str(timestep) + '\n')
             for population in args:
                 average_population = np.sum(population) / (
-                (population.shape[0]-2) * (population.shape[1]-2))
+                    (population.shape[0]-2) * (population.shape[1]-2))
                 average_density_file.write(population.kind + ' ' + str(average_population) + '\n')		  
-		  
-     
+
+
 # create new landscape from the file 'my_land'
 env = Landscape('islands.dat')
 config = Config('config.dat')
