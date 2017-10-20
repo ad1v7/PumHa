@@ -1,17 +1,66 @@
 import numpy as np
-"""
-This is module docstring
-"""
-     
+import simplejson as json
+from scipy.ndimage import convolve
+from collections import OrderedDict
+
 
     # Chloe
 class Config():
     def __init__(self, config_file):
-        self.r = 0.
-        self.d = 0.
+
+        try:
+            My_File = open('data.cfg')
+        except IOError:
+            self.create_config()
+
+	self.config = self.load_from_file()
 
     def load_from_file(self):
-        pass
+        #parse config file and assign self.r etc
+
+        with open('data.cfg', 'r') as My_File:
+            Config = json.load(My_File, object_pairs_hook=OrderedDict)
+        
+        for key in Config:
+            value = Config[key]
+            print("{} ({})".format(key, value))
+        
+        Accept_Default = raw_input('Accept default values? (Enter to accept, anything else to configure simulation.')
+        if Accept_Default == "":
+            print('Continuing with defaults.')
+        else:
+            print('Enter a value or press enter to keep default:'
+            for key in Config:
+                value = Config[key]
+                User_Setting = raw_input("{} ({}): ".format(key, value))
+                if not User_Setting == "":
+                    Config[key] = User_Setting
+
+        self.r = Config["Hare_birth"]
+        self.a = Config["Hare_predation"]
+        self.b = Config["Hare_diffusion"]
+        self.m = Config["Puma_birth"]
+        self.k = Config["Puma_mortality"]
+        self.l = Config["Puma_diffusion"]
+        self.deltat = Config["Time_Step"]
+	
+        return Config
+
+    def create_config(self):
+        default = {
+            'Hare_birth': 0.08,
+            'Hare_predation': 0.04,
+            'Hare_diffusion': 0.2,
+            'Puma_birth': 0.02,
+            'Puma_mortality': 0.06,
+            'Puma_diffusion': 0.2,
+            'Time_Step': 0.4
+        }
+
+        with open('data.cfg', 'w') as outfile:
+            json.dump(default, outfile, sort_keys=True)
+
+        return
 
 
 class Landscape(object):
@@ -22,9 +71,13 @@ class Landscape(object):
     def load_landscape(self, filename):
         print('Loading landscape')
 
+	return np.pad(np.loadtxt(filename,skiprows=1), ((1,1),(1,1)), mode='constant', constant_values=0)
+
+
     def find_dry_squares(self):
         print('calculating number of dry squares')
-        return []
+        kernel =  [[0,1,0], [1,0,1], [0,1,0]]
+        return convolve(self.landscape, kernel, mode='constant')
 
     # find and save indices of an landscape array
     # as tuples
@@ -49,23 +102,20 @@ class Population(object):
         self.diffusion = diffusion
 
         self.density = self.random_density(landscape_in)
-    Elen
-    def random_density(self, Landscape):
+
+    # Elen
+    def random_density(self, landscape_inp):
         min_ro = self.min_ro
         max_ro = self.max_ro
-        grid = Landscape.landscape
-        print('Random distribution')
-        return np.array(of size landscape)
+        # turning the array of integers into an array of floats
+        grid = landscape_inp.landscape.astype(np.float32)
+        # assigning a random density to every cell between min_ro and max_ro
+        grid[grid == 1] = np.random.uniform(min_ro, max_ro,
+                                            grid[grid == 1].shape)
+        return grid
 
 
-    def load_config(self, Config):
-        self.min_ro = Config.min_ro
-        self.max_ro = Config.max_ro
-        self.birth = Config.birth
-        self.death = Config.death
-        self.diffusion = Config.diffusion
-        self.dt = Config.dt
-
+#Marcin
 
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=.02, death=.06, diffusion=.02,
@@ -141,6 +191,7 @@ class HarePopulation(Population):
 
 
 class Simulation():
+
     """This is class docstring
     Blaaa
     """
@@ -159,21 +210,22 @@ class Simulation():
 
     def remove_population(self, pop):
         print(pop.kind + ' removed')
-    Marcin
-    
+  
+
+        return self.populations.append(pop)
+#Marcin
+    # not sure is this function required
+    def remove_population(self, pop):
+        print(pop.kind + ' removed')
+    #Marcin
+
     def update(self):
         for pop in self.populations:
             pop.update_density(self.populations)
      
-    def run(self):
-        for loop
-    Elen
-    def save_state(self):
-        save densities to ppm file
-
-
 # create new landscape from the file 'my_land'
-env = Landscape('my_land')
+env = Landscape('islands.dat')
+config = Config('config.dat')
 
 # create new populations using default values
 puma_pop = PumaPopulation(env)
