@@ -1,4 +1,3 @@
 # PumHa
 
 
-DOCSTRINGS
