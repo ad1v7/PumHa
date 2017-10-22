@@ -1,7 +1,0 @@
-t = 34
-t = 34
-t = 34
-t = 34
-PumaPopulation 1.29713228014
-t = 34
-PumaPopulation 0.548721154531
