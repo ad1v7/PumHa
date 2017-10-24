@@ -252,7 +252,7 @@ class Simulation():
             with open('Densities/t=' + str(
                     timestep) + '_' + population.kind + '.ppm',
                       'w+') as density_file:
-                                density_file.write(
+                density_file.write(
                     str(population.density.shape[0]) + ' ' + str(population.density.shape[1]) + '\n')
                 density_file.write('\n')
                 density_file.write(
@@ -315,7 +315,7 @@ print(puma_pop.density)
 #......
 # create new simulation with the landscape env and puma population
 sim = Simulation(env, puma_pop)
-sim.run(5)
+sim.run(5000)
 print(puma_pop.density)
 # update one step
 # sim.run(20)
