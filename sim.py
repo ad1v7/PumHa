@@ -106,6 +106,7 @@ class Population(object):
 
     # Elen
     def random_density(self, landscape_inp):
+        #do those need to be defined again?
         min_ro = self.min_ro
         max_ro = self.max_ro
         # turning the array of integers into an array of floats
