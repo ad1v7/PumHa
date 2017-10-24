@@ -1,9 +1,13 @@
+import time
 import numpy as np
 import sys
 import simplejson as json
 from scipy.ndimage import convolve
 from collections import OrderedDict
+from tqdm import tqdm
 
+
+EPS = 1e-3
 
 # Chloe
 class Config():
@@ -130,10 +134,15 @@ class Population(object):
         self.diffusion = diffusion
         self.dt = dt
 
+    def find_density_arr(self, pop_class, pop_list):
+        rows, cols = self.density.shape
+        return next((p.density for p in pop_list if
+                     isinstance(p, pop_class)), np.zeros((rows, cols)))
+
+
 
 
 # Marcin
-
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=.02, death=.06, diffusion=.02,
                  min_ro=0., max_ro=5., dt=.4):
@@ -142,19 +151,15 @@ class PumaPopulation(Population):
         self.kind = 'PumaPopulation'
         print('Puma population created')
 
-    def update_density(self, old_populations, populations):
+    def update_density(self, populations_old, populations_new):
         # extract required populations density arrays for update
-        # and assign to reference arrays
-        # if no populations found assign zero density array
-        rows, cols = self.density.shape
-        zero_density_arr = np.zeros((rows, cols))
-        P_new = next((pop.density for pop in populations if
-                      isinstance(pop, PumaPopulation)), zero_density_arr)
-        P = next((pop.density for pop in old_populations if
-                  isinstance(pop, PumaPopulation)), zero_density_arr)
-        H = next((pop.density for pop in old_populations if
-                  isinstance(pop, HarePopulation)), zero_density_arr)
+        P_new = self.find_density_arr(PumaPopulation, populations_new)
+        P = self.find_density_arr(PumaPopulation, populations_old)
+        H = self.find_density_arr(HarePopulation, populations_old)
 
+        # update all landscape ij
+        # do not update boundary
+        rows, cols = self.density.shape
         for i in range(1, rows-1):
             for j in range(1, cols-1):
                 P_new[i][j] = self.update_density_ij(i, j, P, H) * self._landscape[i][j]
@@ -178,22 +183,17 @@ class HarePopulation(Population):
                                              diffusion, min_ro, max_ro, dt=.4)
         print('Hare population created')
         self.kind = 'HarePopulation'
-    def update_density(self, old_populations, populations):
+
+    def update_density(self, populations_old, populations_new):
         # extract required populations density arrays for update
-        # and assign to reference arrays
-        # if no populations assign zero density array
-        rows, cols = self.density.shape
-        zero_density_arr = np.zeros((rows, cols))
-        H_new = next((pop.density for pop in populations if
-                      isinstance(pop, HarePopulation)), zero_density_arr)
-        P = next((pop.density for pop in old_populations if
-                  isinstance(pop, PumaPopulation)), zero_density_arr)
-        H = next((pop.density for pop in old_populations if
-                  isinstance(pop, HarePopulation)), zero_density_arr)
+        H_new = self.find_density_arr(HarePopulation, populations_new)
+        P = self.find_density_arr(PumaPopulation, populations_old)
+        H = self.find_density_arr(HarePopulation, populations_old)
 
         # update array but ommit water boundary
         # ToDo
         # iterate i,j which are land only (skip water)
+        rows, cols = self.density.shape
         for i in range(1, rows - 1):
             for j in range(1, cols - 1):
                 H_new[i][j] = self.update_density_ij(i, j, P, H) * self._landscape[i][j]
@@ -215,7 +215,7 @@ class Simulation():
     Blaaa
     """
 
-    def __init__(self, Landscape, *args):
+    def __init__(self, *args):
         """ This is constructor docstring
         Blaaa
         """
@@ -230,9 +230,8 @@ class Simulation():
 
     def remove_population(self, pop):
         print(pop.kind + ' removed')
-        return self.populations.append(pop)
+        return self.populations.remove(pop)
 
-    # Marcin
     def update(self, old_populations, populations):
         for pop in populations:
             pop.update_density(old_populations, populations)
@@ -242,16 +241,19 @@ class Simulation():
         ("Do this", "Return that")
         """
         print('Running simulation')
-        old_populations = np.copy(self.populations)
-        for i in range(num_steps):
+        start = time.time()
+        populations_old = np.copy(self.populations)
+        for i in tqdm(range(num_steps)):
             if i % 2 == 0:
-                self.update(old_populations, self.populations)
+                self.update(populations_old, self.populations)
             else:
-                self.update(self.populations, old_populations)
+                self.update(self.populations, populations_old)
 
         # make sure we return last updated array
         if num_steps % 2 == 0:
-            self.populations = np.copy(old_populations)
+            self.populations = np.copy(populations_old)
+        end = time.time()
+        print("Simulation time: %.2f s" % (end - start))
 
     def save_density_grid(self, timestep):
         # creating a new file in directory "Densities", assuming it has been
@@ -278,6 +280,7 @@ class Simulation():
                     (population.density.shape[0] - 2) * (population.density.shape[1] - 2))
                 average_density_file.write(
                     population.kind + ' ' + str(average_population) + '\n')
+
 
 
 # create new landscape from the file 'my_land'
