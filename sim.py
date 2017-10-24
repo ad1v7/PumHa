@@ -7,10 +7,8 @@ from collections import OrderedDict
 from tqdm import tqdm
 
 
-EPS = 1e-3
-
 # Chloe
-class Config():
+class Configuration():
     def __init__(self, config_file):
 
         try:
@@ -29,18 +27,6 @@ class Config():
         for key in config:
             value = config[key]
             print("{} ({})".format(key, value))
-
-        #accept_default = input(
-         #  'Accept default values? (Enter to accept, anything else to configure simulation.')
-        #if accept_default == "":
-         #   print('Continuing with defaults.')
-        #else:
-         #   print('Enter a value or press enter to keep default:')
-          #  for key in config:
-           #     value = config[key]
-            #    user_setting = input("{} ({}): ".format(key, value))
-             #   if not user_setting == "":
-              #      config[key] = user_setting
 
         self.hare_birth = config["Hare_birth"]
         self.hare_predation = config["Hare_predation"]
@@ -70,7 +56,7 @@ class Config():
 
 class Landscape(object):
     def __init__(self, filename):
-        #Check if the landscape exists.        
+        #Check if the landscape exists.
         try:
             my_file = open(filename)
         except IOError:
@@ -114,7 +100,6 @@ class Population(object):
         self._N = landscape_inp.dry_squares
         self._landscape = landscape_inp.landscape
 
-    # Elen
     def random_density(self, landscape_inp):
         min_ro = self.min_ro
         max_ro = self.max_ro
@@ -127,8 +112,6 @@ class Population(object):
 
 
     def load_config(self, birth, death, diffusion, dt):
-        #self.min_ro = Config.min_ro
-        #self.max_ro = Config.max_ro
         self.birth = birth
         self.death = death
         self.diffusion = diffusion
@@ -140,9 +123,6 @@ class Population(object):
                      isinstance(p, pop_class)), np.zeros((rows, cols)))
 
 
-
-
-# Marcin
 class PumaPopulation(Population):
     def __init__(self, Landscape, birth=.02, death=.06, diffusion=.02,
                  min_ro=0., max_ro=5., dt=.4):
@@ -285,7 +265,7 @@ class Simulation():
 
 # create new landscape from the file 'my_land'
 env = Landscape('islands2.dat')
-config = Config('config.dat')
+config = Configuration('config.dat')
 
 print(env.landscape)
 print(env.dry_squares)
