@@ -17,7 +17,7 @@ class Config():
         self.config = self.load_from_file(config_file)
 
     def load_from_file(self, config_file):
-        # parse config file and assign self.r etc
+        # parse config file and assign values
 
         with open(config_file, 'r') as f:
             config = json.load(f, object_pairs_hook=OrderedDict)
@@ -48,6 +48,7 @@ class Config():
 
         return config
 
+    #Create a default configuration set up as JSON.
     def create_config(self, config_file):
         default = {
             'Hare_birth': 0.08,
@@ -65,37 +66,34 @@ class Config():
 
 class Landscape(object):
     def __init__(self, filename):
-        
+
+        #Check if the landscape exists.        
         try:
             my_file = open(filename)
         except IOError:
             print('No such landscape file.')
             sys.exit(1)
-            
+
         self.landscape = self.load_landscape(filename)
         self.dry_squares = self.find_dry_squares()
         self.land_indices = self.find_land_squares_indices()
 
+    #Load landscape from file, in to an array padded with a border of water.
     def load_landscape(self, filename):
         print('Loading landscape')
         return np.pad(np.loadtxt(filename, skiprows=1), ((1, 1), (1, 1)),
                       mode='constant', constant_values=0)
 
+    #This gives every element of an array a value equal to the value of it's
+    #neighbours multiplied by the kernel.  Since land is 1 and water is 0,
+    #multiplying + neighbours by one gives the sum of the land neighbours
+    #minus the diagals.  This means we can calculate this value just once.
     def find_dry_squares(self):
         print('calculating number of dry squares')
         kernel = [[0, 1, 0], [1, 0, 1], [0, 1, 0]]
         return convolve(self.landscape, kernel, mode='constant')
 
-    # find and save indices of an landscape array
-    # as tuples
-    # eg [(0,0), (1,1), (2,3)]
-    # Why bother?
-    # Any iteration over landscape can be replaced
-    # with iteration over land idices which will make
-    # life easier (no need to check each time are we on land)
-    # and way faster
-    # also add new Landscape class variable to store it
-    # so other classes can access it
+    #Return tuples of all non-zero elements of landscape (ie, the land)
     def find_land_squares_indices(self):
         return np.transpose(np.nonzero(self.landscape))
 
