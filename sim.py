@@ -116,7 +116,6 @@ class Population(object):
                                             grid[grid == 1].shape)
         return grid
 
-
     def load_config(self, birth, death, diffusion, dt):
         #self.min_ro = Config.min_ro
         #self.max_ro = Config.max_ro
@@ -274,7 +273,6 @@ class Simulation():
                                for row in population.density]))
 
     def save_average_density(self, timestep):
-
         """Claculate the average density of animals in the whole landscape
 
         The average population is found by summing all the densities in the grid
