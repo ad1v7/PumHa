@@ -236,22 +236,43 @@ class Simulation():
         print("Simulation time: %.2f s" % (end - start))
 
     def save_density_grid(self, timestep):
-        # creating a new file in directory "Densities", assuming it has been
-        # created through a makefile (?)
-        # args consists of class instances of either HarePopulation or
-        # PumaPopulation. Assuming that somewhere
-        # in these classes there is a variable self.density which is a numpy
-        # array that holds the array that needs to go to the file.
+        """Write the densities on each landscape square to a ppm file
+
+        This method writes the density of a population to a file in the folder
+        'Densities' which has a name in a format 't=*timestep*_*population kind'.
+        The first row in the file will give the dimensions of the density
+        array. The density array is a 2D array consisting of float values that
+        represent the average density on that square.
+
+        :param timestep: the timestep to which the density matrix corresponds to
+        :type timestep: float
+
+        """
         for population in self.populations:
             with open('Densities/t=' + str(
                     timestep) + '_' + population.kind + '.ppm',
                       'w+') as density_file:
-                density_file.write(str(population.density))
+                                density_file.write(
+                    str(population.density.shape[0]) + ' ' + str(population.density.shape[1]) + '\n')
+                density_file.write('\n')
+                density_file.write(
+                    '\n'.join([' '.join(['{:.2f}'.format(num) for num in row])
+                               for row in population.density]))
 
     def save_average_density(self, timestep):
-        # args again PumaPopulation or HarePopulation class instances.
-        # Creating a file for average densities in the same folder, no new
-        # folder needed for one file, I think
+        """Claculate the average density of animals in the whole landscape
+
+        The average population is found by summing all the densities in the grid
+        and dividing it by the area of the whole grid. The density is saved to a
+        file 'average_densities.txt' in a format
+        't = *timestep*
+        *population kind* *average density*'
+        For every timestep the densities are found for every density in the
+        self.populations array.
+
+        :param timestep: timestep at which the averages are calculated.
+        :return:
+        """
         with open('average_densities.txt',
                   'a+') as average_density_file:
             average_density_file.write('t = ' + str(timestep) + '\n')
