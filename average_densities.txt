@@ -1,0 +1,10 @@
+t = 34
+PumaPopulation 1.62543879615
+t = 34
+PumaPopulation 1.51943651835
+t = 34
+PumaPopulation 0.67835383945
+t = 34
+PumaPopulation 1.29572825962
+t = 34
+PumaPopulation 1.94683032566
