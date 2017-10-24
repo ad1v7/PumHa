@@ -1,0 +1,4 @@
+include README.rst
+
+# Include the data files
+recursive-include data *
