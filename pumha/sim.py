@@ -127,7 +127,7 @@ class PumaPopulation(Population):
     def __init__(self, Landscape, birth=.02, death=.06, diffusion=.02,
                  min_ro=0., max_ro=5., dt=.4):
         super(PumaPopulation, self).__init__(Landscape, birth, death,
-                                             diffusion, min_ro, max_ro, dt=.4)
+                                             diffusion, min_ro, max_ro, dt)
         self.kind = 'PumaPopulation'
         print('Puma population created')
 
@@ -150,7 +150,7 @@ class PumaPopulation(Population):
         l = self.diffusion
         dt = self.dt
         N = self._N
-        return P[i][j] + dt * (b * H[i][j] * P[i][i] - m * P[i][j]
+        return P[i][j] + dt * (b * H[i][j] * P[i][j] - m * P[i][j]
                                + l * ((P[i - 1][j] + P[i + 1][j] + P[i][j - 1] +
                                        P[i][j + 1])
                                       - N[i][j] * P[i][j]))
@@ -160,7 +160,7 @@ class HarePopulation(Population):
     def __init__(self, Landscape, birth=.08, death=.04, diffusion=.02,
                  min_ro=0., max_ro=5., dt=.4):
         super(HarePopulation, self).__init__(Landscape, birth, death,
-                                             diffusion, min_ro, max_ro, dt=.4)
+                                             diffusion, min_ro, max_ro, dt)
         print('Hare population created')
         self.kind = 'HarePopulation'
 
