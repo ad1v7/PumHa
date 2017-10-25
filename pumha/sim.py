@@ -99,6 +99,7 @@ class Population(object):
         self.density = self.random_density(landscape_inp)
         self._N = landscape_inp.dry_squares
         self._landscape = landscape_inp.landscape
+        self._land_idx = landscape_inp.land_indices
 
     def random_density(self, landscape_inp):
         min_ro = self.min_ro
@@ -138,11 +139,8 @@ class PumaPopulation(Population):
         H = self.find_density_arr(HarePopulation, populations_old)
 
         # update all landscape ij
-        # do not update boundary
-        rows, cols = self.density.shape
-        for i in range(1, rows-1):
-            for j in range(1, cols-1):
-                P_new[i][j] = self.update_density_ij(i, j, P, H) * self._landscape[i][j]
+        for i,j in self._land_idx:
+            P_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
         b = self.birth
@@ -170,13 +168,9 @@ class HarePopulation(Population):
         P = self.find_density_arr(PumaPopulation, populations_old)
         H = self.find_density_arr(HarePopulation, populations_old)
 
-        # update array but ommit water boundary
-        # ToDo
-        # iterate i,j which are land only (skip water)
-        rows, cols = self.density.shape
-        for i in range(1, rows - 1):
-            for j in range(1, cols - 1):
-                H_new[i][j] = self.update_density_ij(i, j, P, H) * self._landscape[i][j]
+        # update all landscape ij
+        for i,j in self._land_idx:
+            H_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
         r = self.birth
@@ -285,7 +279,7 @@ class Simulation():
 
 if __name__ == "__main__":
     # create new landscape from the file 'my_land'
-    env = Landscape('data/islands2.dat')
+    env = Landscape('data/islands.dat')
     config = Configuration('data/config.dat')
 
     print(env.landscape)
@@ -315,7 +309,7 @@ if __name__ == "__main__":
     #......
     # create new simulation with the landscape env and puma population
     sim = Simulation(env, puma_pop)
-    sim.run(5000)
+    sim.run(500)
     print(puma_pop.density)
     # update one step
     # sim.run(20)
