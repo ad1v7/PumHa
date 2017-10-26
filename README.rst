@@ -53,3 +53,4 @@ Make sure that below tasks are distributed evenly
 * Check, verify and discuss output
 * Discuss module structure
 * Go over requirements and make sure all tasks are either assigned or completed
+* time step attribute in Population looks rather awkward; add it to Simulation?
