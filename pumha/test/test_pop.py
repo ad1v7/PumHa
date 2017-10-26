@@ -1,46 +1,40 @@
 from unittest import TestCase
 import numpy as np
 from pumha.env import Landscape
-from pumha.pop import (Configuration,
-                       PumaPopulation,
+from pumha.pop import (PumaPopulation,
                        HarePopulation)
-from pumha.sim import Simulation
 
 
 land_arr = np.array([[0, 0, 0, 0],
                      [0, 1, 1, 0],
                      [0, 1, 0, 0],
-                     [0, 0, 1 ,0],
-                     [0, 0, 0 ,0]
-                    ])
+                     [0, 0, 1, 0],
+                     [0, 0, 0, 0]])
 
-dry_squares = np.array([[0, 1 ,1 ,0],
-                        [1, 2 ,1 ,1],
+dry_squares = np.array([[0, 1, 1, 0],
+                        [1, 2, 1, 1],
                         [1, 1, 3, 0],
                         [0, 2, 0, 0],
-                        [0, 0, 1, 0]
-                       ])
+                        [0, 0, 1, 0]])
 
 P_density = np.array([[0, 0, 0, 0],
                       [0, 1.1, 1.9, 0],
                       [0, 0.1, 0, 0],
-                      [0, 0, 2.6 ,0],
-                      [0, 0, 0 ,0]
-                     ])
+                      [0, 0, 2.6, 0],
+                      [0, 0, 0, 0]])
 
 H_density = np.array([[0, 0, 0, 0],
                       [0, 3.1, 2.4, 0],
                       [0, 3.1, 0, 0],
-                      [0, 0, 0.6 ,0],
-                      [0, 0, 0 ,0]
-             ])
+                      [0, 0, 0.6, 0],
+                      [0, 0, 0, 0]])
 
 # create new landscape
 env = Landscape('pumha/test/data/test_land.dat')
 # add arrays so we know what to expect
 env.landscape = np.copy(land_arr)
 env.dry_squares = np.copy(dry_squares)
-env.land_indices = [(1,1),(1,2),(2,1),(3,2)]
+env.land_indices = [(1, 1), (1, 2), (2, 1), (3, 2)]
 # create puma and hare populations
 # and add density arrays for testing
 puma = PumaPopulation(env)
@@ -48,6 +42,7 @@ puma.density = np.copy(P_density)
 hare = HarePopulation(env)
 hare.density = np.copy(H_density)
 pop_list = [hare, puma]
+
 
 class TestPopulation(TestCase):
     def test_find_density_arr(self):
@@ -139,13 +134,12 @@ class TestPopulation(TestCase):
         H_test = 3.1+dt*(r*3.1-a*3.1*1.1+k*((2.4+3.1)-2*3.1))
         self.assertAlmostEqual(H_new_ij, H_test)
 
-
     # to be implemented
     def test_random_density(self):
         pass
 
 
-# return if all matrix perimeter (boundary) elements are zeroes
+# return True if all matrix perimeter (boundary) elements are zeroes
 def zero_surrounded(array):
-    return not (array[0,:].any() or array[-1,:].any() or array[:,0].any()
-                    or array[:,-1].any())
+    return not (array[0, :].any() or array[-1, :].any() or array[:, 0].any()
+                or array[:, -1].any())
