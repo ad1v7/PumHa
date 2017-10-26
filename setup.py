@@ -17,17 +17,25 @@ setup(
     author=['Chloe Sumner', 'Elen Kalda', 'Marcin Kirsz'],
     license='MIT',
     packages=find_packages(),
+    classifiers=[
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License'
+    ],
     package_data={
         'data': ['config.dat',
                 'island2.dat',
                 'islands.dat'],
     },
     install_requires=[
-        'numpy',
-        'simplejson',
-        'scipy',
-        'tqdm'
+        'numpy>=1.13.0',
+        'simplejson>=3.8.1',
+        'scipy>=0.17.0',
+        'tqdm>=4.19.4'
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
+    entry_points={
+        'console_scripts': ['pumha=pumha.run_sim:main']
+    }
 )
