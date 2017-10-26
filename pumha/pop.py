@@ -270,7 +270,7 @@ class HarePopulation(Population):
             H_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
-         """Return updated hare density at one(i,j) square
+        """Return updated hare density at one(i,j) square
 
         Method implements discrete approximation of the following equation:
 
