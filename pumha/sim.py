@@ -3,39 +3,76 @@ import numpy as np
 from tqdm import tqdm
 from pumha.pop import Population
 
+
 class Simulation():
-    """This is class docstring
-    Blaaa
+    """Simulate time and space evolution of populations
+
+    Only populations added to a populations list are simulated. If no
+    populations are added the simulation will run using density arrays of
+    zeroes. If only one population is added but its update method requires
+    existance of another population the simulation will still run using zeros
+    density array for missing population.
+    
+    This can be interpreted as follows:
+
+    Lets add only hare population; its update method requires puma population,
+    if there are no pumas hares death rate is 0 so they only increase in
+    numbers until they rule a land!
+
+    Similarly for pumas only - if there is no hares they all starve to death.
+
+    :ivar populations: List of populations in a simulation
+    :type populations: list of pumha.pop.Population types
     """
 
     def __init__(self, *args):
-        """ This is constructor docstring
-        Blaaa
-        """
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
 
     def add_population(self, pop):
-        """This is public method docstring
-        ("Do this", "Return that")
+        """Add population object to a simulation
+
+        :param pop: population one  want to add to a simulation
+        :type pop: pumha.pop.Population
         """
-        self.populations.append(pop)
+        if isinstance(pop, Population):
+            self.populations.append(pop)
+        else:
+            print("Object is not of Population type")
 
     def remove_population(self, pop):
-        print(pop.kind + ' removed')
-        return self.populations.remove(pop)
+        """Remove population from a simulation
 
-    def update(self, old_populations, populations):
-        for pop in populations:
-            pop.update_density(old_populations, populations)
+        :param pop: population one  want to remove from a simulation
+        :type pop: pumha.pop.Population
+        """
+        print(pop.kind + ' removed')
+        self.populations.remove(pop)
+
+    def update(self, populations_old, populations_new):
+        """One step update for all populations in a simulation
+
+        :param populations_old: list of populations at time t
+        :param populations_new: list of populations at time t+dt
+        """
+        for pop in self.populations:
+            pop.update_density(populations_old, populations_new)
 
     def run(self, num_steps):
-        """This is public method docstring
-        ("Do this", "Return that")
+        """Run a simulation over given number of steps
+
+        Instance population list is updated every second iteration. At the end
+        of a simulation it is updated with the latest version.
+        Method also provides simple timer for a loop which prints simulation
+        time at the end of a simulation to the standard output.
+
+        :param num_steps: Number of steps for a simulation
+        :type num_steps: int
         """
         print('Running simulation')
         start = time.time()
         populations_old = np.copy(self.populations)
+        # tqdm is used to provide progress bar
         for i in tqdm(range(num_steps)):
             if i % 2 == 0:
                 self.update(populations_old, self.populations)
