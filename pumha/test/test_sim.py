@@ -1,6 +1,11 @@
 from unittest import TestCase
-from pumha.sim import Configuration, Landscape, PumaPopulation, HarePopulation
 import numpy as np
+from pumha.env import Landscape
+from pumha.pop import (Configuration,
+                       PumaPopulation,
+                       HarePopulation)
+from pumha.sim import Simulation
+
 
 land_arr = np.array([[0, 0, 0, 0],
                      [0, 1, 1, 0],
