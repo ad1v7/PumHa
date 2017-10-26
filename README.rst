@@ -54,3 +54,5 @@ Make sure that below tasks are distributed evenly
 * Discuss module structure
 * Go over requirements and make sure all tasks are either assigned or completed
 * time step attribute in Population looks rather awkward; add it to Simulation?
+* make sure output is saved every T step
+* decide format of ppm file, how to get round 70 characters per line limit?
