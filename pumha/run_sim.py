@@ -1,3 +1,7 @@
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
 from pumha.env import Landscape
 from pumha.pop import (Configuration,
                        PumaPopulation,
@@ -41,3 +45,6 @@ if __name__ == "__main__":
     # update one step
     # sim.run(20)
     sim.save_average_density(34)
+
+def main():
+    print('Hello')
