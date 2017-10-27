@@ -135,6 +135,7 @@ class TestPopulation(TestCase):
         self.assertAlmostEqual(H_new_ij, H_test)
 
 
+    # some comment
     def test_random_density(self):
         for pop in pop_list:
             # check that grids are numpy arrays
