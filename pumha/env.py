@@ -27,7 +27,6 @@ class Landscape(object):
         self.dry_squares = self.find_dry_squares()
         self.land_indices = self.find_land_squares_indices()
 
-    #Load landscape from file, in to an array padded with a border of water.
     def load_landscape(self, filename):
         """Load the landscape as a numpy array, from a file.
 
