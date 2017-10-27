@@ -188,8 +188,11 @@ class PumaPopulation(Population):
         H = self.find_density_arr(HarePopulation, populations_old)
 
         # update all landscape ij
-        for i, j in self._land_idx:
-            P_new[i][j] = self.update_density_ij(i, j, P, H)
+        #for i, j in self._land_idx:
+        rows,cols = self.density.shape
+        for i in range(1, rows - 1):
+            for j in range(1, cols-1):
+                P_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
         """Return updated puma density at one(i,j) square
@@ -270,8 +273,11 @@ class HarePopulation(Population):
         H = self.find_density_arr(HarePopulation, populations_old)
 
         # update all landscape ij
-        for i, j in self._land_idx:
-            H_new[i][j] = self.update_density_ij(i, j, P, H)
+        #for i, j in self._land_idx:
+        rows,cols = self.density.shape
+        for i in range(1, rows - 1):
+            for j in range(1, cols-1):
+                H_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
         """Return updated hare density at one(i,j) square

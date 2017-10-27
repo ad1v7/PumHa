@@ -10,7 +10,7 @@ from pumha.sim import Simulation
 
 if __name__ == "__main__":
     # create new landscape from the file 'my_land'
-    env = Landscape('data/islands2.dat')
+    env = Landscape('data/islands.dat')
     config = Configuration('data/config.dat')
 
     print(env.landscape)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     #......
     # create new simulation with the landscape env and puma population
     sim = Simulation(env, puma_pop)
-    sim.run(500)
+    sim.run(100)
     print(puma_pop.density)
     # update one step
     # sim.run(20)
