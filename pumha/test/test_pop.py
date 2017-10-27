@@ -134,6 +134,7 @@ class TestPopulation(TestCase):
         H_test = 3.1+dt*(r*3.1-a*3.1*1.1+k*((2.4+3.1)-2*3.1))
         self.assertAlmostEqual(H_new_ij, H_test)
 
+
     #Elen's comment
     def test_random_density(self):
         for pop in pop_list:
