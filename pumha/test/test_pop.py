@@ -134,12 +134,24 @@ class TestPopulation(TestCase):
         H_test = 3.1+dt*(r*3.1-a*3.1*1.1+k*((2.4+3.1)-2*3.1))
         self.assertAlmostEqual(H_new_ij, H_test)
 
-    # to be implemented
+
     def test_random_density(self):
-        pass
+        for pop in pop_list:
+            # check that grids are numpy arrays
+            self.assertTrue(isinstance(pop.random_density(env), np.ndarray))
+            # check that the output array is the same shape as the landscape
+            self.assertTrue(
+                pop.random_density(env).shape == env.landscape.shape)
+            # check that no nonzero density was assigned to the water squares
+            self.assertAlmostEqual(env.landscape[env.landscape == 0].all(),
+                                   pop.random_density(env)[
+                                       pop.random_density(env) == 0].all())
+            # check that all the random densities are between min_ro and max_ro
+            self.assertTrue(pop.min_ro <= pop.random_density(env)[
+                pop.random_density(env) != 0].all() <= pop.max_ro)
 
 
-# return True if all matrix perimeter (boundary) elements are zeroes
+        # return True if all matrix perimeter (boundary) elements are zeroes
 def zero_surrounded(array):
     return not (array[0, :].any() or array[-1, :].any() or array[:, 0].any()
                 or array[:, -1].any())
