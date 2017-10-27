@@ -88,6 +88,15 @@ class Population(object):
         self._land_idx = landscape_inp.land_indices
 
     def random_density(self, landscape_inp):
+        '''Assing a random density between min_ro and max_ro to every land square
+
+        The method uses the input landscape file to return a grid where there is
+        assigned a random density between minimum and maximum densities for every
+        land square.
+        :param landscape_inp: .dat input file with the landscape
+        :return: a 2D array of random densities
+        :rtype: numpy.ndarray containing data with float64 type
+        '''
         min_ro = self.min_ro
         max_ro = self.max_ro
         # turning the array of integers into an array of floats
