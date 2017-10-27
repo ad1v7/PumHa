@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
+here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
         long_description = f.read()
 
@@ -28,9 +28,9 @@ setup(
                 'islands.dat'],
     },
     install_requires=[
-        'numpy>=1.13.0',
+        'numpy>=1.9.2',
         'simplejson>=3.8.1',
-        'scipy>=0.17.0',
+        'scipy>=0.15.1',
         'tqdm>=4.19.4'
     ],
     test_suite='nose.collector',
