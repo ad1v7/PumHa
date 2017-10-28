@@ -82,7 +82,7 @@ class Simulation():
         for i in tqdm(range(num_steps)):
             if i % 2 == 0:
                 self.update(populations_old, self.populations)
-                self.save_density_grid_v2(i)
+                self.save_density_grid(i)
             else:
                 self.update(self.populations, populations_old)
 
@@ -93,30 +93,37 @@ class Simulation():
         print("Simulation time: %.2f s" % (end - start))
 
     def save_density_grid(self, timestep):
-        """Write the densities on each landscape square to a ppm file
+
+        """Write the densities on each landscape square to a plain ppm file
 
         This method writes the density of a population to a file in the folder
         'Densities' which has a name in a format 't=*timestep*_*population kind'.
-        The first row in the file will give the dimensions of the density
-        array. The density array is a 2D array consisting of float values that
-        represent the average density on that square.
+        All the squares with water are assigned blue RGB value (0, 0, 225),
+        land squares represent relative densities of pumas and hares.
 
         :param timestep: the timestep to which the density matrix corresponds to
         :type timestep: float
 
         """
-        land = environment.landscape
-        # creating an array in in a format which could be converted to a ppm file
-        ppm_grid = np.zeros((land.shape[0], land.shape[1], 3))
-        # finding water and making it blue
-        ppm_grid[:, :, 2][land == 0] = 225
-        # colouring in densities
+        #find puma and hare densities
         for pop in self.populations:
             if isinstance(pop, HarePopulation):
-                ppm_grid[:, :, 0] = 100*pop.density
+                hare_pop = pop.density
             else:
-                ppm_grid[:, :, 1] = 100*pop.density
-        misc.imsave('Densities/t = '+str(timestep)+'.ppm', ppm_grid)
+                puma_pop = pop.density
+
+        with open('Densities/t = '+str(timestep)+'_plain.ppm', 'w+') as f:
+            f.write('P3'+'\n')
+            f.write('#da raw ppm file'+'\n')
+            rows, cols = hare_pop.shape
+            f.write('%s %s\n' % (rows, cols))
+            f.write('5\n')
+            for i in range(rows):
+                for j in range(cols):
+                    puma_pop_ij = int(round(puma_pop[i][j]))
+                    hare_pop_ij = int(round(hare_pop[i][j]))
+                    f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255  ')
+            f.write('\n')
 
 
     def save_average_density(self, timestep):
@@ -142,52 +149,4 @@ class Simulation():
                 average_density_file.write(
                     population.kind + ' ' + str(average_population) + '\n')
 
-    def save_density_grid_v2(self, timestep):
-        """Saves density grids
 
-        extract density arrays from population list and assign to variables
-        output this to a file
-        P6 <---- raw ppm so we dont have to worry about 70 char limit
-        cols rows <--- size of density array
-        10 <---- this is actualy a scalling factor!!! I explain later
-        Here comes density array <--- see comment below
-        iterate over density grid (rows, cols = i,j)
-
-        the format is
-        R G B  R G B  R G B  R...
-        one line corresponds to one line in density array than add print
-        statement with new line and print another line and so on
-        set B=0 always
-        R = density of pumas for a given i,j grid square
-        G = density of hares for a given i,j density grid square
-
-        densities must be rounded as integers for ex
-        str(int(round(density[i][j]))) before saving
-        dont worry about scalling it should work as is
-
-        for testing you can use new map1.dat will save you some time
-        because it is smaller than islands2.dat
-        
-        any questions ask :)
-
-        """
-
-        #find puma and hare densities
-        for pop in self.populations:
-            if isinstance(pop, HarePopulation):
-                hare_pop = pop.density
-            else:
-                puma_pop = pop.density
-
-        with open('Densities/t = '+str(timestep)+'_plain.ppm', 'w+') as f:
-            f.write('P3'+'\n')
-            f.write('#da raw ppm file'+'\n')
-            rows, cols = hare_pop.shape
-            f.write('%s %s\n' % (rows, cols))
-            f.write('5\n')
-            for i in range(rows):
-                for j in range(cols):
-                    puma_pop_ij = int(round(puma_pop[i][j]))
-                    hare_pop_ij = int(round(hare_pop[i][j]))
-                    f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255  ')
-            f.write('\n')
