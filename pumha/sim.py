@@ -192,5 +192,5 @@ class Simulation():
                         f.write('0 0 225  ')
                     else:
                         puma_pop_ij = int(round(puma_pop[i][j]))
-                        hare_pop_ij = int(round(puma_pop[i][j]))
+                        hare_pop_ij = int(round(hare_pop[i][j]))
                         f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+' '+str(0)+'  ')
