@@ -141,7 +141,7 @@ class Simulation():
                 average_density_file.write(
                     population.kind + ' ' + str(average_population) + '\n')
 
-    def save_density_grid_v2(self):
+    def save_density_grid_v2(self, timestep,  environment):
         """Saves density grids
 
         extract density arrays from population list and assign to variables
@@ -170,3 +170,27 @@ class Simulation():
         any questions ask :)
 
         """
+
+        #find puma and hare densities
+        for pop in self.populations:
+            if isinstance(pop, HarePopulation):
+                hare_pop = pop.density
+            else:
+                puma_pop = pop.density
+
+        print(environment.land_indices)
+        with open('Densities/t = '+str(timestep)+'_plain.txt', 'w+') as f:
+            f.write('P3'+'\n')
+            f.write('#da plain ppm file'+'\n')
+            f.write(str(environment.landscape.shape[0])+' '+str(environment.landscape.shape[1])+'\n')
+            rows, cols = hare_pop.shape
+            print(rows, cols)
+            for i in range(rows):
+                f.write('\n')
+                for j in range(cols):
+                    if environment.landscape[i][j]==0:
+                        f.write('0 0 225  ')
+                    else:
+                        puma_pop_ij = int(round(puma_pop[i][j]))
+                        hare_pop_ij = int(round(puma_pop[i][j]))
+                        f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+' '+str(0)+'  ')

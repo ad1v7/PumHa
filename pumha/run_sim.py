@@ -10,7 +10,7 @@ from pumha.sim import Simulation
 
 if __name__ == "__main__":
     # create new landscape from the file 'my_land'
-    env = Landscape('data/islands.dat')
+    env = Landscape('data/map1.dat')
     config = Configuration('data/config.dat')
 
     print(env.landscape)
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     print(puma_pop.density)
     # update one step
     # sim.run(20)
-    sim.save_density_grid(34, env)
+    sim.save_density_grid_v2(34, env)
 
 def main():
     print('Hello')
