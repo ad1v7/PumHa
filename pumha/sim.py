@@ -4,8 +4,10 @@ from __future__ import (absolute_import,
                         unicode_literals)
 import time
 import numpy as np
+from scipy import misc
 from tqdm import tqdm
-from pumha.pop import Population
+from pumha.pop import Population, HarePopulation, PumaPopulation
+from pumha.env import Landscape
 
 
 class Simulation():
@@ -89,7 +91,7 @@ class Simulation():
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
 
-    def save_density_grid(self, timestep):
+    def save_density_grid(self, timestep, environment):
         """Write the densities on each landscape square to a ppm file
 
         This method writes the density of a population to a file in the folder
@@ -102,16 +104,19 @@ class Simulation():
         :type timestep: float
 
         """
-        for population in self.populations:
-            with open('Densities/t=' + str(
-                    timestep) + '_' + population.kind + '.ppm',
-                      'w+') as density_file:
-                density_file.write(
-                    str(population.density.shape[0]) + ' ' + str(population.density.shape[1]) + '\n')
-                density_file.write('\n')
-                density_file.write(
-                    '\n'.join([' '.join(['{:.2f}'.format(num) for num in row])
-                               for row in population.density]))
+        land = environment.landscape
+        # creating an array in in a format which could be converted to a ppm file
+        ppm_grid = np.zeros((land.shape[0], land.shape[1], 3))
+        # finding water and making it blue
+        ppm_grid[:, :, 2][land == 0] = 225
+        # colouring in densities
+        for pop in self.populations:
+            if isinstance(pop, HarePopulation):
+                ppm_grid[:, :, 0] = 100*pop.density
+            else:
+                ppm_grid[:, :, 1] = 100*pop.density
+        misc.imsave('Densities/t = '+str(timestep)+'.ppm', ppm_grid)
+
 
     def save_average_density(self, timestep):
         """Claculate the average density of animals in the whole landscape
