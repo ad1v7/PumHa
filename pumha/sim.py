@@ -140,3 +140,33 @@ class Simulation():
                     (population.density.shape[0] - 2) * (population.density.shape[1] - 2))
                 average_density_file.write(
                     population.kind + ' ' + str(average_population) + '\n')
+
+    def save_density_grid_v2(self):
+        """Saves density grids
+
+        extract density arrays from population list and assign to variables
+        output this to a file
+        P6 <---- raw ppm so we dont have to worry about 70 char limit
+        cols rows <--- size of density array
+        10 <---- this is actualy a scalling factor!!! I explain later
+        Here comes density array <--- see comment below
+        iterate over density grid (rows, cols = i,j)
+
+        the format is
+        R G B  R G B  R G B  R...
+        one line corresponds to one line in density array than add print
+        statement with new line and print another line and so on
+        set B=0 always
+        R = density of pumas for a given i,j grid square
+        G = density of hares for a given i,j density grid square
+
+        densities must be rounded as integers for ex
+        str(int(round(density[i][j]))) before saving
+        dont worry about scalling it should work as is
+
+        for testing you can use new map1.dat will save you some time
+        because it is smaller than islands2.dat
+        
+        any questions ask :)
+
+        """
