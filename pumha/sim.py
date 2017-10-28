@@ -82,6 +82,7 @@ class Simulation():
         for i in tqdm(range(num_steps)):
             if i % 2 == 0:
                 self.update(populations_old, self.populations)
+                self.save_density_grid_v2(i)
             else:
                 self.update(self.populations, populations_old)
 
@@ -91,7 +92,7 @@ class Simulation():
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
 
-    def save_density_grid(self, timestep, environment):
+    def save_density_grid(self, timestep):
         """Write the densities on each landscape square to a ppm file
 
         This method writes the density of a population to a file in the folder
@@ -141,7 +142,7 @@ class Simulation():
                 average_density_file.write(
                     population.kind + ' ' + str(average_population) + '\n')
 
-    def save_density_grid_v2(self, timestep,  environment):
+    def save_density_grid_v2(self, timestep):
         """Saves density grids
 
         extract density arrays from population list and assign to variables
@@ -178,19 +179,15 @@ class Simulation():
             else:
                 puma_pop = pop.density
 
-        print(environment.land_indices)
-        with open('Densities/t = '+str(timestep)+'_plain.txt', 'w+') as f:
+        with open('Densities/t = '+str(timestep)+'_plain.ppm', 'w+') as f:
             f.write('P3'+'\n')
-            f.write('#da plain ppm file'+'\n')
-            f.write(str(environment.landscape.shape[0])+' '+str(environment.landscape.shape[1])+'\n')
+            f.write('#da raw ppm file'+'\n')
             rows, cols = hare_pop.shape
-            print(rows, cols)
+            f.write('%s %s\n' % (rows, cols))
+            f.write('5\n')
             for i in range(rows):
-                f.write('\n')
                 for j in range(cols):
-                    if environment.landscape[i][j]==0:
-                        f.write('0 0 225  ')
-                    else:
-                        puma_pop_ij = int(round(puma_pop[i][j]))
-                        hare_pop_ij = int(round(puma_pop[i][j]))
-                        f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+' '+str(0)+'  ')
+                    puma_pop_ij = int(round(puma_pop[i][j]))
+                    hare_pop_ij = int(round(hare_pop[i][j]))
+                    f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255  ')
+            f.write('\n')

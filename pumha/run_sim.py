@@ -40,11 +40,11 @@ if __name__ == "__main__":
     #......
     # create new simulation with the landscape env and puma population
     sim = Simulation(env, puma_pop, hare_pop)
-    sim.run(5)
+    sim.run(100)
     print(puma_pop.density)
     # update one step
     # sim.run(20)
-    sim.save_density_grid_v2(34, env)
+    #sim.save_density_grid_v2(34, env)
 
 def main():
     print('Hello')
