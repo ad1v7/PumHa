@@ -112,7 +112,7 @@ class Simulation():
             else:
                 puma_pop = pop.density
 
-        density_file = 'Densities/t = '+str(timestep)+'_plain.ppm'
+        density_file = 'densities/t = '+str(timestep)+'_plain.ppm'
 
         with open(density_file, 'w+') as f:
             f.write('P3'+'\n')
