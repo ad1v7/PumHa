@@ -105,7 +105,7 @@ class TestPopulation(TestCase):
     def test_puma_population_update_density_ij(self):
         b = .02
         m = .06
-        l = .02
+        l = .2
         dt = .4
         # test 1,2: 2nd row, 3rd column
         P = puma.density
@@ -121,7 +121,7 @@ class TestPopulation(TestCase):
     def test_hare_population_update_density_ij(self):
         r = .08
         a = .04
-        k = .02
+        k = .2
         dt = .4
         # test 1,2: 2nd row, 3rd column
         P = puma.density
