@@ -112,7 +112,9 @@ class Simulation():
             else:
                 puma_pop = pop.density
 
-        with open('Densities/t = '+str(timestep)+'_plain.ppm', 'w+') as f:
+        density_file = 'Densities/t = '+str(timestep)+'_plain.ppm'
+
+        with open(density_file, 'w+') as f:
             f.write('P3'+'\n')
             f.write('#da raw ppm file'+'\n')
             rows, cols = hare_pop.shape
@@ -124,7 +126,21 @@ class Simulation():
                     hare_pop_ij = int(round(hare_pop[i][j]))
                     f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255  ')
             f.write('\n')
+        #creating files in the right format
+        self.chop_lines(density_file, 'new_densities/t = '+str(timestep)+'_plain.ppm')
 
+    def chop_lines(self, input_file, output_file):
+        # read in the data from the input file
+        with open(input_file, 'r') as f, open(output_file, 'w+') as g:
+            for line in f:
+                i = 4
+                line = line.strip().split('  ')
+                for segment in line:
+                    g.write(segment + '  ')
+                    i = (i + 1) % 5
+                    if i == 4:
+                        g.write('\n')
+                g.write('\n')
 
     def save_average_density(self, timestep):
         """Claculate the average density of animals in the whole landscape
