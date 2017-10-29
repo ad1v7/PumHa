@@ -46,12 +46,12 @@ pop_list = [hare, puma]
 
 class TestPopulation(TestCase):
     def test_find_density_arr(self):
-        arr = puma.find_density_arr(PumaPopulation, pop_list)
+        arr = puma.find_density_arr(pop_list)
         self.assertTrue(isinstance(arr, np.ndarray))
         self.assertTrue(np.array_equal(arr, puma.density))
         # repeat with reversed list
         pop_list.reverse()
-        arr = puma.find_density_arr(PumaPopulation, pop_list)
+        arr = puma.find_density_arr(pop_list)
         self.assertTrue(isinstance(arr, np.ndarray))
         self.assertTrue(np.array_equal(arr, puma.density))
 
