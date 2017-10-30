@@ -107,7 +107,7 @@ class Simulation():
         """Write the densities on each landscape square to a plain ppm file
 
         This method writes the density of a population to a file in the folder
-        'Densities' which has a name in a format 't=*timestep*_*population kind'.
+        'densities' which has a name in a format 't = *timestep*_plain.ppm
         All the squares with water are assigned blue RGB value (0, 0, 225),
         land squares represent relative densities of pumas and hares.
 
@@ -124,33 +124,29 @@ class Simulation():
 
         density_file = 'densities/t = '+str(timestep)+'_plain.ppm'
 
+        #creating an array of strings where every string represents a pixel
+        density_arr = []
+        rows, cols = hare_pop.shape
+        for i in range(rows):
+            for j in range(cols):
+                puma_pop_ij = int(round(puma_pop[i][j]))
+                hare_pop_ij = int(round(hare_pop[i][j]))
+                density_arr.append(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255')
         with open(density_file, 'w+') as f:
             f.write('P3'+'\n')
             f.write('#da raw ppm file'+'\n')
             rows, cols = hare_pop.shape
             f.write('%s %s\n' % (rows, cols))
             f.write('5\n')
-            for i in range(rows):
-                for j in range(cols):
-                    puma_pop_ij = int(round(puma_pop[i][j]))
-                    hare_pop_ij = int(round(hare_pop[i][j]))
-                    f.write(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255  ')
+            i = 4
+            for segment in density_arr:
+                f.write(segment + '  ')
+                i = (i + 1) % 5
+                if i == 4:
+                    f.write('\n')
             f.write('\n')
-        #creating files in the right format
-        self.chop_lines(density_file, 'new_densities/t = '+str(timestep)+'_plain.ppm')
 
-    def chop_lines(self, input_file, output_file):
-        # read in the data from the input file
-        with open(input_file, 'r') as f, open(output_file, 'w+') as g:
-            for line in f:
-                i = 4
-                line = line.strip().split('  ')
-                for segment in line:
-                    g.write(segment + '  ')
-                    i = (i + 1) % 5
-                    if i == 4:
-                        g.write('\n')
-                g.write('\n')
+
 
     def save_average_density(self, timestep):
         """Claculate the average density of animals in the whole landscape
