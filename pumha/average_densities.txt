@@ -1,2 +1,0 @@
-t = 34
-PumaPopulation 0.0452626806641
