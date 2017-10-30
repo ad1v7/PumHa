@@ -82,6 +82,8 @@ class Simulation():
         of a simulation it is updated with the latest version.
         The method invokes save_density_grid_interface() every save_freq step
         in attempt to save ppm output.
+        At the end of the simulation rescale_ppm_files() method is invoked to
+        rescale all ppm files using highest value of the density.
         Method also provides simple timer for a loop which prints total elapsed
         time at the end of a simulation to the standard output.
 
@@ -96,6 +98,7 @@ class Simulation():
         start = time.time()
         populations_old = np.copy(self.populations)
         # tqdm is used to provide progress bar
+        max_density = 0
         for i in tqdm(range(num_steps)):
             if i % 2 == 0:
                 self.update(populations_old, self.populations)
@@ -103,14 +106,25 @@ class Simulation():
                 self.update(self.populations, populations_old)
             # saving ppm file every T steps
             if i % save_freq == 0:
+                # save output
                 self.save_density_grid_interface(i)
                 self.save_average_density(i)
+                # find max value of density
+                new_max_ro = np.amax([p.density for p in self.populations])
+                if new_max_ro > max_density:
+                    max_density = new_max_ro
+
+        # use max density value to rescale all ppm files
+        self.rescale_ppm_files(max_density)
 
         # make sure we return last updated array
         if num_steps % 2 == 0:
             self.populations = np.copy(populations_old)
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
+
+    def rescale_ppm_files(self, max_density):
+        max_density = int(max_density)
 
     def save_density_grid_interface(self, i):
         """Simple interface to save_density_grid method
