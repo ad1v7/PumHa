@@ -43,9 +43,12 @@ if __name__ == "__main__":
     # Clearing the contents of an average density file
     f = open('average_densities.txt', 'w')
     f.close()
+    with open('average_densities.txt', 'w')as f:
+        f.write('timestep    hare population        puma population\n')
+        f.write('-----------------------------------------------------\n')
 
     sim = Simulation(env, puma_pop, hare_pop)
-    sim.run(400, 2)
+    sim.run(10, 2)
     print(puma_pop.density)
 
     # sim.run(20)
