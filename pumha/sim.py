@@ -234,11 +234,11 @@ class Simulation():
         populations = [hare_pop, puma_pop]
         with open('average_densities.txt',
                   'a+') as f:
-            f.write(str(timestep) + '             ')
+            f.write(str(timestep) + '           ')
             for pop in populations:
                 average_pop = np.sum(pop) / (
                     (pop.shape[0] - 2) * (pop.shape[1] - 2))
-                f.write(str(average_pop) + '        ')
+                f.write(str(average_pop) + '          ')
             f.write('\n')
 
 

@@ -45,7 +45,7 @@ if __name__ == "__main__":
     f.close()
     with open('average_densities.txt', 'w')as f:
         f.write('timestep    hare population        puma population\n')
-        f.write('-----------------------------------------------------\n')
+
 
     sim = Simulation(env, puma_pop, hare_pop)
     sim.run(10, 2)
