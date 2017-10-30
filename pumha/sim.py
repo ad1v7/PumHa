@@ -105,6 +105,7 @@ class Simulation():
             # saving ppm file every T steps
             if i % save_freq == 0:
                 self.save_density_grid_interface(i)
+                self.save_average_density(i)
 
         # make sure we return last updated array
         if num_steps % 2 == 0:
@@ -187,15 +188,14 @@ class Simulation():
         self.populations array.
 
         :param timestep: timestep at which the averages are calculated.
-        :return:
         """
         with open('average_densities.txt',
-                  'a+') as average_density_file:
-            average_density_file.write('t = ' + str(timestep) + '\n')
-            for population in self.populations:
-                average_population = np.sum(population.density) / (
-                    (population.density.shape[0] - 2) * (population.density.shape[1] - 2))
-                average_density_file.write(
-                    population.kind + ' ' + str(average_population) + '\n')
+                  'a+') as f:
+            f.write('----------------------------\n')
+            f.write('t = ' + str(timestep) + '\n')
+            for pop in self.populations:
+                average_pop = np.sum(pop.density) / (
+                    (pop.density.shape[0] - 2) * (pop.density.shape[1] - 2))
+                f.write(pop.kind + ' ' + str(average_pop) + '\n')
 
 

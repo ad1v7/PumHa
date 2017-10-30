@@ -1,0 +1,20 @@
+----------------------------
+t = 0
+PumaPopulation 0.692223046874
+HarePopulation 0.683996941826
+----------------------------
+t = 4
+PumaPopulation 0.675957745379
+HarePopulation 0.631469083501
+----------------------------
+t = 8
+PumaPopulation 0.655529102078
+HarePopulation 0.586345576564
+----------------------------
+t = 12
+PumaPopulation 0.63201170747
+HarePopulation 0.547876311001
+----------------------------
+t = 16
+PumaPopulation 0.606326768645
+HarePopulation 0.515469638432

@@ -39,10 +39,15 @@ if __name__ == "__main__":
     # create new population using specific values (config file...)
     #......
     # create new simulation with the landscape env and puma population
+
+    # Clearing the contents of an average density file
+    f = open('average_densities.txt', 'w')
+    f.close()
+
     sim = Simulation(env, puma_pop, hare_pop)
     sim.run(400, 2)
     print(puma_pop.density)
-    # update one step
+
     # sim.run(20)
     #sim.save_density_grid_v2(34, env)
     
