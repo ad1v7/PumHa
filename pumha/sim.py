@@ -3,6 +3,7 @@ from __future__ import (absolute_import,
                         print_function,
                         unicode_literals)
 import time
+import os
 import numpy as np
 from tqdm import tqdm
 from pumha.pop import Population, HarePopulation, PumaPopulation
@@ -96,6 +97,8 @@ class Simulation():
               Running simulation over %s steps\n
               ppm output is saved every %s steps\n''' % (num_steps, save_freq))
         start = time.time()
+        #self.create_output_dir()
+        print(os.path.dirname(__file__))
         populations_old = np.copy(self.populations)
         # tqdm is used to provide progress bar
         max_density = 0
@@ -122,6 +125,14 @@ class Simulation():
             self.populations = np.copy(populations_old)
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
+
+    def create_output_dir(self):
+        timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
+        new_dir = 'densities-' + timestr
+        print('Creating new output directory:')
+        print(os.path.abspath(new_dir))
+        if not os.path.exists(new_dir):
+                os.makedirs(new_dir)
 
     def rescale_ppm_files(self, max_density):
         max_density = int(max_density)
