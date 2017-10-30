@@ -7,7 +7,6 @@ import numpy as np
 from scipy import misc
 from tqdm import tqdm
 from pumha.pop import Population, HarePopulation, PumaPopulation
-from pumha.env import Landscape
 
 
 class Simulation():
@@ -33,9 +32,11 @@ class Simulation():
 
         Each population is of extended puma.pop.Population type
 
+        Run a population over 500 steps and save ppm output every 4th step
+
         >>> from pumha.sim import Simulation
         >>> sim = Simulation(puma, hare)
-        >>> sim.run(500)
+        >>> sim.run(500, 4)
 
     :ivar populations: List of populations in a simulation
     :type populations: list of pumha.pop.Population types
