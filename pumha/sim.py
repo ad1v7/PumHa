@@ -44,6 +44,7 @@ class Simulation():
     def __init__(self, *args):
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
+        self._print_info = True
 
     def add_population(self, pop):
         """Add population object to a simulation
@@ -74,33 +75,58 @@ class Simulation():
         for pop in self.populations:
             pop.update_density(populations_old, populations_new)
 
-    def run(self, num_steps):
-        """Run a simulation over given number of steps
+    def run(self, num_steps, save_freq):
+        """Run a simulation over given number of steps and save ppm output
 
         Instance population list is updated every second iteration. At the end
         of a simulation it is updated with the latest version.
-        Method also provides simple timer for a loop which prints simulation
+        The method invokes save_density_grid_interface() every save_freq step
+        in attempt to save ppm output.
+        Method also provides simple timer for a loop which prints total elapsed
         time at the end of a simulation to the standard output.
 
         :param num_steps: Number of steps for a simulation
         :type num_steps: int
+        :param save_freq: Number of time steps between outputs
+        :type num_steps: int
         """
-        print('Running simulation')
+        print('''
+              Running simulation over %s steps\n
+              ppm output is saved every %s steps\n''' % (num_steps, save_freq))
         start = time.time()
         populations_old = np.copy(self.populations)
         # tqdm is used to provide progress bar
         for i in tqdm(range(num_steps)):
             if i % 2 == 0:
                 self.update(populations_old, self.populations)
-                self.save_density_grid(i)
             else:
                 self.update(self.populations, populations_old)
+            # saving ppm file every T steps
+            if i % save_freq == 0:
+                self.save_density_grid_interface(i)
 
         # make sure we return last updated array
         if num_steps % 2 == 0:
             self.populations = np.copy(populations_old)
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
+
+    def save_density_grid_interface(self, i):
+        info = '''
+        Save to ppm file method requires exactly 2 populations
+        in a simulation. One of hares and one of pumas.
+        Other cases are not yet implemented. In fact they will never be.
+        The simulation will continue without ppm visualisation
+        '''
+        if len(self.populations) == 2 and self._print_info:
+            try:
+                self.save_density_grid(i)
+            except UnboundLocalError:
+                print(info)
+                self._print_info = False
+        elif self._print_info:
+            print(info)
+            self._print_info = False
 
     def save_density_grid(self, timestep):
 
