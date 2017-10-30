@@ -70,12 +70,13 @@ class Population(object):
     :type diffusion: float
     :ivar dt: time step in arbitrary units
     :type dt: float
-    :ivar density: population density in a given landscape initialized at
-    random
+    :ivar density: population density in a given landscape \
+            initialized at random
     :type density: numpy.ndarray containing data with float64 type
     """
 
-    def __init__(self, landscape_inp, birth, death, diffusion, min_ro, max_ro, dt):
+    def __init__(self, landscape_inp, birth, death,
+                 diffusion, min_ro, max_ro, dt):
         self.min_ro = min_ro
         self.max_ro = max_ro
         self.birth = birth
@@ -88,15 +89,18 @@ class Population(object):
         self._land_idx = landscape_inp.land_indices
 
     def random_density(self, landscape_inp):
-        '''Assing a random density between min_ro and max_ro to every land square
+        """Assing a random density between min_ro and max_ro to every land square
 
-        The method uses the input landscape file to return a grid where there is
-        assigned a random density between minimum and maximum densities for every
-        land square.
-        :param landscape_inp: .dat input file with the landscape
+        The method uses the Landscape object to return a grid where there
+        is assigned a random density between minimum and maximum densities for
+        every land square.
+
+        :param landscape_inp: Instance of a Landscape object
+        :type landscape_inp: Landscape
         :return: a 2D array of random densities
         :rtype: numpy.ndarray containing data with float64 type
-        '''
+
+        """
         min_ro = self.min_ro
         max_ro = self.max_ro
         # turning the array of integers into an array of floats
@@ -131,7 +135,7 @@ class Population(object):
         density matrix of zeros.
 
         :param pop_class: required population object
-        :type pop_class: Extended Population class object
+        :type pop_class: Extended Population class
         :param pop_list: list of all populations
         :type pop_list: list
         :return: required population density array (array of zeros if not found)
@@ -168,6 +172,7 @@ class PumaPopulation(Population):
         >>> puma = PumaPopulation(land, birth=0.03, death=0.01)
 
     :See Also:
+
     pumha.pop.Population
     """
 
@@ -187,8 +192,8 @@ class PumaPopulation(Population):
 
         :param populations_old: list of populations at current timestep
         :type populations_old: list of Population type
-        :param populations_new: list of populations with updated
-        density array at t+dt
+        :param populations_new: list of populations with updated \
+                density array at t+dt
         :type populations_new: list of Population type
         """
         # extract required populations density arrays for update
@@ -201,20 +206,21 @@ class PumaPopulation(Population):
             P_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
-        """Return updated puma density at one(i,j) square
+        """Return updated puma density at one (i,j) square
 
         Method implements discrete approximation of the following equation:
 
-        :math::$\frac{\partial P}{\partial t} = bHP-mP+l(\frac{\partial^2
-        P}{\partial x^2} + \frac{\partial^2 P}{\partial y^2})$
+        .. math::
+            \\frac{\partial P}{\partial t} = bHP-mP+l(\\frac{\partial^2 P} \
+                    {\partial x^2} + \\frac{\partial^2 P}{\partial y^2})
 
         where,
 
-        P = density of pumas
-        H = density of hares
-        b = birth rate of pumas
-        m = death rate of pumas
-        l = diffusion rate of pumas
+        * P = density of pumas
+        * H = density of hares
+        * b = birth rate of pumas
+        * m = death rate of pumas
+        * l = diffusion rate of pumas
 
         :param i: density array row number (first row is i=0)
         :type i: int
@@ -226,7 +232,6 @@ class PumaPopulation(Population):
         :type H: numpy.ndarray of float type
         :return: updated density i, j square
         :rtype: float
-
         """
         b = self.birth
         m = self.death
@@ -234,9 +239,8 @@ class PumaPopulation(Population):
         dt = self.dt
         N = self._N
         return P[i][j] + dt * (b * H[i][j] * P[i][j] - m * P[i][j]
-                               + l * ((P[i - 1][j] + P[i + 1][j] + P[i][j - 1] +
-                                       P[i][j + 1])
-                                      - N[i][j] * P[i][j]))
+                               + l * ((P[i - 1][j] + P[i + 1][j] + P[i][j - 1]
+                                       + P[i][j + 1]) - N[i][j] * P[i][j]))
 
 
 class HarePopulation(Population):
@@ -248,9 +252,9 @@ class HarePopulation(Population):
     or by simply assigning required values to instance attributes. For example
     use see PumaPopulation.
 
-    :See Also:
-    pumha.pop.Population
-    pumha.pop.PumaPopulation
+    *See Also*
+        * pumha.pop.Population
+        * pumha.pop.PumaPopulation
     """
 
     def __init__(self, Landscape, birth=.08, death=.04, diffusion=.2,
@@ -269,9 +273,9 @@ class HarePopulation(Population):
 
         :param populations_old: list of populations at current timestep
         :type populations_old: list of Population type
-        :param populations_new: list of populations with updated
-        density array at t+dt
-        :type populations_new: list of Population type
+        :param populations_new: list of populations with updated \
+                density array at t+dt
+        :type populations_new: list of Extended Population type
         """
         # extract required populations density arrays for update
         H_new = self.find_density_arr(HarePopulation, populations_new)
@@ -283,20 +287,21 @@ class HarePopulation(Population):
             H_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
-        """Return updated hare density at one(i,j) square
+        """Return updated hare density at one (ij) square
 
         Method implements discrete approximation of the following equation:
 
-        :math::$\frac{\partial H}{\partial t} = rH-aHP+k(\frac{\partial^2
-        H}{\partial x^2} + \frac{\partial^2 H}{\partial y^2})$
+        .. math::
+            \\frac{\partial H}{\partial t} = rH-aHP+k(\\frac{\partial^2 H} \
+            {\partial x^2} + \\frac{\partial^2 H}{\partial y^2})
 
         where,
 
-        P = density of pumas
-        H = density of hares
-        r = birth rate of hares
-        a = death rate of hares
-        k = diffusion rate of hares
+        * P = density of pumas
+        * H = density of hares
+        * r = birth rate of hares
+        * a = death rate of hares
+        * k = diffusion rate of hares
 
         :param i: density array row number (first row is i=0)
         :type i: int
@@ -306,7 +311,7 @@ class HarePopulation(Population):
         :type P: numpy.ndarray of float type
         :param H: density array of hares
         :type H: numpy.ndarray of float type
-        :return: updated density i, j square
+        :return: updated density ij square
         :rtype: float
 
         """
@@ -317,6 +322,5 @@ class HarePopulation(Population):
         dt = self.dt
         N = self._N
         return H[i][j] + dt * (r * H[i][j] - a * H[i][j] * P[i][j]
-                               + k * ((H[i - 1][j] + H[i + 1][j] + H[i][j - 1] +
-                                       H[i][j + 1])
-                                      - N[i][j] * H[i][j]))
+                               + k * ((H[i - 1][j] + H[i + 1][j] + H[i][j - 1]
+                                       + H[i][j + 1]) - N[i][j] * H[i][j]))

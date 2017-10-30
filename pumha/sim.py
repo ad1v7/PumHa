@@ -27,6 +27,16 @@ class Simulation():
 
     Similarly for pumas only - if there is no hares they all starve to death.
 
+    :Example:
+
+        Create new simulation with two populations: puma, hare
+
+        Each population is of extended puma.pop.Population type
+
+        >>> from pumha.sim import Simulation
+        >>> sim = Simulation(puma, hare)
+        >>> sim.run(500)
+
     :ivar populations: List of populations in a simulation
     :type populations: list of pumha.pop.Population types
     """
@@ -38,7 +48,7 @@ class Simulation():
     def add_population(self, pop):
         """Add population object to a simulation
 
-        :param pop: population one  want to add to a simulation
+        :param pop: a population to be added to a simulation
         :type pop: pumha.pop.Population
         """
         if isinstance(pop, Population):
@@ -49,7 +59,7 @@ class Simulation():
     def remove_population(self, pop):
         """Remove population from a simulation
 
-        :param pop: population one  want to remove from a simulation
+        :param pop: apopulation to be removed from a simulation
         :type pop: pumha.pop.Population
         """
         print(pop.kind + ' removed')
