@@ -7,11 +7,15 @@ from pumha.pop import (Configuration,
                        PumaPopulation,
                        HarePopulation)
 from pumha.sim import Simulation
+import os
 
 if __name__ == "__main__":
     # create new landscape from the file 'my_land'
-    env = Landscape('data/map1.dat')
-    config = Configuration('data/config.dat')
+    directory = os.path.dirname(os.path.abspath(__file__))
+    map_file = os.path.join(directory, 'data/map1.dat')
+    env = Landscape(map_file)
+    config_file = os.path.join(directory, 'data/config.dat')
+    config = Configuration(config_file)
 
     print(env.landscape)
     print(env.dry_squares)
@@ -48,7 +52,7 @@ if __name__ == "__main__":
         f.write('-----------------------------------------------------\n')
 
     sim = Simulation(env, puma_pop, hare_pop)
-    sim.run(10, 2)
+    sim.run(400, 8)
     print(puma_pop.density)
 
     # sim.run(20)
