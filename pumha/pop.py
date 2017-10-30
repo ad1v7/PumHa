@@ -91,7 +91,7 @@ class Population(object):
     def random_density(self, landscape_inp):
         """Assign a random density between min_ro and max_ro to every land square
 
-        The method uses the Landscape object to return a grid where there
+        The method returns a grid where there
         is assigned a random density between minimum and maximum densities for
         every land square.
 

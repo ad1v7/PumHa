@@ -134,10 +134,32 @@ class Simulation():
 
         """Write the densities on each landscape square to a plain ppm file
 
-        This method writes the density of a population to a file in the folder
+        The function writes the density of a population to a file in the folder
         'densities' which has a name in a format 't = *timestep*_plain.ppm
-        All the squares with water are assigned blue RGB value (0, 0, 225),
-        land squares represent relative densities of pumas and hares.
+        All the squares with water are assigned blue RGB value (0 0, 225).
+
+        The files are in a plain PPM format - each line is separated into
+        a group of 3 values correpsonding to a pixel, each value in those
+        triplets represents either red, green or blue value. The dimension
+        of the landscape is given in the head of the file.
+
+        Example:
+
+        P3
+        # some comment
+        4 4
+
+        0 0 255  0 0 255  0 0 255  0 0 255
+        0 0 255  34 56 255  28 60 255  0 0 255
+        0 0 255  30 50 255  30 57 225  0 0 255
+        0 0 255  0 0 255  0 0 255  0 0 255
+
+        This PPM file represents a small island surrounded by water. Since lines
+        in a PPM file must be no longer than 70 characters, the function creates
+        an array of strings, every string representing a pixel and then writes
+        those strings to a file, 5 pixels on every line (since in case every RGB
+        value is a 3 digit number, at most five of them would fit to a line of
+        a length 70 characters).
 
         :param timestep: the timestep to which the density matrix corresponds to
         :type timestep: float
@@ -152,7 +174,7 @@ class Simulation():
 
         density_file = 'densities/t = '+str(timestep)+'_plain.ppm'
 
-        #creating an array of strings where every string represents a pixel
+        # creating an array of strings where every string represents a pixel
         density_arr = []
         rows, cols = hare_pop.shape
         for i in range(rows):
@@ -160,6 +182,7 @@ class Simulation():
                 puma_pop_ij = int(round(puma_pop[i][j]))
                 hare_pop_ij = int(round(hare_pop[i][j]))
                 density_arr.append(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255')
+        #writing pixels on a file in a plain ppm format.
         with open(density_file, 'w+') as f:
             f.write('P3'+'\n')
             f.write('#da raw ppm file'+'\n')

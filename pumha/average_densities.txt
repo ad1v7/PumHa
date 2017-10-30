@@ -1,20 +1,68 @@
 ----------------------------
 t = 0
-PumaPopulation 0.692223046874
-HarePopulation 0.683996941826
+PumaPopulation 0.480769980714
+HarePopulation 0.472644592872
 ----------------------------
-t = 4
-PumaPopulation 0.675957745379
-HarePopulation 0.631469083501
+t = 10
+PumaPopulation 0.44692082964
+HarePopulation 0.391169064401
 ----------------------------
-t = 8
-PumaPopulation 0.655529102078
-HarePopulation 0.586345576564
+t = 20
+PumaPopulation 0.401625992821
+HarePopulation 0.337379969466
 ----------------------------
-t = 12
-PumaPopulation 0.63201170747
-HarePopulation 0.547876311001
+t = 30
+PumaPopulation 0.353220300201
+HarePopulation 0.305010422228
 ----------------------------
-t = 16
-PumaPopulation 0.606326768645
-HarePopulation 0.515469638432
+t = 40
+PumaPopulation 0.306895754565
+HarePopulation 0.288967724834
+----------------------------
+t = 50
+PumaPopulation 0.265347530605
+HarePopulation 0.28579875406
+----------------------------
+t = 60
+PumaPopulation 0.229657163835
+HarePopulation 0.293474886349
+----------------------------
+t = 70
+PumaPopulation 0.199995570574
+HarePopulation 0.311027888897
+----------------------------
+t = 80
+PumaPopulation 0.176091232216
+HarePopulation 0.338238973025
+----------------------------
+t = 90
+PumaPopulation 0.157519538942
+HarePopulation 0.375398648046
+----------------------------
+t = 100
+PumaPopulation 0.143879534625
+HarePopulation 0.423100070345
+----------------------------
+t = 110
+PumaPopulation 0.134910206072
+HarePopulation 0.482012216924
+----------------------------
+t = 120
+PumaPopulation 0.130584329836
+HarePopulation 0.55256620713
+----------------------------
+t = 130
+PumaPopulation 0.131208286139
+HarePopulation 0.634467919883
+----------------------------
+t = 140
+PumaPopulation 0.13754772287
+HarePopulation 0.725926686681
+----------------------------
+t = 150
+PumaPopulation 0.150979248548
+HarePopulation 0.822493840784
+----------------------------
+t = 160
+PumaPopulation 0.173605862847
+HarePopulation 0.915535759164
