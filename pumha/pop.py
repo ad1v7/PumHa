@@ -123,7 +123,7 @@ class Population(object):
         self.diffusion = diffusion
         self.dt = dt
 
-    def find_density_arr(self, pop_list):
+    def find_density_arr(self, pop_class, pop_list):
         """Return required population density array from a list of populations
 
         Returns density array of a first found element matching pop_class from
@@ -139,7 +139,7 @@ class Population(object):
         """
         rows, cols = self.density.shape
         return next((p.density for p in pop_list if
-                     isinstance(p, self.__class__)), np.zeros((rows, cols),
+                     isinstance(p, pop_class)), np.zeros((rows, cols),
                                                          dtype=float))
 
 
@@ -192,9 +192,9 @@ class PumaPopulation(Population):
         :type populations_new: list of Population type
         """
         # extract required populations density arrays for update
-        P_new = self.find_density_arr(populations_new)
-        P = self.find_density_arr(populations_old)
-        H = self.find_density_arr(populations_old)
+        P_new = self.find_density_arr(PumaPopulation, populations_new)
+        P = self.find_density_arr(PumaPopulation, populations_old)
+        H = self.find_density_arr(HarePopulation, populations_old)
 
         # update all landscape ij
         for i, j in self._land_idx:
@@ -274,9 +274,9 @@ class HarePopulation(Population):
         :type populations_new: list of Population type
         """
         # extract required populations density arrays for update
-        H_new = self.find_density_arr(populations_new)
-        P = self.find_density_arr(populations_old)
-        H = self.find_density_arr(populations_old)
+        H_new = self.find_density_arr(HarePopulation, populations_new)
+        P = self.find_density_arr(PumaPopulation, populations_old)
+        H = self.find_density_arr(HarePopulation, populations_old)
 
         # update all landscape ij
         for i, j in self._land_idx:
