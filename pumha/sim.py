@@ -239,13 +239,20 @@ class Simulation():
 
         :param timestep: timestep at which the averages are calculated.
         """
+        for pop in self.populations:
+            if isinstance(pop, HarePopulation):
+                hare_pop = pop.density
+            else:
+                puma_pop = pop.density
+
+        populations = [hare_pop, puma_pop]
         with open('average_densities.txt',
                   'a+') as f:
-            f.write('----------------------------\n')
-            f.write('t = ' + str(timestep) + '\n')
-            for pop in self.populations:
-                average_pop = np.sum(pop.density) / (
-                    (pop.density.shape[0] - 2) * (pop.density.shape[1] - 2))
-                f.write(pop.kind + ' ' + str(average_pop) + '\n')
+            f.write(str(timestep) + '             ')
+            for pop in populations:
+                average_pop = np.sum(pop) / (
+                    (pop.shape[0] - 2) * (pop.shape[1] - 2))
+                f.write(str(average_pop) + '        ')
+            f.write('\n')
 
 
