@@ -4,7 +4,6 @@ from __future__ import (absolute_import,
                         unicode_literals)
 import time
 import numpy as np
-from scipy import misc
 from tqdm import tqdm
 from pumha.pop import Population, HarePopulation, PumaPopulation
 
@@ -113,20 +112,34 @@ class Simulation():
         print("Simulation time: %.2f s" % (end - start))
 
     def save_density_grid_interface(self, i):
+        """Simple interface to save_density_grid method
+
+        Provides extandable interface to potential group of save_density_grid
+        methods each one to cover specific case for a simulation. This is
+        mostly because of the limitation of the ppm file format. Currently only
+        the case of simulation containing pumas and hares population is
+        implemented.
+
+        :param timestep: the timestep to which the density matrix corresponds to
+        :type timestep: int
+        """
         info = '''
         Save to ppm file method requires exactly 2 populations
         in a simulation. One of hares and one of pumas.
         Other cases are not yet implemented. In fact they will never be.
         The simulation will continue without ppm visualisation
+
+        Current population(s):
         '''
+        
         if len(self.populations) == 2 and self._print_info:
             try:
                 self.save_density_grid(i)
             except UnboundLocalError:
-                print(info)
+                print("%s\n %s" % (info, self.populations))
                 self._print_info = False
         elif self._print_info:
-            print(info)
+            print("%s\n %s" % (info, self.populations))
             self._print_info = False
 
     def save_density_grid(self, timestep):
@@ -139,7 +152,7 @@ class Simulation():
         land squares represent relative densities of pumas and hares.
 
         :param timestep: the timestep to which the density matrix corresponds to
-        :type timestep: float
+        :type timestep: int
 
         """
         #find puma and hare densities
