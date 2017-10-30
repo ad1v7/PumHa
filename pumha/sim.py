@@ -212,7 +212,6 @@ class Simulation():
 
         density_file = 'densities/t = '+str(timestep)+'_plain.ppm'
 
-        # creating an array of strings where every string represents a pixel
         density_arr = []
         rows, cols = hare_pop.shape
         for i in range(rows):
@@ -220,7 +219,7 @@ class Simulation():
                 puma_pop_ij = int(round(puma_pop[i][j]))
                 hare_pop_ij = int(round(hare_pop[i][j]))
                 density_arr.append(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255')
-        #writing pixels on a file in a plain ppm format.
+        # writing pixels on a file in a plain ppm format
         with open(density_file, 'w+') as f:
             f.write('P3'+'\n')
             f.write('#da raw ppm file'+'\n')
@@ -241,12 +240,10 @@ class Simulation():
         """Claculate the average density of animals in the whole landscape
 
         The average population is found by summing all the densities in the grid
-        and dividing it by the area of the whole grid. The density is saved to a
-        file 'average_densities.txt' in a format
-        't = *timestep*
-        *population kind* *average density*'
-        For every timestep the densities are found for every density in the
-        self.populations array.
+        and dividing it by the numbers of squares in the grid. The density is
+        saved to a file 'average_densities.txt', where the first column gives
+        the timestep and second and third columns hare and puma densities at that
+        time step respectively. 
 
         :param timestep: timestep at which the averages are calculated.
         """
