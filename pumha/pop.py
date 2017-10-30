@@ -89,9 +89,9 @@ class Population(object):
         self._land_idx = landscape_inp.land_indices
 
     def random_density(self, landscape_inp):
-        """Assing a random density between min_ro and max_ro to every land square
+        """Assign a random density between min_ro and max_ro to every land square
 
-        The method uses the Landscape object to return a grid where there
+        The method returns a grid where there
         is assigned a random density between minimum and maximum densities for
         every land square.
 
@@ -104,7 +104,7 @@ class Population(object):
         min_ro = self.min_ro
         max_ro = self.max_ro
         # turning the array of integers into an array of floats
-        grid = landscape_inp.landscape.astype(np.float32)
+        grid = landscape_inp.landscape.astype(np.float)
         # assigning a random density to every cell between min_ro and max_ro
         grid[grid == 1] = np.random.uniform(min_ro, max_ro,
                                             grid[grid == 1].shape)
