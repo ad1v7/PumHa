@@ -46,6 +46,7 @@ class Simulation():
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
         self._print_info = True
+        self.out_dir = self.create_output_dir()
 
     def add_population(self, pop):
         """Add population object to a simulation
@@ -93,12 +94,11 @@ class Simulation():
         :param save_freq: Number of time steps between outputs
         :type num_steps: int
         """
+        self.num_steps = num_steps
         print('''
               Running simulation over %s steps\n
               ppm output is saved every %s steps\n''' % (num_steps, save_freq))
         start = time.time()
-        #self.create_output_dir()
-        print(os.path.dirname(__file__))
         populations_old = np.copy(self.populations)
         # tqdm is used to provide progress bar
         max_density = 0
@@ -123,19 +123,54 @@ class Simulation():
         # make sure we return last updated array
         if num_steps % 2 == 0:
             self.populations = np.copy(populations_old)
+        self.rescale_ppm_files(max_density)
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
 
     def create_output_dir(self):
+        """Create directory for output ppm and dat files
+
+        Directory is created using current date and time. All symulation output
+        files are saved into it. The ouput directory is created where the script is
+        running.  The naming convention is as follows:
+
+            PumHa_out_%Y-%m-%d-%H-%M-%S
+        """
         timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
-        new_dir = 'densities-' + timestr
-        print('Creating new output directory:')
-        print(os.path.abspath(new_dir))
+        new_dir_name = 'PumHa_out_' + timestr
+        new_dir = os.path.abspath(new_dir_name)
+        print('Creating new output directory:\n %s' % new_dir)
         if not os.path.exists(new_dir):
                 os.makedirs(new_dir)
+        return new_dir
 
     def rescale_ppm_files(self, max_density):
-        max_density = int(max_density)
+        """Rescale all ppm files using common ppm color value (Maxval)
+
+        The method takes highest recorded density from the enntire simulation
+        and use it as common scalling factor for all ppm files. In this way the
+        whole simulation is scalled properly.
+
+        :param max_density: maximum density for a single square from the run
+        :type max_density: int, float
+        """
+        max_density = int(max_density)+1
+        ppm_Maxval = 65536 # maxmimum allowed color value for ppm format
+        colorline=3 # 4th line in a file is a color max value
+
+        # make sure color value is below ppm format allowed maximum
+        if max_density > ppm_Maxval:
+            max_density = ppm_Maxval
+
+        # list all files, open, edit color value line and save
+        for f in os.listdir(self.out_dir):
+            f = os.path.join(self.out_dir, f)
+            if f.endswith(".ppm"):
+                with open(f, 'r') as my_file :
+                    filedata = my_file.readlines()
+                    filedata[colorline] = str(max_density)+'\n'
+                with open(f, 'w') as my_file:
+                    my_file.writelines(filedata)
 
     def save_density_grid_interface(self, i):
         """Simple interface to save_density_grid method
@@ -206,14 +241,19 @@ class Simulation():
         #find puma and hare densities and scaling
         for pop in self.populations:
             if isinstance(pop, HarePopulation):
-                hare_pop = 10 * pop.density
+                #hare_pop = 10 * pop.density
+                hare_pop = pop.density
                 #all values greater than 255 will be assigned value 255
-                hare_pop[hare_pop > 255] = 255
+                #hare_pop[hare_pop > 255] = 255
             else:
-                puma_pop = 10 * pop.density
-                puma_pop[puma_pop > 255] = 255
+                puma_pop = pop.density
+                #puma_pop = 10 * pop.density
+                #puma_pop[puma_pop > 255] = 255
 
-        density_file = 'densities/t = '+str(timestep)+'_plain.ppm'
+        # get nicely formatted step number for printing
+        time_st = str(timestep).zfill(len(str(self.num_steps)))
+        # get output file name
+        density_file = os.path.join(self.out_dir, time_st+'.ppm')
 
         density_arr = []
         rows, cols = hare_pop.shape
@@ -225,7 +265,7 @@ class Simulation():
         # writing pixels on a file in a plain ppm format
         with open(density_file, 'w+') as f:
             f.write('P3'+'\n')
-            f.write('#da raw ppm file'+'\n')
+            f.write('#da plain ppm file'+'\n')
             rows, cols = hare_pop.shape
             f.write('%s %s\n' % (rows, cols))
             f.write('5\n')
@@ -257,7 +297,8 @@ class Simulation():
                 puma_pop = pop.density
 
         populations = [hare_pop, puma_pop]
-        with open('average_densities.txt', 'a+') as f:
+        out_file = os.path.join(self.out_dir, 'average_densities.dat')
+        with open(out_file, 'a+') as f:
             f.write(str(timestep) + '           ')
             for pop in populations:
                 average_pop = np.sum(pop) / (
