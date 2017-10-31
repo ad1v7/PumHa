@@ -15,7 +15,6 @@ User can set the values of these parameters on a configuration file called confi
 
 The input landscape file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example,
 
-.. code-block:: python
   5 5
 
   1 1 1 1 1 
