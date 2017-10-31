@@ -1,7 +1,38 @@
 *****
 PumHa
 *****
-Description what package does...
+The package simulates the population dynamics of hares and pumas in a user-specified landscape. 
+
+The simulation starts off with a random puma and hare densities between 0 and 5 assigned to every land square. Those densities are then subject to a change according to the discrete approximation of formulas 
+
+[formulas (?)]
+
+where
+
+[parameters and their default values]
+
+User can set the values of these parameters on a configuration file called config.dat, located in the data folder. 
+
+The input landscape file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example,
+
+.. code-block:: python
+  5 5
+
+  1 1 1 1 1 
+
+  1 1 1 1 0  
+
+  1 0 0 0 0  
+
+  1 1 0 0 0  
+
+  1 1 0 0 0 
+
+
+The simulation can be run from the pumha folder with a command
+
+[command]
+
 
 How to install
 ########
