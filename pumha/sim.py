@@ -203,12 +203,15 @@ class Simulation():
         :type timestep: int
 
         """
-        #find puma and hare densities
+        #find puma and hare densities and scaling
         for pop in self.populations:
             if isinstance(pop, HarePopulation):
-                hare_pop = pop.density
+                hare_pop = 10 * pop.density
+                #all values greater than 255 will be assigned value 255
+                hare_pop[hare_pop > 255] = 255
             else:
-                puma_pop = pop.density
+                puma_pop = 10 * pop.density
+                puma_pop[puma_pop > 255] = 255
 
         density_file = 'densities/t = '+str(timestep)+'_plain.ppm'
 
@@ -243,7 +246,7 @@ class Simulation():
         and dividing it by the numbers of squares in the grid. The density is
         saved to a file 'average_densities.txt', where the first column gives
         the timestep and second and third columns hare and puma densities at that
-        time step respectively. 
+        time step respectively.
 
         :param timestep: timestep at which the averages are calculated.
         """
@@ -254,8 +257,7 @@ class Simulation():
                 puma_pop = pop.density
 
         populations = [hare_pop, puma_pop]
-        with open('average_densities.txt',
-                  'a+') as f:
+        with open('average_densities.txt', 'a+') as f:
             f.write(str(timestep) + '           ')
             for pop in populations:
                 average_pop = np.sum(pop) / (
