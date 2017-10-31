@@ -99,9 +99,14 @@ Puma Package
 
 * Information on the programming language, revision control, debuggers, build tools, and test tools you
 have used.
+
 * Where to get, and how to build and install, any third-party packages needed by your code (for
 packages that are not already on the Physics Computational Lab machines).
 * How to build your code.
+
 * How to run your code.
+
 * How to run your tests.
+
 * Summary of key design decisions and reasons for these.
+
