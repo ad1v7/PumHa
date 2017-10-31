@@ -4,6 +4,9 @@ from __future__ import (absolute_import,
                         unicode_literals)
 import numpy as np
 import simplejson as json
+import jsonschema
+import sys
+from jsonschema import validate
 from collections import OrderedDict
 
 
@@ -14,6 +17,7 @@ class Configuration():
         except IOError:
             self.create_config(config_file)
 
+        valid_file = self.valid_config(config_file)
         self.config = self.load_from_file(config_file)
 
     def load_from_file(self, config_file):
@@ -32,6 +36,7 @@ class Configuration():
         self.puma_mortality = config["Puma_mortality"]
         self.puma_diffusion = config["Puma_diffusion"]
         self.time_Step = config["Time_Step"]
+        self.steps = config["Steps"]
 
         return config
 
@@ -44,11 +49,37 @@ class Configuration():
             'Puma_birth': 0.02,
             'Puma_mortality': 0.06,
             'Puma_diffusion': 0.2,
-            'Time_Step': 0.4
+            'Time_Step': 0.4,
+            'Steps': 100
         }
 
         with open(config_file, 'w') as outfile:
             json.dump(default, outfile, sort_keys=True)
+
+    def valid_config(self, config_file):
+
+        schema = {
+            "type" : "object",
+            "properties" : {
+                "Hare_birth" : {"type" : "number"},
+                "Hare_predation" : {"type" : "number"},
+                "Hare_diffusion" : {"type" : "number"},
+                "Puma_birth" : {"type" : "number"},
+                "Puma_mortality" : {"type" : "number"},
+                "Puma_diffusion" : {"type" : "number"},
+                "Time_Step" : {"type" : "number"},
+                "Steps" : {"type" : "number"},
+            },
+        }
+        my_file = open(config_file)
+        for idx, item in enumerate(my_file):
+            try:
+                validate(item, schema)
+            except jsonschema.exceptions.ValidationError as ve:
+                print('Invalid configuration file format.')
+                print('A new default.dat has been created for example use.')
+                self.create_config('data/default.dat')
+                sys.exit(1)
 
 
 class Population(object):
