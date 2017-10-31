@@ -89,3 +89,9 @@ Make sure that below tasks are distributed evenly
 
 Puma Package
 ########
+* should simulation continue after default config is created?
+* clarify input and output
+* what data include with the package
+* add print frequency to the config
+* scaling for ppm files
+* probably need to have variable to store absolute path to output directory
