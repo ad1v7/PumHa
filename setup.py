@@ -31,7 +31,8 @@ setup(
         'numpy>=1.9.2',
         'simplejson>=3.8.1',
         'scipy>=0.15.1',
-        'tqdm>=4.19.4'
+        'tqdm>=4.19.4',
+        'jsonschema>=2.6.0'
     ],
     test_suite='nose.collector',
     tests_require=['nose'],

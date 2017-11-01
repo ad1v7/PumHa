@@ -4,6 +4,9 @@ from __future__ import (absolute_import,
                         unicode_literals)
 import numpy as np
 import simplejson as json
+import jsonschema
+import sys
+from jsonschema import validate
 from collections import OrderedDict
 
 
@@ -14,6 +17,7 @@ class Configuration():
         except IOError:
             self.create_config(config_file)
 
+        valid_file = self.valid_config(config_file)
         self.config = self.load_from_file(config_file)
 
     def load_from_file(self, config_file):
@@ -31,7 +35,9 @@ class Configuration():
         self.puma_birth = config["Puma_birth"]
         self.puma_mortality = config["Puma_mortality"]
         self.puma_diffusion = config["Puma_diffusion"]
-        self.time_Step = config["Time_Step"]
+        self.time_Step = config["Time_step"]
+        self.steps = config["Steps"]
+        self.output_interval = config["Output_interval"]
 
         return config
 
@@ -44,20 +50,46 @@ class Configuration():
             'Puma_birth': 0.02,
             'Puma_mortality': 0.06,
             'Puma_diffusion': 0.2,
-            'Time_Step': 0.4
+            'Time_step': 0.4,
+            'Steps': 100,
+            'Output_interval': 8
         }
 
         with open(config_file, 'w') as outfile:
             json.dump(default, outfile, sort_keys=True)
 
+    def valid_config(self, config_file):
+
+        schema = {
+            "type" : "object",
+            "properties" : {
+                "Hare_birth" : {"type" : "number"},
+                "Hare_predation" : {"type" : "number"},
+                "Hare_diffusion" : {"type" : "number"},
+                "Puma_birth" : {"type" : "number"},
+                "Puma_mortality" : {"type" : "number"},
+                "Puma_diffusion" : {"type" : "number"},
+                "Time_step" : {"type" : "number"},
+                "Steps" : {"type" : "number"},
+                "Output_interval" : {"type" : "number"},
+            },
+        }
+        my_file = open(config_file)
+        for idx, item in enumerate(my_file):
+            try:
+                validate(item, schema)
+            except jsonschema.exceptions.ValidationError as ve:
+                print('Invalid configuration file format.')
+                print('A new default.dat has been created for example use.')
+                self.create_config('data/default.dat')
+                sys.exit(1)
+
 
 class Population(object):
     """ Base class for creating specific population classes
-
     Class stores instance attributes and provides methods which are universal
     for derived subclasses. It is not intended to be used on its own rather it
     should be extended by specific population subclasses (e.g. PumaPopulation)
-
     :ivar min_ro: minimum density per ij square in the density array
     :type min_ro: float
     :ivar max_ro: maximum density per ij square in the density array
@@ -90,16 +122,13 @@ class Population(object):
 
     def random_density(self, landscape_inp):
         """Assign a random density between min_ro and max_ro to every land square
-
         The method returns a grid where there
         is assigned a random density between minimum and maximum densities for
         every land square.
-
         :param landscape_inp: Instance of a Landscape object
         :type landscape_inp: Landscape
         :return: a 2D array of random densities
         :rtype: numpy.ndarray containing data with float64 type
-
         """
         min_ro = self.min_ro
         max_ro = self.max_ro
@@ -112,7 +141,6 @@ class Population(object):
 
     def load_config(self, birth, death, diffusion, dt):
         """Set instance attributes using provided parameters
-
         :param birth: birth rate for a given population
         :type birth: float
         :param death: death rate for a given population
@@ -129,11 +157,9 @@ class Population(object):
 
     def find_density_arr(self, pop_class, pop_list):
         """Return required population density array from a list of populations
-
         Returns density array of a first found element matching pop_class from
         a list of provided populations. If no element is found it returns
         density matrix of zeros.
-
         :param pop_class: required population object
         :type pop_class: Extended Population class
         :param pop_list: list of all populations
@@ -149,30 +175,22 @@ class Population(object):
 
 class PumaPopulation(Population):
     """Puma population class with its specific update method
-
     This class represents puma population living in some landscape therefore it
     requires Landscape object as a parameter. Remaining parameters are set to
     defaults and can be changed later either using provided method load_config
     or by simply assigning required values to instance attributes.
-
     :Example:
-
         Create puma population using default values
-
         >>> from pumha.pop import PumaPopulation
         >>> from pumha.env import Landscape
         >>> land = Landscape('my_land_file.dat')
         >>> puma = PumaPopulation(land)
-
         Create puma population using specifig values
-
         >>> from pumha.pop import PumaPopulation
         >>> from pumha.env import Landscape
         >>> land = Landscape('my_land_file.dat')
         >>> puma = PumaPopulation(land, birth=0.03, death=0.01)
-
     :See Also:
-
     pumha.pop.Population
     """
 
@@ -185,11 +203,9 @@ class PumaPopulation(Population):
 
     def update_density(self, populations_old, populations_new):
         """Update density array of puma population instance
-
         Method updates entire density array of puma population instance based
         on densities of current populations living in a landscape. Only land
         squares in the density array are updated.
-
         :param populations_old: list of populations at current timestep
         :type populations_old: list of Population type
         :param populations_new: list of populations with updated \
@@ -207,21 +223,16 @@ class PumaPopulation(Population):
 
     def update_density_ij(self, i, j, P, H):
         """Return updated puma density at one (i,j) square
-
         Method implements discrete approximation of the following equation:
-
         .. math::
             \\frac{\partial P}{\partial t} = bHP-mP+l(\\frac{\partial^2 P} \
                     {\partial x^2} + \\frac{\partial^2 P}{\partial y^2})
-
         where,
-
         * P = density of pumas
         * H = density of hares
         * b = birth rate of pumas
         * m = death rate of pumas
         * l = diffusion rate of pumas
-
         :param i: density array row number (first row is i=0)
         :type i: int
         :param j: density array column number (first column is j=0)
@@ -245,13 +256,11 @@ class PumaPopulation(Population):
 
 class HarePopulation(Population):
     """Hare population class with its specific update method
-
     This class represents hare population living in some landscape therefore it
     requires Landscape object as a parameter. Remaining parameters are set to
     defaults and can be changed later either using provided method load_config
     or by simply assigning required values to instance attributes. For example
     use see PumaPopulation.
-
     *See Also*
         * pumha.pop.Population
         * pumha.pop.PumaPopulation
@@ -266,11 +275,9 @@ class HarePopulation(Population):
 
     def update_density(self, populations_old, populations_new):
         """Update density array of hare population instance
-
         Method updates entire density array of hare population instance based
         on densities of current populations living in a landscape. Only land
         squares in the density array are updated.
-
         :param populations_old: list of populations at current timestep
         :type populations_old: list of Population type
         :param populations_new: list of populations with updated \
@@ -288,21 +295,16 @@ class HarePopulation(Population):
 
     def update_density_ij(self, i, j, P, H):
         """Return updated hare density at one (ij) square
-
         Method implements discrete approximation of the following equation:
-
         .. math::
             \\frac{\partial H}{\partial t} = rH-aHP+k(\\frac{\partial^2 H} \
             {\partial x^2} + \\frac{\partial^2 H}{\partial y^2})
-
         where,
-
         * P = density of pumas
         * H = density of hares
         * r = birth rate of hares
         * a = death rate of hares
         * k = diffusion rate of hares
-
         :param i: density array row number (first row is i=0)
         :type i: int
         :param j: density array column number (first column is j=0)
@@ -313,7 +315,6 @@ class HarePopulation(Population):
         :type H: numpy.ndarray of float type
         :return: updated density ij square
         :rtype: float
-
         """
 
         r = self.birth
@@ -323,4 +324,4 @@ class HarePopulation(Population):
         N = self._N
         return H[i][j] + dt * (r * H[i][j] - a * H[i][j] * P[i][j]
                                + k * ((H[i - 1][j] + H[i + 1][j] + H[i][j - 1]
-                                       + H[i][j + 1]) - N[i][j] * H[i][j]))
++ H[i][j + 1]) - N[i][j] * H[i][j]))
