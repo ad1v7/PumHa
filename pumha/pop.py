@@ -6,39 +6,70 @@ import numpy as np
 import simplejson as json
 import jsonschema
 import sys
+import os
 from jsonschema import validate
 from collections import OrderedDict
 
 
 class Configuration():
     def __init__(self, config_file):
-        try:
-            my_file = open(config_file)
-        except IOError:
-            self.create_config(config_file)
 
-        #valid_file = self.valid_config(config_file)
-        self.config = self.load_from_file(config_file)
+        if config_file is None:
+            directory = os.path.dirname(os.path.abspath(__file__))
+            default_file = os.path.join(directory, "data/default.dat")
+
+            try:
+                self.load_from_file(default_file)
+            except IOError:
+                print("\nNo default config file found")
+                self.create_config(default_file)
+                self.load_from_file(default_file)
+
+            print("\nDefault config file loaded:\n%s\n" % default_file)
+
+        else:
+            try:
+                self.valid_config(config_file)
+                config = self.load_from_file(config_file)
+                print("\nConfig file loaded:\n%s\n" %
+                      os.path.abspath(config_file))
+
+            except IOError:
+                print("Config file does not exist:\n%s" % os.path.abspath(config_file))
+                sys.exit(1)
+
+
+
 
     def load_from_file(self, config_file):
-        print("Loading config file:\n%s\n" % config_file)
         # parse config file and assign values
         with open(config_file, 'r') as f:
-            config = json.load(f, object_pairs_hook=OrderedDict)
+            # check is config file valid json format
+            try:
+                config = json.load(f, object_pairs_hook=OrderedDict)
+            except ValueError:
+                print("Config file is not of json type")
+                sys.exit(1)
 
         for key in config:
             value = config[key]
             print("{} ({})".format(key, value))
 
-        self.hare_birth = config["Hare_birth"]
-        self.hare_predation = config["Hare_predation"]
-        self.hare_diffusion = config["Hare_diffusion"]
-        self.puma_birth = config["Puma_birth"]
-        self.puma_mortality = config["Puma_mortality"]
-        self.puma_diffusion = config["Puma_diffusion"]
-        self.time_Step = config["Time_step"]
-        self.steps = config["Steps"]
-        self.output_interval = config["Output_interval"]
+        try:
+            self.hare_birth = config["Hare_birth"]
+            self.hare_predation = config["Hare_predation"]
+            self.hare_diffusion = config["Hare_diffusion"]
+            self.puma_birth = config["Puma_birth"]
+            self.puma_mortality = config["Puma_mortality"]
+            self.puma_diffusion = config["Puma_diffusion"]
+            self.time_step = config["Time_step"]
+            self.steps = config["Steps"]
+            self.output_interval = config["Output_interval"]
+
+        except KeyError, e:
+            print("Wrong key name in a config file:\n %s" % str(e))
+            print('Try \'pumha --help\' for help')
+            sys.exit(1)
 
         return config
 
@@ -56,9 +87,13 @@ class Configuration():
             'Output_interval': 8
         }
 
-        with open(config_file, 'w') as outfile:
-            json.dump(default, outfile, sort_keys=True)
-        print("New config file created:\n%s\n" % config_file)
+        try:
+            with open(config_file, 'w') as outfile:
+                json.dump(default, outfile, sort_keys=True, indent=4*' ')
+                print("New config file created:\n%s\n" % config_file)
+        except:
+            print("Something went wrong...")
+            raise
 
     def valid_config(self, config_file):
 
@@ -76,15 +111,15 @@ class Configuration():
                 "Output_interval" : {"type" : "number"},
             },
         }
-        my_file = open(config_file)
-        for idx, item in enumerate(my_file):
-            try:
-                validate(item, schema)
-            except jsonschema.exceptions.ValidationError as ve:
-                print('Invalid configuration file format.')
-                print('A new default.dat has been created for example use.')
-                self.create_config('data/default.dat')
-                sys.exit(1)
+
+        with open(config_file, 'r') as f:
+            config = json.load(f, object_pairs_hook=OrderedDict)
+        try:
+            validate(config, schema)
+        except jsonschema.exceptions.ValidationError as ve:
+            print('Invalid configuration file format.:\n%s' % str(ve))
+            print('Try \'pumha --help\' for help')
+            sys.exit(1)
 
 
 class Population(object):
