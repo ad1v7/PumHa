@@ -123,7 +123,6 @@ class Simulation():
         # make sure we return last updated array
         if num_steps % 2 == 0:
             self.populations = np.copy(populations_old)
-        self.rescale_ppm_files(max_density)
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
 
