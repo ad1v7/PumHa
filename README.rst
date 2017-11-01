@@ -32,14 +32,42 @@ The simulation can be run from the pumha folder with a command
 
 [command]
 
+some stuff :)
+cplab: Scientific Linux release 7.3 (Nitrogen)
+Marcin's Ubuntu 16.04.3 LTS
 
 How to install
 ########
-git clone https://github.com/ad1v7/PumHa
+To install PumHa package:
 
-cd to directory which contains setup.py
+Change directory to your install directory (or create one)
 
-pip install -e .
+Copy repository running the following command::
+    git clone https://github.com/ad1v7/PumHa
+
+Alternatively if you are the lucky one to have a tar.gz package
+(in fact very lucky because only 4 people out of 7+ billions have it!)
+Extract archive content::
+    tar zxvf pumha.tar.gz
+cd into newly created directory
+
+make sure you are in a directory which contains setup.py
+and use `pip <http://pip-installer.org>`_ (as a root)::
+    pip install .
+
+Pip command requires root permission on some systems
+if you can't run it as a root you can try:
+pip install --user .
+
+In a latter case pip will install command line script into
+~/.local/bin
+directory (this is the case for Scientific Linux and Ubuntu)
+
+If ~/.local/bin is not in your $PATH (run echo $PATH to check it put)
+You can export it running the following command:
+export PATH=$PATH:~/.local/bin
+You may want to add above line to ~/.profile so ~/.local/bin is added to path at login
+
 
 You might need to run above command as super user (root):
 e.g. on Linux (Debian):
