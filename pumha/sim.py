@@ -1,3 +1,18 @@
+"""Simulation module
+
+Module contains only one class::
+
+    Simulation
+
+and one function::
+
+    create_output_dir
+
+The module is used to build new simulations using
+extended Population classes
+
+To run a simulation use run() method.
+"""
 from __future__ import (absolute_import,
                         division,
                         print_function,
@@ -6,10 +21,10 @@ import time
 import os
 import numpy as np
 from tqdm import tqdm
-from pumha.pop import Population, HarePopulation, PumaPopulation
+from pumha.pop import Population, HarePopulation
 
 
-class Simulation():
+class Simulation(object):
     """Simulate time and space evolution of populations
 
     Only populations added to a populations list are simulated. If no
@@ -17,7 +32,7 @@ class Simulation():
     zeroes. If only one population is added but its update method requires
     existance of another population the simulation will still run using zeros
     density array for missing population.
-    
+
     This can be interpreted as follows:
 
     Lets add only hare population; its update method requires puma population,
@@ -46,7 +61,8 @@ class Simulation():
         # create populations list but ignore args which are not populations
         self.populations = [pop for pop in args if isinstance(pop, Population)]
         self._print_info = True
-        self.out_dir = self.create_output_dir()
+        self.out_dir = create_output_dir()
+        self.num_steps = 1  # redefined in run()
 
     def add_population(self, pop):
         """Add population object to a simulation
@@ -126,23 +142,6 @@ class Simulation():
         end = time.time()
         print("Simulation time: %.2f s" % (end - start))
 
-    def create_output_dir(self):
-        """Create directory for output ppm and dat files
-
-        Directory is created using current date and time. All symulation output
-        files are saved into it. The ouput directory is created where the script is
-        running.  The naming convention is as follows:
-
-            PumHa_out_%Y-%m-%d-%H-%M-%S
-        """
-        timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
-        new_dir_name = 'PumHa_out_' + timestr
-        new_dir = os.path.abspath(new_dir_name)
-        print('Creating new output directory:\n %s' % new_dir)
-        if not os.path.exists(new_dir):
-                os.makedirs(new_dir)
-        return new_dir
-
     def rescale_ppm_files(self, max_density):
         """Rescale all ppm files using common ppm color value (Maxval)
 
@@ -154,21 +153,21 @@ class Simulation():
         :type max_density: int, float
         """
         max_density = int(max_density)+1
-        ppm_Maxval = 65536 # maxmimum allowed color value for ppm format
-        colorline=3 # 4th line in a file is a color max value
+        ppm_maxval = 65536  # maxmimum allowed color value for ppm format
+        colorline = 3   # 4th line in a file is a color max value
 
         # make sure color value is below ppm format allowed maximum
-        if max_density > ppm_Maxval:
-            max_density = ppm_Maxval
+        if max_density > ppm_maxval:
+            max_density = ppm_maxval
 
         # list all files, open, edit color value line and save
-        for f in os.listdir(self.out_dir):
-            f = os.path.join(self.out_dir, f)
-            if f.endswith(".ppm"):
-                with open(f, 'r') as my_file :
+        for item in os.listdir(self.out_dir):
+            item = os.path.join(self.out_dir, item)
+            if item.endswith(".ppm"):
+                with open(item, 'r') as my_file:
                     filedata = my_file.readlines()
                     filedata[colorline] = str(max_density)+'\n'
-                with open(f, 'w') as my_file:
+                with open(item, 'w') as my_file:
                     my_file.writelines(filedata)
 
     def save_density_grid_interface(self, i):
@@ -180,7 +179,8 @@ class Simulation():
         the case of simulation containing pumas and hares population is
         implemented.
 
-        :param timestep: the timestep to which the density matrix corresponds to
+        :param timestep: the timestep to which the density \
+                matrix corresponds to
         :type timestep: int
         """
         info = '''
@@ -191,7 +191,7 @@ class Simulation():
 
         Current population(s):
         '''
-        
+
         if len(self.populations) == 2 and self._print_info:
             try:
                 self.save_density_grid(i)
@@ -203,7 +203,6 @@ class Simulation():
             self._print_info = False
 
     def save_density_grid(self, timestep):
-
         """Write the densities on each landscape square to a plain ppm file
 
         The function writes the density of a population to a file in the folder
@@ -226,28 +225,24 @@ class Simulation():
         0 0 255  30 50 255  30 57 225  0 0 255
         0 0 255  0 0 255  0 0 255  0 0 255
 
-        This PPM file represents a small island surrounded by water. Since lines
-        in a PPM file must be no longer than 70 characters, the function creates
-        an array of strings, every string representing a pixel and then writes
-        those strings to a file, 5 pixels on every line (since in case every RGB
-        value is a 3 digit number, at most five of them would fit to a line of
-        a length 70 characters).
+        This PPM file represents a small island surrounded by water.
+        Since lines in a PPM file must be no longer than 70 characters,
+        the function creates an array of strings, every string representing
+        a pixel and then writes those strings to a file, 5 pixels on every
+        line (since in case every RGB value is a 3 digit number, at most five
+        of them would fit to a line of a length 70 characters).
 
-        :param timestep: the timestep to which the density matrix corresponds to
+        :param timestep: the timestep to which the density matrix \
+                corresponds to
         :type timestep: int
 
         """
-        #find puma and hare densities and scaling
+        # find puma and hare densities and scaling
         for pop in self.populations:
             if isinstance(pop, HarePopulation):
-                #hare_pop = 10 * pop.density
                 hare_pop = pop.density
-                #all values greater than 255 will be assigned value 255
-                #hare_pop[hare_pop > 255] = 255
             else:
                 puma_pop = pop.density
-                #puma_pop = 10 * pop.density
-                #puma_pop[puma_pop > 255] = 255
 
         # get nicely formatted step number for printing
         time_st = str(timestep).zfill(len(str(self.num_steps)))
@@ -260,32 +255,32 @@ class Simulation():
             for j in range(cols):
                 puma_pop_ij = int(round(puma_pop[i][j]))
                 hare_pop_ij = int(round(hare_pop[i][j]))
-                density_arr.append(str(puma_pop_ij)+' '+str(hare_pop_ij)+ ' 255')
+                density_arr.append(str(puma_pop_ij) +
+                                   ' ' + str(hare_pop_ij) + ' 255')
+
         # writing pixels on a file in a plain ppm format
-        with open(density_file, 'w+') as f:
-            f.write('P3'+'\n')
-            f.write('#da plain ppm file'+'\n')
+        with open(density_file, 'w+') as out:
+            out.write('P3'+'\n')
+            out.write('#da plain ppm file'+'\n')
             rows, cols = hare_pop.shape
-            f.write('%s %s\n' % (cols, rows))
-            f.write('5\n')
+            out.write('%s %s\n' % (cols, rows))
+            out.write('5\n')
             i = 4
             for segment in density_arr:
-                f.write(segment + '  ')
+                out.write(segment + '  ')
                 i = (i + 1) % 5
                 if i == 4:
-                    f.write('\n')
-            f.write('\n')
-
-
+                    out.write('\n')
+            out.write('\n')
 
     def save_average_density(self, timestep):
         """Claculate the average density of animals in the whole landscape
 
-        The average population is found by summing all the densities in the grid
-        and dividing it by the numbers of squares in the grid. The density is
-        saved to a file 'average_densities.txt', where the first column gives
-        the timestep and second and third columns hare and puma densities at that
-        time step respectively.
+        The average population is found by summing all the densities in
+        the grid and dividing it by the numbers of squares in the grid.
+        The density is saved to a file 'average_densities.txt', where the first
+        column gives the timestep and second and third columns hare and puma
+        densities at that time step respectively.
 
         :param timestep: timestep at which the averages are calculated.
         """
@@ -297,12 +292,28 @@ class Simulation():
 
         populations = [hare_pop, puma_pop]
         out_file = os.path.join(self.out_dir, 'average_densities.dat')
-        with open(out_file, 'a+') as f:
-            f.write(str(timestep) + '           ')
+        with open(out_file, 'a+') as out:
+            out.write(str(timestep) + '           ')
             for pop in populations:
                 average_pop = np.sum(pop) / (
                     (pop.shape[0] - 2) * (pop.shape[1] - 2))
-                f.write(str(average_pop) + '          ')
-            f.write('\n')
+                out.write(str(average_pop) + '          ')
+            out.write('\n')
 
 
+def create_output_dir():
+    """Create directory for output ppm and dat files
+
+    Directory is created using current date and time. All symulation output
+    files are saved into it. The ouput directory is created where the script is
+    running.  The naming convention is as follows:
+
+        PumHa_out_%Y-%m-%d-%H-%M-%S
+    """
+    timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
+    new_dir_name = 'PumHa_out_' + timestr
+    new_dir = os.path.abspath(new_dir_name)
+    print('Creating new output directory:\n %s' % new_dir)
+    if not os.path.exists(new_dir):
+        os.makedirs(new_dir)
+    return new_dir
