@@ -32,6 +32,8 @@ The input landscape file must be a bitmask ASCII file with the first row giving 
 The simulation can be run from any directory with a command::
 
     pumha <landscape_file> [<config_file>]
+    
+For more detailed description see `How to use_`
 
 
 some stuff :)
