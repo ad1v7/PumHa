@@ -37,16 +37,18 @@ cplab: Scientific Linux release 7.3 (Nitrogen)
 Marcin's Ubuntu 16.04.3 LTS
 
 How to install
-########
+##############
 To install PumHa package:
 
-Change directory to your install directory (or create one)
+Change directory to your install directory (or create one).
 
 Copy repository running the following command::
     git clone https://github.com/ad1v7/PumHa
 
 Alternatively if you are the lucky one to have a tar.gz package
+
 (in fact very lucky because only 4 people out of 7+ billions have it!)
+
 Extract archive content::
     tar zxvf pumha.tar.gz
 cd into newly created directory
