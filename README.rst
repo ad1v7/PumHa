@@ -133,9 +133,6 @@ Depending on how you have installed the package, you might need to run tests as 
 Testing requires nose_ which should be installed by pip_ automatically together with other dependencies.
 
 
-Key design decisions
-====================
-
 System compatibility and requirements
 =====================================
 
@@ -157,7 +154,24 @@ The package requires following dependencies::
     jsonschema>=2.6.0
     docopt>=0.6.2
 
-where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions.
+where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoould be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
+    
+    sudo pip install  package_name
+    
+or if root is not available:
+
+    pip install --user package_name
+    
+Key design decisions
+====================
+* Why this class structure and relations
+* Explain scalability
+* easy to create new populations by extending Population class
+* can be imported as a python module to simply create tailor-made simulations
+* main scalability constrain is requirement to write new ppm output method
+  when number of populations in a simulation is different than 2
+* I'm not really sure what to put here. Who's up for a challenge to write it down?
+
 
 ToDo
 ########
