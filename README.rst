@@ -48,9 +48,9 @@ Copy repository running the following command:
 
     Alternatively if you are the lucky one to have a tar.gz package
     (in fact very lucky because only 4 people out of 7+ billions have it!)
-    Extract archive content using::
+    Extract archive content using:
         tar zxvf pumha.tar.gz
-    where pumha.at.gz is replaced with your archive name
+    where pumha.tar.gz is replaced with your archive name
 
 
 make sure you are in a directory which contains setup.py
