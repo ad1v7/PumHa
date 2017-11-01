@@ -3,7 +3,7 @@ PumHa
 *****
 PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffucion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formualtion, see PumaPopulation and HarePopulation classes in the pumha.pop module.
 
-PumHa is written in Python and it is compatible with any version of Phython 2.7 or higher. Provided the package is correctly installed, it can be run in variety of operating systems (see `System compatibility and requirements`_). The code complies with the `PEP 257`_ and `PEP 8`_ conventions. PumHa package was developed using `GitHub`_ revision control mechanism and the tests were created using Python's `unittest`_ framework.
+PumHa is written in Python and it is compatible with any version of Phython 2.7 or higher. Provided the package is correctly installed, it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). The code complies with the `PEP 257`_ and `PEP 8`_ conventions. PumHa package was developed using `GitHub`_ revision control mechanism and the tests were created using Python's `unittest`_ framework.
 
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/ 
 .. _PEP 8: https://www.python.org/dev/peps/pep-0008/
@@ -53,8 +53,8 @@ directory. This is the case for Scientific Linux and Ubuntu.
 
 ::
 
-If ``~/.local/bin`` is not in your ``$PATH`` (run ``echo $PATH`` to check it out)
-You can export it running the following command::
+If ``~/.local/bin`` is not in your ``$PATH`` (run ``echo $PATH`` to check it),
+you can export it running the following command::
 
     export PATH=$PATH:~/.local/bin
     
@@ -74,17 +74,13 @@ The simulation takes in two input files, a configuration file ``config.dat`` tha
 
 * **Landscape file:** 
 The input landscape file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example,
-
+::
   5 5
 
   1 1 1 1 1 
-
   1 1 1 1 0  
-
   1 0 0 0 0  
-
   1 1 0 0 0  
-
   1 1 0 0 0
 
 There are some example landscapes in the pumha/data folder in the package directory
