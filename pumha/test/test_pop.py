@@ -152,7 +152,7 @@ class TestPopulation(TestCase):
                 pop.random_density(env) != 0].all() <= pop.max_ro)
 
 
-        # return True if all matrix perimeter (boundary) elements are zeroes
+# return True if all matrix perimeter (boundary) elements are zeroes
 def zero_surrounded(array):
     return not (array[0, :].any() or array[-1, :].any() or array[:, 0].any()
                 or array[:, -1].any())
