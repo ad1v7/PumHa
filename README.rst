@@ -38,7 +38,7 @@ Marcin's Ubuntu 16.04.3 LTS
 
 How to install
 ##############
-To install PumHa package on a Linux machine:
+To install PumHa package on a Linux machine (see requirements for known compatibility):
 
 Change directory to your install directory (or create one).
 Copy repository running the following command::
@@ -92,12 +92,17 @@ How to use
 ##########
 
 How to  run tests
-########
-to run tests:
+#################
 
-python setup.py test
+To run tests cd into directory which contains setup.py and run the following command::
 
-See test directory for how to write unittests
+    python setup.py test
+
+Depending on how you have installed the package, you might need to run tests as a root::
+
+    sudo python setup.py test
+  
+Testing requires 'nose <https://pypi.python.org/pypi/nose/1.3.7>' which should be installed together with other dependencies.
 
 
 Key design decisions
