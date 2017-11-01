@@ -1,15 +1,15 @@
 *****
 PumHa
 *****
-The package simulates the population dynamics of hares and pumas in a user-specified landscape. 
+PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffucion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formualtion, see ``PumaPopulation`` and ``HarePopulation`` classes in the ``pumha.pop`` module.
 
-The simulation starts off with a random puma and hare densities between 0 and 5 assigned to every land square. Those densities are then subject to a change according to the discrete approximation of formulas 
+PumHa is written in Python and it is compatible with any version of Phython 2.7 or higher. Provided the package is correctly installed, it can be run in variety of operating systems, including Scientific Linux [comp lab serial number], Windows 10 and Ubuntu [serial number]. The code complies with the `PEP 257`_ and `PEP 8`_ conventions. PumHa package was developed with the help of `GitHub`_ and the tests were created using Python's `unittest`_ framework.
 
-[formulas (?)]
+.. _PEP 257: https://www.python.org/dev/peps/pep-0257/ 
+.. _PEP 8: https://www.python.org/dev/peps/pep-0008/
+.. _GitHub: https://github.com/
+.. _unittest: https://docs.python.org/2/library/unittest.html
 
-where
-
-[parameters and their default values]
 
 User can set the values of these parameters on a configuration file called config.dat, located in the data folder. 
 
@@ -45,13 +45,21 @@ You might need to run above command as super user (root):
 e.g. on Linux (Debian):
 sudo pip install -e .
 
-Testing
+
+How to use
+########
+
+How to  run tests
 ########
 to run tests:
 
 python setup.py test
 
 See test directory for how to write unittests
+
+
+Key design decisions
+########
 
 ToDo
 ########
