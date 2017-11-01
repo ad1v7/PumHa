@@ -32,11 +32,12 @@ setup(
         'simplejson>=3.8.1',
         'scipy>=0.15.1',
         'tqdm>=4.19.4',
-        'jsonschema>=2.6.0'
+        'jsonschema>=2.6.0',
+        'docopt>=0.6.2'
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
     entry_points={
-        'console_scripts': ['pumha=pumha.run_sim:main']
+        'console_scripts': ['pumha=pumha.main:main']
     }
 )
