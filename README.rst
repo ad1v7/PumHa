@@ -77,12 +77,12 @@ directory (this is the case for Scientific Linux and Ubuntu)
 
 ::
 
-If ~/.local/bin is not in your $PATH (run echo $PATH to check it put)
+If ``~/.local/bin`` is not in your ``$PATH`` (run ``echo $PATH`` to check it out)
 You can export it running the following command::
 
     export PATH=$PATH:~/.local/bin
     
-You may want to add above line to ~/.profile so ~/.local/bin is added to path at login.
+You may want to add above line to ``~/.profile`` so ``~/.local/bin`` is added to path at login.
 
 
 How to use
