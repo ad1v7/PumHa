@@ -103,7 +103,7 @@ Depending on how you have installed the package, you might need to run tests as 
 
     sudo python setup.py test
   
-Testing requires `_nose` which should be installed together with other dependencies.
+Testing requires nose_ which should be installed together with other dependencies.
 
 
 Key design decisions
