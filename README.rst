@@ -38,7 +38,7 @@ For more detailed description see `How to use`_.
 
 How to install
 ==============
-To install PumHa package on a Linux machine (see requirements for known compatibility):
+To install PumHa package on a Linux machine (see `System compatibility and requirements`_ for known compatibility):
 
 Change directory to your install directory (or create one).
 Copy repository running the following command::
@@ -139,13 +139,14 @@ Key design decisions
 System compatibility and requirements
 =====================================
 
-The package was tested on:
+The package was tested on::
+
     Scientific Linux release 7.3 (Nitrogen)
     Ubuntu 16.04.3 LTS
     Ubuntu 14.04 LTS
     Windows 10 ?
     
-It is verly likely that the package will work on other systems but there is no guarantee whatsoever. Also the installation may differ to ones provided in this document.
+It is verly likely that the package will work on other systems but there is no guarantee whatsoever. Also the installation procedure may differ to one provided in this document.
 
 The package requires following dependencies::
 
