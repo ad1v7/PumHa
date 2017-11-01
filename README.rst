@@ -41,7 +41,7 @@ How to install
 To install PumHa package on a Linux machine:
 
 Change directory to your install directory (or create one).
-Copy repository running the following command:
+Copy repository running the following command::
 
     git clone https://github.com/ad1v7/PumHa
 
@@ -49,7 +49,7 @@ Copy repository running the following command:
 
     Alternatively if you are the lucky one to have a tar.gz package
     (in fact very lucky because only 4 people out of 7+ billions have it!)
-    Extract archive content using::
+    Extract archive content using:
     
         tar zxvf pumha.tar.gz
         
@@ -82,14 +82,14 @@ You can export it running the following command::
 
     export PATH=$PATH:~/.local/bin
     
-You may want to add above line to ~/.profile so ~/.local/bin is added to path at login
+You may want to add above line to ~/.profile so ~/.local/bin is added to path at login.
 
 
 
 
 
 How to use
-########
+##########
 
 How to  run tests
 ########
