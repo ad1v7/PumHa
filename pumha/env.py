@@ -41,6 +41,11 @@ class Landscape(object):
         skipped in the loading.  The array is padded with a border of
         0's, so that the land is always contained.
 
+        Before loading it is checked that the file can be loaded as a
+        numpy and then after, ensures that the entries are 1 or 0.
+        In the even that either of these checks is failed, loading
+        will be considered failed, and the simulation ended.
+
         :param filename: name of file containing land array
         :type filename: string
         :return: padded landscape array

@@ -10,7 +10,17 @@ import os
 from jsonschema import validate
 from collections import OrderedDict
 
+""" Class for loading simulation settings.
 
+Class checks that a valid configuration file has been parsed as an
+argument (or creates a default for use).  In the event that a file
+is parsed, it is checked to ensure it contains a valid JSON object
+for the simulation, before then loading it as the configuration and
+doing a few more data validation checks.
+
+:ivar filename: name of file holding the configuration JSON
+:type filename: string
+"""
 class Configuration():
     def __init__(self, config_file):
 
@@ -38,11 +48,14 @@ class Configuration():
                 print("Config file does not exist:\n%s" % os.path.abspath(config_file))
                 sys.exit(1)
 
-
-
-
     def load_from_file(self, config_file):
-        # parse config file and assign values
+        """Load the config file as a JSON object and ensure
+        that the loaded object has all of the correct keys
+        as they are assigned to values returned to the simulation.
+
+        :param config_file: Name of file containing coniguration
+        :type config_file: String
+        """
         with open(config_file, 'r') as f:
             # check is config file valid json format
             try:
@@ -71,10 +84,16 @@ class Configuration():
             print('Try \'pumha --help\' for help')
             sys.exit(1)
 
-        return config
+   def create_config(self, config_file):
+        """Create a default configuration file, with some standard
+        values.  This is primarily used as a default when no file
+        is parsed to a simulation, but is also called when a config
+        file is passed with an error, so users will have a working 
+        file which they can edit with their own settings.
 
-    #Create a default configuration set up as JSON.
-    def create_config(self, config_file):
+        :param config_file: Name of file containing coniguration
+        :type config_file: String
+        """
         default = {
             'Hare_birth': 0.08,
             'Hare_predation': 0.04,
@@ -96,7 +115,13 @@ class Configuration():
             raise
 
     def valid_config(self, config_file):
+        """Checks that the configuration file is a JSON file in
+        the format expected for the simulation to run by comparing
+        it an expected schema.
 
+        :param config_file: Name of file containing coniguration
+        :type config_file: String
+        """
         schema = {
             "type" : "object",
             "properties" : {
