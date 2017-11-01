@@ -17,10 +17,11 @@ class Configuration():
         except IOError:
             self.create_config(config_file)
 
-        valid_file = self.valid_config(config_file)
+        #valid_file = self.valid_config(config_file)
         self.config = self.load_from_file(config_file)
 
     def load_from_file(self, config_file):
+        print("Loading config file:\n%s\n" % config_file)
         # parse config file and assign values
         with open(config_file, 'r') as f:
             config = json.load(f, object_pairs_hook=OrderedDict)
@@ -57,6 +58,7 @@ class Configuration():
 
         with open(config_file, 'w') as outfile:
             json.dump(default, outfile, sort_keys=True)
+        print("New config file created:\n%s\n" % config_file)
 
     def valid_config(self, config_file):
 
