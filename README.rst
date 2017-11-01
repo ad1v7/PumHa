@@ -156,12 +156,12 @@ It is verly likely that the package will work on other systems but there is no g
 
 The package requires following dependencies:
 
-* _numpy_ >=1.9.2
-* _simplejson_>=3.8.1
-* _scipy_>=0.15.1
-* _tqdm_>=4.19.4
-* _jsonschema_>=2.6.0
-* _docopt_>=0.6.2
+* _numpy__ >=1.9.2
+* _simplejson__>=3.8.1
+* _scipy__>=0.15.1
+* _tqdm__>=4.19.4
+* _jsonschema__>=2.6.0
+* _docopt__>=0.6.2
 
 
 
