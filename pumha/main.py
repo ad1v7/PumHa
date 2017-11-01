@@ -74,6 +74,7 @@ def main():
         Please correct me if I'm wrong
 
     '''
+    '''
     # case 1) if no config argument given
     if config_file is None:
         print("\nNo config file specified...")
@@ -87,7 +88,9 @@ def main():
             print("Config file does not exist")
             print('Try \'pumha --help\' for help')
             sys.exit(1)
+    '''
 
+    config = Configuration(config_file)
     map_file = arguments.get('<landscape_file>')
     env = Landscape(map_file)
     puma_pop = PumaPopulation(env)
@@ -96,12 +99,12 @@ def main():
     hare_pop.load_config(config.hare_birth,
                          config.hare_predation,
                          config.hare_diffusion,
-                         config.time_Step)
+                         config.time_step)
 
     puma_pop.load_config(config.puma_birth,
                          config.puma_mortality,
                          config.puma_diffusion,
-                         config.time_Step)
+                         config.time_step)
 
     sim = Simulation(env, puma_pop, hare_pop)
     sim.run(config.steps, config.output_interval)
