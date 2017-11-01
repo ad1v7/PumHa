@@ -9,87 +9,169 @@ PumHa is written in Python and it is compatible with any version of Phython 2.7 
 .. _PEP 8: https://www.python.org/dev/peps/pep-0008/
 .. _GitHub: https://github.com/
 .. _unittest: https://docs.python.org/2/library/unittest.html
+.. _nose: https://pypi.python.org/pypi/nose/1.3.7
 
 
 User can set the values of these parameters on a configuration file called config.dat, located in the data folder. 
 
 The input landscape file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example,
 
-  5 5
+  6 5
 
-  1 1 1 1 1 
+  1 1 1 1 1 1
 
-  1 1 1 1 0  
+  1 1 1 1 0 0
 
-  1 0 0 0 0  
+  1 0 0 0 0 0
 
-  1 1 0 0 0  
+  1 1 0 0 0 0
 
-  1 1 0 0 0 
+  1 1 0 0 0 0
 
 
-The simulation can be run from the pumha folder with a command
+The simulation can be run from any directory with a command::
 
-[command]
+    pumha <landscape_file> [<config_file>]
+    
+For more detailed description see `How to use`_.
 
-some stuff :)
-cplab: Scientific Linux release 7.3 (Nitrogen)
-Marcin's Ubuntu 16.04.3 LTS
 
 How to install
-##############
-To install PumHa package:
+==============
+To install PumHa package on a Linux machine (see `System compatibility and requirements`_ for known compatibility):
 
 Change directory to your install directory (or create one).
-
 Copy repository running the following command::
+
     git clone https://github.com/ad1v7/PumHa
 
-Alternatively if you are the lucky one to have a tar.gz package
+::
 
-(in fact very lucky because only 4 people out of 7+ billions have it!)
+    Alternatively if you are the lucky one to have a tar.gz package
+    (in fact very lucky because only 4 people out of 7+ billions have it!)
+    Extract archive content using:
+    
+        tar zxvf pumha.tar.gz
+        
+    where pumha.tar.gz is replaced with your archive name
 
-Extract archive content::
-    tar zxvf pumha.tar.gz
-cd into newly created directory
 
 make sure you are in a directory which contains setup.py
-and use `pip <http://pip-installer.org>`_ (as a root)::
+and use `pip <http://pip-installer.org>`_::
+
     pip install .
+    
+You might need to run above command as super user (root)::
 
-Pip command requires root permission on some systems
-if you can't run it as a root you can try:
-pip install --user .
+    sudo pip install .
+    
+If you can't run it as a root you can try::
 
-In a latter case pip will install command line script into
-~/.local/bin
+    pip install --user .
+    
+In a latter case pip will install command line script into::
+
+    ~/.local/bin
+    
 directory (this is the case for Scientific Linux and Ubuntu)
 
-If ~/.local/bin is not in your $PATH (run echo $PATH to check it put)
-You can export it running the following command:
-export PATH=$PATH:~/.local/bin
-You may want to add above line to ~/.profile so ~/.local/bin is added to path at login
+::
 
+If ``~/.local/bin`` is not in your ``$PATH`` (run ``echo $PATH`` to check it out)
+You can export it running the following command::
 
-You might need to run above command as super user (root):
-e.g. on Linux (Debian):
-sudo pip install -e .
+    export PATH=$PATH:~/.local/bin
+    
+You may want to add above line to ``~/.profile`` so ``~/.local/bin`` is added to path at login.
 
 
 How to use
-########
+==========
+
+::
+
+    Usage: pumha <landscape_file> [<config_file>]
+           pumha (-h | --help | --version)
+
+    Landscape file is an only required parameter to run a simulation.
+    The format of landscape file is explained in a section above.
+    
+    If config file is not provided the program will display warning
+    and will continue using default values.
+    
+    ...installation_path/pumha/data directory contains default.dat config file.
+    If file is not present or was accidently deleted it can be regenerated
+    by running a simulation without specifying config file:
+    
+        pumha <landscape_file>
+        
+    All simulation parameters can be accessed by editing config file.
+    
+    During runtime the program will create new output directory in the directory
+    in which script is invoked.   
+
+    Arguments:
+        landscape_file  required argument
+        config_file     optional config file
+
+    Options:
+        -h --help    Show this screen and exit.
+        --version    Print current version
+
 
 How to  run tests
-########
-to run tests:
+=================
 
-python setup.py test
+To run tests cd into directory which contains setup.py and run the following command::
 
-See test directory for how to write unittests
+    python setup.py test
+
+Depending on how you have installed the package, you might need to run tests as root::
+
+    sudo python setup.py test
+  
+Testing requires nose_ which should be installed by pip_ automatically together with other dependencies.
 
 
+System compatibility and requirements
+=====================================
+
+The package was tested on::
+
+    Scientific Linux release 7.3 (Nitrogen)
+    Ubuntu 16.04.3 LTS
+    Ubuntu 14.04 LTS
+    Windows 10 ?
+    
+It is verly likely that the package will work on other systems but there is no guarantee whatsoever. Also the installation procedure may differ to one provided in this document.
+
+The package requires following dependencies::
+
+    numpy>=1.9.2
+    simplejson>=3.8.1
+    scipy>=0.15.1
+    tqdm>=4.19.4
+    jsonschema>=2.6.0
+    docopt>=0.6.2
+
+where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoould be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
+    
+    sudo pip install  package_name
+    
+or if root is not available:
+
+    pip install --user package_name
+    
 Key design decisions
-########
+====================
+* Why this class structure and relations
+* Explain scalability
+* easy to create new populations by extending Population class
+* can be imported as a python module to simply create tailor-made simulations
+* main scalability constrain is requirement to write new ppm output method
+  when number of populations in a simulation is different than 2
+* I'm not really sure what to put here. Who's up for a challenge to write it down?
+
 
 ToDo
 ########
