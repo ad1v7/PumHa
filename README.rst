@@ -42,7 +42,7 @@ To install PumHa package:
 
 Change directory to your install directory (or create one).
 
-Copy repository running the following command::
+Copy repository running the following command:
     git clone https://github.com/ad1v7/PumHa
 
 Alternatively if you are the lucky one to have a tar.gz package
