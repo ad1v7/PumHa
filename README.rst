@@ -94,19 +94,19 @@ How to use
 
 ::
 
-Usage: main.py <landscape_file> [<config_file>]
-       main.py (-h | --help | --version)
+    Usage: main.py <landscape_file> [<config_file>]
+           main.py (-h | --help | --version)
 
-If config file is not provided the program will display warning
-and will continue using default values.
+    If config file is not provided the program will display warning
+    and will continue using default values.
 
-Arguments:
-    landscape_file  required argument
-    config_file     optional config file
+    Arguments:
+        landscape_file  required argument
+        config_file     optional config file
 
-Options:
-    -h --help    Show this screen and exit.
-    --version    Print current version
+    Options:
+        -h --help    Show this screen and exit.
+        --version    Print current version
 
 
 How to  run tests
