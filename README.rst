@@ -56,13 +56,10 @@ Copy repository running the following command:
 make sure you are in a directory which contains setup.py
 and use `pip <http://pip-installer.org>`_ ::
     pip install .
-
 You might need to run above command as super user (root) ::
     sudo pip install .
-
 If you can't run it as a root you can try::
     pip install --user .
-
 In a latter case pip will install command line script into
     ~/.local/bin
 directory (this is the case for Scientific Linux and Ubuntu)
