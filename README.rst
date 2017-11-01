@@ -64,10 +64,11 @@ You may want to add above line to ``~/.profile`` so ``~/.local/bin`` is added to
 How to use
 ==========
 
-Once you have correctly installed the package, you can run the simulation from any directory. 
+Once you have correctly installed the package, you can run the simulation from any directory by typing into the command line
+::
+    pumha <landscape_file> [<config_file>]
 
-Inputs
-======
+
 The simulation takes in two input files, a configuration file ``config.dat`` that contains the information about the parameter values and a file consisting the landscape. Both of those files need to be in the directory in which you run the simulation. You can find the configuration file in the package directory in pumha/data folder. 
 
 * **Configuration file:** You can find the configuration file in the package directory, in pumha/data folder, then just copy-paste the file to the directory where you run your simulation. If you open that file, you can set the values of all the parameters in the simulation
@@ -85,8 +86,7 @@ The input landscape file must be a bitmask ASCII file with the first row giving 
 
 There are some example landscapes in the pumha/data folder in the package directory
 
-Outputs
-=======
+
 Once you have run the simulation, a folder [name of the output folder] will be created in the directory in which you ran your simulation. In that directory there is a file [name of the average density file] in which there are three columns, the first column giving a timestep value and rest two columns showing the average values of hares and pumas on the whole landscape respectively. The averages values are calculated for the whole landscape, including the water squares
 
 Rest of the files in the output folder are image files that describe the densities of pumas and hares on a given timestep. Each pixel represents a square on landscape grid. Blue pixels denote water. On the pixels representing land, red colour denotes puma density and yellow hare density (so the more red/yellow the square, the higher is puma/hare population on that square). The population values are scaled to an interval between 0 and 225, 225 representing the highest density of animals that appeared in the whole simulation on a single grid.  
