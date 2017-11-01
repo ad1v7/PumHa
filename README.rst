@@ -147,14 +147,19 @@ The package was tested on::
     
 It is verly likely that the package will work on other systems but there is no guarantee whatsoever. Also the installation procedure may differ to one provided in this document.
 
+.. _numpy: https://pypi.python.org/pypi/numpy
+
 The package requires following dependencies::
 
-    numpy>=1.9.2
+    _numpy_ >=1.9.2
     simplejson>=3.8.1
     scipy>=0.15.1
     tqdm>=4.19.4
     jsonschema>=2.6.0
     docopt>=0.6.2
+
+
+
 
 where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoold be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
     
