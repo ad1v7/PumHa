@@ -22,19 +22,18 @@ To install PumHa package on a Linux machine (see `System compatibility and requi
 
     git clone https://github.com/ad1v7/PumHa
 
-::
 
-    Alternatively if you are the lucky one to have a tar.gz package
-    (in fact very lucky because only 4 people out of 7+ billions have it!)
-    Extract archive content using:
+Alternatively, if you are lucky to have a tar.gz package in your computer (in fact you would be very lucky because only 4 people out of 7+ billions have it!), you can do the following:
+1. Extract archive content using::
     
-        tar zxvf pumha.tar.gz
+     tar zxvf pumha.tar.gz
         
-    where pumha.tar.gz is replaced with your archive name
+        
+where pumha.tar.gz is replaced with your archive name
 
 
-make sure you are in a directory which contains setup.py
-and use `pip <http://pip-installer.org>`_::
+2. Make sure you are in a directory which contains setup.py
+and use `pip <http://pip-installer.org>`_:
 
     pip install .
     
@@ -42,15 +41,15 @@ You might need to run above command as super user (root)::
 
     sudo pip install .
     
-If you can't run it as a root you can try::
+If you can't run it as a root, you can try::
 
     pip install --user .
     
-In a latter case pip will install command line script into::
+In a that case pip will install command line script into::
 
     ~/.local/bin
     
-directory (this is the case for Scientific Linux and Ubuntu)
+directory. This is the case for Scientific Linux and Ubuntu.
 
 ::
 
