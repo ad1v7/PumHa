@@ -164,7 +164,9 @@ The package requires following dependencies:
 * _docopt__>=0.6.2
 
 
+`numpy`_
 
+_numpy__
 
 where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoold be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
     
