@@ -148,15 +148,20 @@ The package was tested on::
 It is verly likely that the package will work on other systems but there is no guarantee whatsoever. Also the installation procedure may differ to one provided in this document.
 
 .. _numpy: https://pypi.python.org/pypi/numpy
+.. _simplejson: https://pypi.python.org/pypi/simplejson/
+.. _scipy: https://pypi.python.org/pypi/scipy
+.. _tqdm: https://pypi.python.org/pypi/tqdm
+.. _jsonschema: https://pypi.python.org/pypi/jsonschema
+.. _docopt: https://pypi.python.org/pypi/docopt
 
-The package requires following dependencies::
+The package requires following dependencies:
 
     _numpy_ >=1.9.2
-    simplejson>=3.8.1
-    scipy>=0.15.1
-    tqdm>=4.19.4
-    jsonschema>=2.6.0
-    docopt>=0.6.2
+    _simplejson_>=3.8.1
+    _scipy_>=0.15.1
+    _tqdm_>=4.19.4
+    _jsonschema_>=2.6.0
+    _docopt_>=0.6.2
 
 
 
