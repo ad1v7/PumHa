@@ -251,9 +251,10 @@ class PumaPopulation(Population):
         l = self.diffusion
         dt = self.dt
         N = self._N
-        return P[i][j] + dt * (b * H[i][j] * P[i][j] - m * P[i][j]
+        p_ij = P[i][j] + dt * (b * H[i][j] * P[i][j] - m * P[i][j]
                                + l * ((P[i - 1][j] + P[i + 1][j] + P[i][j - 1]
                                        + P[i][j + 1]) - N[i][j] * P[i][j]))
+        return p_ij if p_ij > 0 else 0.
 
 
 class HarePopulation(Population):
@@ -324,6 +325,7 @@ class HarePopulation(Population):
         k = self.diffusion
         dt = self.dt
         N = self._N
-        return H[i][j] + dt * (r * H[i][j] - a * H[i][j] * P[i][j]
+        h_ij = H[i][j] + dt * (r * H[i][j] - a * H[i][j] * P[i][j]
                                + k * ((H[i - 1][j] + H[i + 1][j] + H[i][j - 1]
-+ H[i][j + 1]) - N[i][j] * H[i][j]))
+                                       + H[i][j + 1]) - N[i][j] * H[i][j]))
+        return h_ij if h_ij > 0 else 0.
