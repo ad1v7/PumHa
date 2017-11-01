@@ -9,6 +9,7 @@ PumHa is written in Python and it is compatible with any version of Phython 2.7 
 .. _PEP 8: https://www.python.org/dev/peps/pep-0008/
 .. _GitHub: https://github.com/
 .. _unittest: https://docs.python.org/2/library/unittest.html
+.. _nose: https://pypi.python.org/pypi/nose/1.3.7
 
 
 User can set the values of these parameters on a configuration file called config.dat, located in the data folder. 
@@ -102,7 +103,7 @@ Depending on how you have installed the package, you might need to run tests as 
 
     sudo python setup.py test
   
-Testing requires `nose <https://pypi.python.org/pypi/nose/1.3.7>` which should be installed together with other dependencies.
+Testing requires `_nose` which should be installed together with other dependencies.
 
 
 Key design decisions
