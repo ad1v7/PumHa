@@ -16,6 +16,8 @@ User can set the values of these parameters on a configuration file called confi
 
 The input landscape file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example,
 
+::
+
   6 5
 
   1 1 1 1 1 1
@@ -154,13 +156,14 @@ The package requires following dependencies::
     jsonschema>=2.6.0
     docopt>=0.6.2
 
-where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoould be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
+where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoold be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
     
     sudo pip install  package_name
     
-or if root is not available:
+or if root is not available::
 
     pip install --user package_name
+    
     
 Key design decisions
 ====================
