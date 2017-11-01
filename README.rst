@@ -92,6 +92,23 @@ You may want to add above line to ~/.profile so ~/.local/bin is added to path at
 How to use
 ##########
 
+::
+
+Usage: main.py <landscape_file> [<config_file>]
+       main.py (-h | --help | --version)
+
+If config file is not provided the program will display warning
+and will continue using default values.
+
+Arguments:
+    landscape_file  required argument
+    config_file     optional config file
+
+Options:
+    -h --help    Show this screen and exit.
+    --version    Print current version
+
+
 How to  run tests
 #################
 
@@ -103,7 +120,7 @@ Depending on how you have installed the package, you might need to run tests as 
 
     sudo python setup.py test
   
-Testing requires nose_ which should be installed together with other dependencies.
+Testing requires nose_ which should be installed by pip_ automatically together with other dependencies.
 
 
 Key design decisions
