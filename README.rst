@@ -156,17 +156,12 @@ It is verly likely that the package will work on other systems but there is no g
 
 The package requires following dependencies:
 
-* _numpy__ >=1.9.2
-* _simplejson__>=3.8.1
-* _scipy__>=0.15.1
-* _tqdm__>=4.19.4
-* _jsonschema__>=2.6.0
-* _docopt__>=0.6.2
-
-
-`numpy`_
-
-_numpy__
+* `numpy`_ >=1.9.2
+* `simplejson`_>=3.8.1
+* `scipy`_>=0.15.1
+* `tqdm`_>=4.19.4
+* `jsonschema`_>=2.6.0
+* `docopt`_>=0.6.2
 
 where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoold be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
     
