@@ -47,10 +47,23 @@ class Landscape(object):
         :rtype: integer array
         """
         print('Loading landscape')
+        
+        try:
+            new_map = np.pad(np.loadtxt(filename, skiprows=1), ((1, 1), (1, 1)),
+                      mode='constant', constant_values=0)
+        except ValueError:
+            print("Value error in landscape file.")
+            print("Please ensure the landscape contains only 0 and 1 entries.")
+            sys.exit(1)
+
         new_map = np.pad(np.loadtxt(filename, skiprows=1), ((1, 1), (1, 1)),
                       mode='constant', constant_values=0)
-        #if not all(isinstance(item, int) for item in new_map):
-        #    sys.exit(1)
+
+        if np.array_equal(new_map, new_map.astype(bool)) == False:
+            print("Value error in landscape file.")
+            print("Please ensure the landscape contains only 0 and 1 entries.")
+            sys.exit(1)
+
         return new_map
 
     def find_dry_squares(self):
