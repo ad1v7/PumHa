@@ -54,26 +54,29 @@ Copy repository running the following command:
 
 
 make sure you are in a directory which contains setup.py
-and use `pip <http://pip-installer.org>`_ (as a root)::
+and use `pip <http://pip-installer.org>`_ ::
     pip install .
-
-Pip command requires root permission on some systems
-if you can't run it as a root you can try:
-pip install --user .
-
-In a latter case pip will install command line script into
-~/.local/bin
-directory (this is the case for Scientific Linux and Ubuntu)
-
-If ~/.local/bin is not in your $PATH (run echo $PATH to check it put)
-You can export it running the following command:
-export PATH=$PATH:~/.local/bin
-You may want to add above line to ~/.profile so ~/.local/bin is added to path at login
-
 
 You might need to run above command as super user (root):
 e.g. on Linux (Debian):
-sudo pip install -e .
+    sudo pip install .
+
+If you can't run it as a root you can try:
+    pip install --user .
+
+In a latter case pip will install command line script into
+    ~/.local/bin
+directory (this is the case for Scientific Linux and Ubuntu)
+
+::
+
+If ~/.local/bin is not in your $PATH (run echo $PATH to check it put)
+You can export it running the following command:
+    export PATH=$PATH:~/.local/bin
+You may want to add above line to ~/.profile so ~/.local/bin is added to path at login
+
+
+
 
 
 How to use
