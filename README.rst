@@ -102,7 +102,7 @@ Depending on how you have installed the package, you might need to run tests as 
 
     sudo python setup.py test
   
-Testing requires 'nose <https://pypi.python.org/pypi/nose/1.3.7>' which should be installed together with other dependencies.
+Testing requires `nose <https://pypi.python.org/pypi/nose/1.3.7>` which should be installed together with other dependencies.
 
 
 Key design decisions
