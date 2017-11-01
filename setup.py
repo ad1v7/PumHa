@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='PumHa',
-    version='0.5.1',
+    version='0.6.1',
     description='Modelling pumas and hares in a landscape',
     long_description=long_description,
     url='https://github.com/ad1v7/PumHa',
