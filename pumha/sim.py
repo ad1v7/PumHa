@@ -267,7 +267,7 @@ class Simulation():
             f.write('P3'+'\n')
             f.write('#da plain ppm file'+'\n')
             rows, cols = hare_pop.shape
-            f.write('%s %s\n' % (rows, cols))
+            f.write('%s %s\n' % (cols, rows))
             f.write('5\n')
             i = 4
             for segment in density_arr:
