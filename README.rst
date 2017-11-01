@@ -33,7 +33,7 @@ where pumha.tar.gz is replaced with your archive name
 
 
 2. Make sure you are in a directory which contains setup.py
-and use `pip <http://pip-installer.org>`_:
+and use `pip <http://pip-installer.org>`_::
 
     pip install .
     
