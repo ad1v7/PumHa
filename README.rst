@@ -168,9 +168,14 @@ This section discusses some design and implementation decisions.
 Usage properties
 ----------------
 
+PumHa package has been designed keeping the ease of usage in mind. All the additional packages required for the code to run can easily installed with `pip`_ (see `How to install`_). Since it can be installed as a Python module, it can be easily used as a part of other simulation softwares.
+
+[what else?]
 
 Handling input
 --------------
+
+
 
 Class structure
 ---------------
