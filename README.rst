@@ -1,7 +1,7 @@
 *****
 PumHa
 *****
-PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffucion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formulation, see PumaPopulation and HarePopulation classes in the pumha.pop module.
+PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffusion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formulation, see PumaPopulation and HarePopulation classes in the pumha.pop module.
 
 PumHa is written in Python programming language, it is compatible with any version of Python 2.7 or higher. Provided the package is correctly installed (see `How to install`_), it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). 
 
