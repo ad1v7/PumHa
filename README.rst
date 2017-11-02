@@ -165,28 +165,22 @@ Usage properties
 
 PumHa package has been designed keeping the ease of usage in mind. All the additional packages required for the code to run can easily installed with `pip`_ (see `How to install`_). Since it can be installed as a Python module, it can be easily used as a part of other simulation softwares.
 
-[sth about how nice it is to have all your simulations in separate output folders]
+Every simulation produces an output folder with a timestamp in its name, making it easy to keep track of previously run simulations. 
 
-[what else?]
 
 Handling input
 --------------
 
 The package has nice buit-in mechanisms for handling invalid input data:
 
-* bla bla comment
+* If a configuration file is not in a JSON format or has invalid input values, the program terminates the simulation and generates a new configuration file in a correct format, giving the user an opportunity to "try again" by changing parameter values in a correct configuration file.
 
-* Classes which deals with user input (Landscape and Configuration) have built in error checks and can handle ?majority? of cases.
-
-* bla bla comment
-
-* If a configuration file is not in a JSON format, has invalid input values or has any other problem in it, the program terminates the simulation and generates a new configuration file in a correct format, giving the user an opportunity to "try again" by parameter values in a corrrect configuration file.
+* Classes Landscape and Canfiguration that deal with user input, have built-in error checks, that can handle majority of cases.
 
 * If the user does not have configuration file or has deleted the default one, it is simple to generate a new one - simply run the program without specifying a configuration file!
 
-* The program will display an error message and terminate if no landscape file is provided or if the landscape file is not in a correct format, since there is no point in running a simulation on a landscape that is not the one user wanted to simulate.
+* The program will display an error message and terminates if no landscape file is provided or if the landscape file is not in a correct format, since there is no point in running a simulation on a landscape that is not the one user wanted to simulate.
 
-[Is all this correct? What else should be mentioned?]
 
 Class structure
 ---------------
@@ -201,7 +195,7 @@ cohesion: what's that?
 
 [how easy/difficult is it to use modules separately, e.g. as a part of another program?]
 
-
+looping over indices
 
 [no output for more and less than 2 populations]
 
