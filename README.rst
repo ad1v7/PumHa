@@ -42,7 +42,7 @@ If you can't run it as a root, you can try
 
     pip install --user .
     
-In a that case pip will install command line script into
+In that case pip will install command line script into
 ::
 
     ~/.local/bin
