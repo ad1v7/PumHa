@@ -122,6 +122,7 @@ The package was tested on::
     Scientific Linux release 7.3 (Nitrogen)
     Ubuntu 16.04.3 LTS
     Ubuntu 14.04 LTS
+    Windows 10 Home
     
 The package is likely to work on other systems as well, but there is no guarantee to that. Also, if you are using an operating system which is not listed above, the installation procedure may also differ from the one outlined in this document.
 
