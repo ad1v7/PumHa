@@ -3,7 +3,7 @@ PumHa
 *****
 PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffucion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formulation, see PumaPopulation and HarePopulation classes in the pumha.pop module.
 
-PumHa is written in Python programming language and it is compatible with any version of Python 2.7 or higher. Provided the package is correctly installed (see `How to install`_ for this), it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). 
+PumHa is written in Python programming language, it is compatible with any version of Python 2.7 or higher. Provided the package is correctly installed (see `How to install`_), it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). 
 
 The package was developed using `GitHub`_ revision control mechanism and the tests were created using Python's `unittest`_ framework. The code complies with the `PEP 257`_ and `PEP 8`_ conventions.
 
@@ -20,13 +20,15 @@ How to install
 To install PumHa package on a Linux machine (see `System compatibility and requirements`_ for known compatibility):
 
 1. Change directory to your install directory (or create one).
-2. Copy repository running the following command::
+2. Copy repository from Github by running the command
+::
 
     git clone https://github.com/ad1v7/PumHa
 
 
 Alternatively, if you are lucky to have a tar.gz package in your computer (in fact you would be very lucky because only 4 people out of 7+ billions have it!), you can do the following:
-1. Extract archive content using::
+1. Extract archive content using
+::
     
      tar zxvf pumha.tar.gz
         
@@ -43,11 +45,13 @@ You might need to run above command as super user (root)::
 
     sudo pip install .
     
-If you can't run it as a root, you can try::
+If you can't run it as a root, you can try
+::
 
     pip install --user .
     
-In a that case pip will install command line script into::
+In a that case pip will install command line script into
+::
 
     ~/.local/bin
     
@@ -56,11 +60,12 @@ directory. This is the case for Scientific Linux and Ubuntu.
 ::
 
 If ``~/.local/bin`` is not in your ``$PATH`` (run ``echo $PATH`` to check it),
-you can export it running the following command::
+you can export it running 
+::
 
     export PATH=$PATH:~/.local/bin
     
-You may want to add above line to ``~/.profile`` so ``~/.local/bin`` is added to path at login.
+You may want to add above line to ``~/.profile`` so ``~/.local/bin`` is added to the path at login.
 
 
 How to use
