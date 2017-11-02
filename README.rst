@@ -1,6 +1,3 @@
-*****
-PumHa
-*****
 PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffusion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formulation, see PumaPopulation and HarePopulation classes in the pumha.pop module.
 
 PumHa is written in Python programming language, it is compatible with any version of Python 2.7 or higher. Provided the package is correctly installed (see `How to install`_), it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). 
@@ -99,7 +96,7 @@ There are some example landscapes in the ``...installation_path/pumha/data`` dir
 
 Once you have run the simulation, an output folder with a time stamp ``PumHa_out_Y-m-d-H-M-S`` will be created in your simulation directory. In that directory there will be a file ``average_densities.dat`` in which there are three columns, the first column giving a timestep value and rest two showing the average values of hare and puma densities on the whole landscape respectively. The average values are calculated for the whole landscape, including the water squares.
 
-Rest of the files in the output folder are image files that describe the densities of pumas and hares on a given timestep. Each pixel represents a square on landscape grid. Blue pixels denote water. On the pixels representing land, red denotes puma density and yellow hare density (so the more red/yellow the square, the higher is puma/hare population on that square). The population values are scaled relative to the highest density of animals that appeared in the whole simulation on a single square.  
+Rest of the files in the output folder are image files that describe the densities of pumas and hares on a given timestep. Each pixel represents a square on landscape grid. Blue pixels denote water. On the pixels representing land, red denotes puma density and green hare density (so the more red/green the square, the higher is puma/hare population on that square). The population values are scaled relative to the highest density of animals that appeared in the whole simulation on a single square.  
 
 
 How to  run tests
@@ -175,7 +172,7 @@ The package has nice buit-in mechanisms for handling invalid input data:
 
 * If a configuration file is not in a JSON format or has invalid input values, the program terminates the simulation and generates a new configuration file in a correct format, giving the user an opportunity to "try again" by changing parameter values in a correct configuration file.
 
-* Classes Landscape and Canfiguration that deal with user input, have built-in error checks, that can handle majority of cases.
+* Classes Landscape and Configuration that deal with user input, have built-in error checks, that can handle majority of cases.
 
 * If the user does not have configuration file or has deleted the default one, it is simple to generate a new one - simply run the program without specifying a configuration file!
 
@@ -185,98 +182,22 @@ The package has nice buit-in mechanisms for handling invalid input data:
 Class structure
 ---------------
 
-[fancy words to use from lecture slides: cohesion, loose coupling, modular programming]
+The code is modular and loosely coupled and it is hence easy to extend it and make changes locally, without having to rewrite methods in different modules or classes. With the choice of variable names, the code aims to be as self-documenting as possible.
 
-loose coupling: check
+The modular structure and use of inheritance in the pumha.pop module allows modules and classes to be used in different projects. The population class has methods relevant to all populations, a user can create their own subclass with corresponding methods (that perhaps use different mathematical formalism). Setting up a simulation is very simple, requiring only at the least a landscape file and one population to be specified. Hence it is simple to create custom tailored simulations. 
 
-modular: check
+Though it is possible to extend the code to include several populations, the output functions are specific to the case of two populations. There is a function that checks the number of populations in the simulation and if it is other than two, it displays a message and continues the simulation without providing output. 
 
-cohesion: what's that?
+To make the simulation faster, the methods responsible for the density updates only loop over land squares. For standard landscapes this implementation can reduce the total simulation time around four times. 
 
-[how easy/difficult is it to use modules separately, e.g. as a part of another program?]
 
-looping over indices
-
-[no output for more and less than 2 populations]
-
-[why we opted for using inheritance]
-
-[what else?]
 
 Output and visualisation
 ------------------------
 
-The output file that lists average densities at given timesteps has the timestep value, hare density and puma density written as three columns, making it simple to plot. 
+The output file that lists average densities at given timesteps has the timestep value, hare density and puma density written as three columns respectively, making it simple to plot. 
 
-There were several difficult decisions to make regarding to the visualisation of the densities on the landscape. In this program, both puma and hare densities on a given time step are shown on one map, one pixel corresponding to one square on a grid, blue representing water, yellow hare density and red puma density (for more information about the output, see `How to use`_). One of the biggest issues with visualizing population value changes over time is the scaling of the colour values. In order to scale the colours such that the highest colour value represents the highest population density encountered in the simulation, one would need to wait until the simulation is done and then rewrite all the files with correct scaling. Thankfully, there is a nice feature in the PPM file format - a scaling factor, which scales all the values in the file according to that factor. Going over all the PPM output files once the simulation is done and scaling every value separately would make the simulation ridiculously long, however, changing one value in every input file is less of a problem. 
+In out visualisation implementation, both puma and hare densities on a given time step are shown on one PPM file, one pixel corresponding to one square on a grid, blue without any red or green representing water, green hare density and red puma density (for more information about the output, see `How to use`_). The RGB values representing the puma and hare densities are equal to the actual value of the density at the square. In case these values are above 65 536 (which is unlikely to happen), rescale_ppm_files function will overwrite the scaling number in every PPM file.
 
-This kind of output functionality is only implemented for the case where there are exactly two populations. There is also a method that checks that and returns an error message if that is not the case.
-
-[what else?]
-
-* Why this class structure and relations
-* Explain scalability
-* easy to create new populations by extending Population class
-* can be imported as a python module to simply create tailor-made simulations
-* main scalability constrain is requirement to write new ppm output method
-  when number of populations in a simulation is different than 2
-* I'm not really sure what to put here. Who's up for a challenge to write it down?
-
-
-ToDo
-########
-Make sure that below tasks are distributed evenly
-
-* Check is density array type of double precision float (float64)
-
-  - answer: is not -> change to float64
-* Add unit tests
-
-  - how can we verify that the simulation does what it supposed to do?
-* Add comments if necessary
-
-  - comment other people code: this is the best way to improve!
-  - ask if something is unclear -> this could be a bug
-* add docstring to each module (top of each .py file)
-* Add docstrings to each class and every public method
-
-  - build documentation with Sphinx and add to docs directory
-  - ...but wait for:
-* Check code compliance with pep8 and pep257
-
-  - Do it but after all unittests and docstrings are added
-* Prepare Readme file
-
-  - discuss content
-  - find a volunteer :-)
-* what data we want to include with the package
-* Check, verify and discuss output
-* Discuss module structure
-* Go over requirements and make sure all tasks are either assigned or completed
-* time step attribute in Population looks rather awkward; add it to Simulation?
-* make sure output is saved every T step
-* decide format of ppm file, how to get round 70 characters per line limit?
-
-Puma Package
-########
-* should simulation continue after default config is created?
-* clarify input and output
-* what data include with the package
-* add print frequency to the config
-* scaling for ppm files
-* probably need to have variable to store absolute path to output directory
-
-
-* Information on the programming language, revision control, debuggers, build tools, and test tools you
-have used.
-
-* Where to get, and how to build and install, any third-party packages needed by your code (for
-packages that are not already on the Physics Computational Lab machines).
-* How to build your code.
-
-* How to run your code.
-
-* How to run your tests.
-
-* Summary of key design decisions and reasons for these.
+Since a line in a plain PPM file must be no longer than 70 characters, all the RGB values are written into an array of strings, each element in an array corresponging to a pixel. Those strings are then written on a file, four pixels per line (since that is the maximum amount of pixels that could fit to one line if both puma and hare densities are 5-digit numbers).
 
