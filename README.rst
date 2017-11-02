@@ -1,7 +1,7 @@
 *****
 PumHa
 *****
-PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffucion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formulation, see PumaPopulation and HarePopulation classes in the pumha.pop module.
+PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffusion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formulation, see PumaPopulation and HarePopulation classes in the pumha.pop module.
 
 PumHa is written in Python programming language, it is compatible with any version of Python 2.7 or higher. Provided the package is correctly installed (see `How to install`_), it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). 
 
@@ -86,13 +86,13 @@ If configuration file is not provided, the program will display warning and will
 
 Therefore the simulation can be run without specifying a configuration file, but you must provide a ``<landscape_file>``. This file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example,
 ::
-  5 5
+  5 7
 
-  1 1 1 1 1 
-  1 1 1 1 0  
-  1 0 0 0 0  
-  1 1 0 0 0  
-  1 1 0 0 0
+  1 1 1 1 1 1 1
+  1 1 1 1 0 0 1
+  1 0 0 0 0 0 0
+  1 1 0 0 0 1 1 
+  1 1 0 0 0 1 1
 
 There are some example landscapes in the ``...installation_path/pumha/data`` directory.
 
@@ -180,7 +180,7 @@ The package has nice buit-in mechanisms for handling invalid input data:
 
 * bla bla comment
 
-* If a configuration file is not in a JSON format or has invalid input values, the program terminates the simulation and generates a new configuration file in a correct format, giving the user an opportunity to "try again" by parameter values in a corrrect configuration file.
+* If a configuration file is not in a JSON format, has invalid input values or has any other problem in it, the program terminates the simulation and generates a new configuration file in a correct format, giving the user an opportunity to "try again" by parameter values in a corrrect configuration file.
 
 * If the user does not have configuration file or has deleted the default one, it is simple to generate a new one - simply run the program without specifying a configuration file!
 
