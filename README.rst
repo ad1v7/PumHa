@@ -185,23 +185,15 @@ The package has nice buit-in mechanisms for handling invalid input data:
 Class structure
 ---------------
 
-[fancy words to use from lecture slides: cohesion, loose coupling, modular programming]
+The code is modular and loosely coupled and it is hence easy to extend it and make changes locally, without having to rewrite methods in different modules or classes. With the choice of variable names, the code aims to be as self-documenting as possible.
 
-loose coupling: check
+The modular structure and use of inheriance in the pumha.pop module allows modules and classes to be used in different projects. The population class has methods relevant to all populations, a user can create their own subclass with corresponding methods (that perhaps use different mathematical formalism). Setting up a simulation is very easy, requiring only a landscape file and one population to be specified. Hence it is to create custom tailored simulations. 
 
-modular: check
+Though it is possible to extend the code to include several populations, the output functions are specific to the case of two population. There is a function that checkes the number of populations in the simulation and if it is other than two, it displays a message and continues the simulation without providing output. 
 
-cohesion: what's that?
+To make the simulation faster, the methods responsible for the density updates only loop over land squares. For standard landscapes this implementation can reduce the total simulation time around four times. 
 
-[how easy/difficult is it to use modules separately, e.g. as a part of another program?]
 
-looping over indices
-
-[no output for more and less than 2 populations]
-
-[why we opted for using inheritance]
-
-[what else?]
 
 Output and visualisation
 ------------------------
@@ -221,62 +213,4 @@ This kind of output functionality is only implemented for the case where there a
 * main scalability constrain is requirement to write new ppm output method
   when number of populations in a simulation is different than 2
 * I'm not really sure what to put here. Who's up for a challenge to write it down?
-
-
-ToDo
-########
-Make sure that below tasks are distributed evenly
-
-* Check is density array type of double precision float (float64)
-
-  - answer: is not -> change to float64
-* Add unit tests
-
-  - how can we verify that the simulation does what it supposed to do?
-* Add comments if necessary
-
-  - comment other people code: this is the best way to improve!
-  - ask if something is unclear -> this could be a bug
-* add docstring to each module (top of each .py file)
-* Add docstrings to each class and every public method
-
-  - build documentation with Sphinx and add to docs directory
-  - ...but wait for:
-* Check code compliance with pep8 and pep257
-
-  - Do it but after all unittests and docstrings are added
-* Prepare Readme file
-
-  - discuss content
-  - find a volunteer :-)
-* what data we want to include with the package
-* Check, verify and discuss output
-* Discuss module structure
-* Go over requirements and make sure all tasks are either assigned or completed
-* time step attribute in Population looks rather awkward; add it to Simulation?
-* make sure output is saved every T step
-* decide format of ppm file, how to get round 70 characters per line limit?
-
-Puma Package
-########
-* should simulation continue after default config is created?
-* clarify input and output
-* what data include with the package
-* add print frequency to the config
-* scaling for ppm files
-* probably need to have variable to store absolute path to output directory
-
-
-* Information on the programming language, revision control, debuggers, build tools, and test tools you
-have used.
-
-* Where to get, and how to build and install, any third-party packages needed by your code (for
-packages that are not already on the Physics Computational Lab machines).
-* How to build your code.
-
-* How to run your code.
-
-* How to run your tests.
-
-* Summary of key design decisions and reasons for these.
 
