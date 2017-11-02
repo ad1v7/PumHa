@@ -101,13 +101,6 @@ Once you have run the simulation, an output folder with a time stamp ``PumHa_out
 
 Rest of the files in the output folder are image files that describe the densities of pumas and hares on a given timestep. Each pixel represents a square on landscape grid. Blue pixels denote water. On the pixels representing land, red denotes puma density and yellow hare density (so the more red/yellow the square, the higher is puma/hare population on that square). The population values are scaled relative to the highest density of animals that appeared in the whole simulation on a single square.  
 
-Options:
-
-``-h --help``    Show this screen and exit
-    
-``--version``    Print current version
-
-
 
 How to  run tests
 =================
@@ -181,6 +174,12 @@ Handling input
 
 The package has nice buit-in mechanisms for handling invalid input data:
 
+* bla bla comment
+
+* Classes which deals with user input (Landscape and Configuration) have built in error checks and can handle ?majority? of cases.
+
+* bla bla comment
+
 * If a configuration file is not in a JSON format or has invalid input values, the program terminates the simulation and generates a new configuration file in a correct format, giving the user an opportunity to "try again" by parameter values in a corrrect configuration file.
 
 * If the user does not have configuration file or has deleted the default one, it is simple to generate a new one - simply run the program without specifying a configuration file!
@@ -194,7 +193,15 @@ Class structure
 
 [fancy words to use from lecture slides: cohesion, loose coupling, modular programming]
 
+loose coupling: check
+
+modular: check
+
+cohesion: what's that?
+
 [how easy/difficult is it to use modules separately, e.g. as a part of another program?]
+
+
 
 [no output for more and less than 2 populations]
 
