@@ -81,8 +81,14 @@ class Simulation(object):
         :param pop: apopulation to be removed from a simulation
         :type pop: pumha.pop.Population
         """
-        print(pop.kind + ' removed')
-        self.populations.remove(pop)
+        try:
+            self.populations.remove(pop)
+            print(pop.kind + ' removed')
+        except ValueError as ve:
+            msg = ("No such a population in a list: %s, %s" % (pop, ve))
+            print(msg)
+            return msg
+
 
     def update(self, populations_old, populations_new):
         """One step update for all populations in a simulation
