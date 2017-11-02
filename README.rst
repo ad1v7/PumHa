@@ -170,6 +170,8 @@ Usage properties
 
 PumHa package has been designed keeping the ease of usage in mind. All the additional packages required for the code to run can easily installed with `pip`_ (see `How to install`_). Since it can be installed as a Python module, it can be easily used as a part of other simulation softwares.
 
+[sth about how nice it is to have all your simulations in separate output folders]
+
 [what else?]
 
 Handling input
@@ -188,12 +190,23 @@ The package has nice buit-in mechanisms for handling invalid input data:
 Class structure
 ---------------
 
+[fancy words to use from lecture slides: cohesion, loose coupling, modular programming]
+[how easy/difficult is it to use modules separately, e.g. as a part of another program?]
+[no output for more and less than 2 populations]
+[why we opted for using inheritance]
+
+[what else?]
+
 Output and visualisation
 ------------------------
 
 The output file that lists average densities at given timesteps has the timestep value, hare density and puma density written as three columns, making it simple to plot. 
 
 There were several difficult decisions to make regarding to the visualisation of the densities on the landscape. In this program, both puma and hare densities on a given time step are shown on one map, one pixel corresponding to one square on a grid, blue representing water, yellow hare density and red puma density (for more information about the output, see `How to use`_). One of the biggest issues with visualizing population value changes over time is the scaling of the colour values. In order to scale the colours such that the highest colour value represents the highest population density encountered in the simulation, one would need to wait until the simulation is done and then rewrite all the files with correct scaling. Thankfully, there is a nice feature in the PPM file format - a scaling factor, which scales all the values in the file according to that factor. Going over all the PPM output files once the simulation is done and scaling every value separately would make the simulation ridiculously long, however, changing one value in every input file is less of a problem. 
+
+This kind of output functionality is only implemented for the case where there are exactly two populations. There is also a method that checks that and returns an error message if that is not the case.
+
+[what else?]
 
 * Why this class structure and relations
 * Explain scalability
