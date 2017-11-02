@@ -85,13 +85,18 @@ Therefore the simulation can be run without specifying a configuration file, but
   1 1 0 0 0  
   1 1 0 0 0
 
-There are some example landscapes in the ``...installation_path/pumha/data`` folder in the package directory
+There are some example landscapes in the ``...installation_path/pumha/data`` folder in the package directory.
 
 
 Once you have run the simulation, a folder [name of the output folder] will be created in the directory in which you ran your simulation. In that directory there is a file [name of the average density file] in which there are three columns, the first column giving a timestep value and rest two columns showing the average values of hares and pumas on the whole landscape respectively. The averages values are calculated for the whole landscape, including the water squares
 
-Rest of the files in the output folder are image files that describe the densities of pumas and hares on a given timestep. Each pixel represents a square on landscape grid. Blue pixels denote water. On the pixels representing land, red colour denotes puma density and yellow hare density (so the more red/yellow the square, the higher is puma/hare population on that square). The population values are scaled to an interval between 0 and 225, 225 representing the highest density of animals that appeared in the whole simulation on a single grid.  
+Rest of the files in the output folder are image files that describe the densities of pumas and hares on a given timestep. Each pixel represents a square on landscape grid. Blue pixels denote water, on the pixels representing land, red denotes puma density and yellow hare density (so the more red/yellow the square, the higher is puma/hare population on that square). The population values are scaled to an interval between 0 and 225, 225 representing the highest density of animals that appeared in the whole simulation on a single grid.  
 
+Options:
+
+``-h --help``    Show this screen and exit
+    
+``--version``    Print current version
 
 ::
 
