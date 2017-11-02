@@ -191,8 +191,11 @@ Class structure
 ---------------
 
 [fancy words to use from lecture slides: cohesion, loose coupling, modular programming]
+
 [how easy/difficult is it to use modules separately, e.g. as a part of another program?]
+
 [no output for more and less than 2 populations]
+
 [why we opted for using inheritance]
 
 [what else?]
