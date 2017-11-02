@@ -6,16 +6,16 @@ Usage: pumha <landscape_file> [<config_file>]
 The program requires landscape file in the following format:
 
     4 3
+
     0 1 1 0
     0 1 0 0
     0 1 1 0
 
-The first line specify size of the landscape grid.
-Land is represented by 1 and water by 0.
-The program can simulate arbitrary size grids subject to
-hardware restrictions.
+The first line in the input file specifies size of the landscape grid.
+Land is represented by 1 and water by 0. The program can simulate arbitrary
+size grids subject to hardware restrictions.
 
-If config file is not provided the program will display warning
+If config file is not provided, the program will display warning
 and will continue using default values.
 
 Arguments:
@@ -43,8 +43,8 @@ from pumha.sim import Simulation
 def main():
     """Entry point function for the PumHa program
 
-    The function parse user input from terminal and then set up, configure and
-    rum simulation using values found in a config file
+    The function parses user input from the terminal and then sets up,
+    configures and runs simulation using values in the config file.
     """
     # get version from setup.py
     version = pkg_resources.require("PumHa")[0].version

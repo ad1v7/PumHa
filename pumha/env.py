@@ -10,17 +10,21 @@ import sys
 class Landscape(object):
     """ Class for instantiating a simulation landscape
 
-    Class checks that a valid landscape file exists, before then
-    loading it in to a padded array, representing a guaranteed empty
-    water-halo around the land).  The number of land (1) tiles around
-    water (0) tiles is then calculated for each array element so this
-    can be used in future calculations, instead of evaluated every time.
-    Finally, a list of indices is provided for land elements.
+    Class checks that a valid landscape file exists, then loads it into a
+    numpy array. The array will be padded with zeros around the
+    given landscape. The number of land (represented by 1) squares around
+    every square is then calculated for each array element and this
+    information is saved into a new numpy array, so this can be used in future
+    calculations.
+
+    Finally, a list of indices is provided for land elements. When updating
+    the population densities, this list of indices is used to avoid having to
+    loop over water squares.
     :ivar filename: name of file holding the landscape array
     :type filename: string
     """
     def __init__(self, filename):
-        #Check if the landscape exists.
+        # Check if the landscape exists.
         try:
             my_file = open(filename)
         except IOError:
@@ -32,19 +36,18 @@ class Landscape(object):
         self.land_indices = self.find_land_squares_indices()
 
     def load_landscape(self, filename):
-        """Load the landscape as a numpy array, from a file.
+        """Load the landscape as a numpy array from a file
 
-        Loads an array of 1's for land and 0's for water in to a numpy
-        array, from the parsed filename.  The array should start on the
-        second line of the file; the first line contains the size but
-        that is irrelevant in our implementation so the first line is
-        skipped in the loading.  The array is padded with a border of
-        0's, so that the land is always contained.
+        Loads an array of 1-s for land and 0-s for water in to a numpy
+        array, from the parsed filename. The array should start on the
+        second line of the file (the first line contains the size but
+        that is irrelevant in our implementation, so the first line is
+        skipped in the loading). Pads the array with a border of
+        0-s, so that the land is always surrounded by water.
 
-        Before loading it is checked that the file can be loaded as a
-        numpy and then after, ensures that the entries are 1 or 0.
-        In the even that either of these checks is failed, loading
-        will be considered failed, and the simulation ended.
+        Before loading the landscape, the function checks that the file can be
+        loaded as a numpy array and then ensures that all entries are either 1
+        or 0. If either of these checks fails, the simulation will terminate.
 
         :param filename: name of file containing land array
         :type filename: string
@@ -72,12 +75,13 @@ class Landscape(object):
         return new_map
 
     def find_dry_squares(self):
-        """Counts the number of dry squares around each array element.
+        """Counts the number of dry squares around each array element
 
-        This gives every element of an array a value equal to the sum of it's
-        neighbours multiplied by the kernel.  Since land is 1 and water is 0,
-        multiplying cardinal neighbours by one and summing gives the total land
-        in the cardinal directions.
+        Assigns to every element of an array a value equal to the sum of it's
+        neighbours multiplied by the kernel (see example). Since land squares
+        have value 1 and water squares have value 0,  multiplying cardinal
+        neighbours by one and summing gives the total land in the cardinal
+        directions.
 
         Example:
 
@@ -105,12 +109,12 @@ class Landscape(object):
         return convolve(self.landscape, kernel, mode='constant')
 
     def find_land_squares_indices(self):
-        """Return tuples of all non-zero elements of landscape (ie, the land)
+        """Return tuples of all non-zero elements of landscape
 
         Find the non-zero elements of the landscape array and then
         transpose them in to an array of tuples.  This allows for just
-        iterating over the land elements in later calculations, which
-        are the only one's which can have a non-zero value.
+        iterating over the land elements in later calculations,
+        significantly reducing the computation.
 
         :param filename: name of file containing land array
         :type filename: string
