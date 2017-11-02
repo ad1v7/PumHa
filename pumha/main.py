@@ -3,7 +3,7 @@
 Usage: pumha <landscape_file> [<config_file>]
        pumha (-h | --help | --version)
 
-The program requires landscape file in the following format:
+The program requires landscape file in the following format::
 
     4 3
 
@@ -19,10 +19,12 @@ If config file is not provided, the program will display warning
 and will continue using default values.
 
 Arguments:
+
     landscape_file  required argument
     config_file     optional config file
 
 Options:
+
     -h --help    Show this screen and exit.
     --version    Print current version
 """

@@ -89,7 +89,6 @@ class Simulation(object):
             print(msg)
             return msg
 
-
     def update(self, populations_old, populations_new):
         """One step update for all populations in a simulation
 
@@ -151,9 +150,9 @@ class Simulation(object):
     def rescale_ppm_files(self, max_density):
         """Rescale all PPM files using common PPM color value (Maxval)
 
-        The method takes the highest recorded density from the entire simulation
-        and uses it as common scaling factor for all PPM files. In this way the
-        whole simulation is scaled properly.
+        The method takes the highest recorded density from the entire
+        simulation and uses it as common scaling factor for all PPM files.
+        In this way the whole simulation is scaled properly.
 
         :param max_density: maximum density for a single square from the run
         :type max_density: int, float
@@ -212,7 +211,7 @@ class Simulation(object):
         """Write the densities on each landscape square to a plain PPM file
 
         The method writes the density of a population to a file in the output
-        folder. The name of a file is in a format 't = *timestep*_plain.ppm.
+        folder. The name of a file is in a format timestep.ppm.
 
         The files are in a plain PPM format - each line is separated into
         a group of 3 values corresponding to a pixel, each value in those
@@ -223,23 +222,21 @@ class Simulation(object):
         encountered in the simulation. That is done with the
         rescale_ppm_files method.
 
-        Example:
+        Example::
 
-        P3
-        # some comment
-        4 4
+            P3
+            # some comment
+            4 4
 
-        0 0 255  0 0 255  0 0 255  0 0 255
-        0 0 255  34 56 255  28 60 255  0 0 255
-        0 0 255  30 50 255  30 57 225  0 0 255
-        0 0 255  0 0 255  0 0 255  0 0 255
+            0 0 255  0 0 255  0 0 255  0 0 255
+            0 0 255  34 56 255  28 60 255  0 0 255
+            0 0 255  30 50 255  30 57 225  0 0 255
+            0 0 255  0 0 255  0 0 255  0 0 255
 
         This PPM file represents a small island surrounded by water.
         Since lines in a PPM file must be no longer than 70 characters,
         the function creates an array of strings, every string representing
-        a pixel and then writes those strings to a file, 5 pixels on every
-        line (since in case every RGB value is a 3 digit number, at most five
-        of them would fit to a line of a length 70 characters).
+        a pixel and then writes those strings to a file.
 
         :param timestep: the timestep to which the density matrix \
                 corresponds to
@@ -260,8 +257,8 @@ class Simulation(object):
 
         density_arr = []
         rows, cols = hare_pop.shape
-        for i in range(rows):
-            for j in range(cols):
+        for i in range(1, rows-1):
+            for j in range(1, cols-1):
                 puma_pop_ij = int(round(puma_pop[i][j]))
                 hare_pop_ij = int(round(hare_pop[i][j]))
                 density_arr.append(str(puma_pop_ij) +
@@ -271,14 +268,13 @@ class Simulation(object):
         with open(density_file, 'w+') as out:
             out.write('P3' + '\n')
             out.write('#da plain ppm file' + '\n')
-            rows, cols = hare_pop.shape
-            out.write('%s %s\n' % (cols, rows))
+            out.write('%s %s\n' % (cols-2, rows-2))
             out.write('5\n')
-            i = 4
+            i = 3
             for segment in density_arr:
                 out.write(segment + '  ')
-                i = (i + 1) % 5
-                if i == 4:
+                i = (i + 1) % 4
+                if i == 3:
                     out.write('\n')
             out.write('\n')
 
