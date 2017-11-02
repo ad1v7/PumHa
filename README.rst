@@ -103,15 +103,15 @@ Options:
 How to  run tests
 =================
 
-To run tests cd into directory which contains setup.py and run the following command::
+To run the tests, go into the directory which contains ``setup.py`` and run the following command::
 
     python setup.py test
 
-Depending on how you have installed the package, you might need to run tests as root::
+Depending on how you have installed the package, you might need to run the tests as root::
 
     sudo python setup.py test
   
-Testing requires nose_ which should be installed by pip_ automatically together with other dependencies.
+Testing requires nose_ which will be installed by pip_ automatically together with other dependencies.
 
 
 System compatibility and requirements
@@ -122,9 +122,8 @@ The package was tested on::
     Scientific Linux release 7.3 (Nitrogen)
     Ubuntu 16.04.3 LTS
     Ubuntu 14.04 LTS
-    Windows 10 ?
     
-It is verly likely that the package will work on other systems but there is no guarantee whatsoever. Also the installation procedure may differ to one provided in this document.
+The package is likely to work on other systems as well, but there is no guarantee to that. Also, if you are using an operating system which is not listed above, the installation procedure may also differ from the one outlined in this document.
 
 .. _numpy: https://pypi.python.org/pypi/numpy
 .. _simplejson: https://pypi.python.org/pypi/simplejson/
@@ -142,7 +141,9 @@ The package requires following dependencies:
 * `jsonschema`_>=2.6.0
 * `docopt`_>=0.6.2
 
-where the miniumum requried version is the one tested. Once again it is likely that the package will work with older versions. Above packages shoold be installed automatically when using pip_. However if somehow there are some issues they can be installed separatelly using pip_::
+The miniumum requried version is the one tested, but it is likely that the package will work with older versions as well. 
+
+Above packages should be installed automatically when using pip_ (as described in the section `How to install`_). However, if there are some issues with the installation, they can be installed separatelly using pip_::
     
     sudo pip install  package_name
     
