@@ -12,11 +12,12 @@ from collections import OrderedDict
 
 
 class Configuration():
-    """ Class for loading simulation settings
+    """ Class for loading simulation parameters
+
     Class checks that a valid configuration file has been parsed as an
-    argument or creates a default one. If a config file is given by the user,
-    it is checks if it contains a valid JSON object for the simulation,
-    then loads it as the configuration data and does a few more data
+    argument and if not, creates a default one. If a config file is given by
+    the user, it is checks if it contains a valid JSON object for the
+    simulation, then loads it as the configuration data and does few more data
     validation checks.
 
     :ivar filename: name of file holding the configuration JSON
@@ -85,7 +86,8 @@ class Configuration():
 
    def create_config(self, config_file):
         """Create a default configuration file with some standard values
-        This is primarily used as a default when no file
+
+        This method is primarily used as a default when no file
         is parsed to a simulation, but is also called when a config
         file is passed with an error, so users will have a working 
         file which they can edit with their own settings.
@@ -115,8 +117,7 @@ class Configuration():
 
     def valid_config(self, config_file):
         """Checks that the configuration file is a JSON file in
-        the format expected for the simulation to run by comparing
-        it to an expected schema.
+        the correct format by comparing it to an expected schema.
 
         :param config_file: Name of file containing coniguration
         :type config_file: String
@@ -148,7 +149,8 @@ class Configuration():
 
 class Population(object):
     """ Base class for creating specific population classes
-    Class stores instance attributes and provides methods which are universal
+
+    Class stores instance attributes and provides methods which can be used by
     for derived subclasses. It is not intended to be used on its own, but
     should be extended by specific population subclasses (e.g. PumaPopulation)
     :ivar min_ro: minimum density per ij square in the density array
@@ -183,7 +185,8 @@ class Population(object):
 
     def random_density(self, landscape_inp):
         """Assign a random density between min_ro and max_ro to every land square
-        Returns a grid where there is assigned a random density
+
+        Returns a grid with a random density assigned
         between minimum and maximum densities for every land square.
         :param landscape_inp: Instance of a Landscape object
         :type landscape_inp: Landscape
@@ -192,22 +195,22 @@ class Population(object):
         """
         min_ro = self.min_ro
         max_ro = self.max_ro
-        # turning the array of integers into an array of floats
         grid = landscape_inp.landscape.astype(np.float)
-        # assigning a random density to every cell between min_ro and max_ro
+        # assigning a random density to every land square
         grid[grid == 1] = np.random.uniform(min_ro, max_ro,
                                             grid[grid == 1].shape)
         return grid
 
     def load_config(self, birth, death, diffusion, dt):
         """Set instance attributes using provided parameters
-        :param birth: birth rate for a given population
+
+        :param birth: birth rate of a given population
         :type birth: float
-        :param death: death rate for a given population
+        :param death: death rate of a given population
         :type death: float
-        :param diffusion: diffusion rate for a given population
+        :param diffusion: diffusion rate of a given population
         :type diffusion: float
-        :param dt: time step in arbitrary units
+        :param dt: timestep in arbitrary units
         :type dt: float
         """
         self.birth = birth
@@ -217,10 +220,11 @@ class Population(object):
 
     def find_density_arr(self, pop_class, pop_list):
         """Return required population density array from a list of populations
+
         Returns density array of a first found element matching pop_class from
-        a list of provided populations. If no element is found it returns
+        a list of provided populations. If no element is found, it returns
         matrix of zeros.
-        :param pop_class: required Population object
+        :param pop_class: required population object
         :type pop_class: extended Population class
         :param pop_list: list of all populations
         :type pop_list: list
@@ -235,10 +239,12 @@ class Population(object):
 
 class PumaPopulation(Population):
     """Puma population class with its specific update method
+
     This class represents puma population living in some landscape, therefore it
     requires Landscape object as a parameter. Remaining parameters are set to
-    defaults and can be changed later either using provided method load_config
+    defaults and can be changed later by either using provided method load_config
     or by simply assigning required values to instance attributes.
+
     :Example:
         Create puma population using default values
         >>> from pumha.pop import PumaPopulation
@@ -250,6 +256,7 @@ class PumaPopulation(Population):
         >>> from pumha.env import Landscape
         >>> land = Landscape('my_land_file.dat')
         >>> puma = PumaPopulation(land, birth=0.03, death=0.01)
+
     :See Also:
     pumha.pop.Population
     """
@@ -263,6 +270,7 @@ class PumaPopulation(Population):
 
     def update_density(self, populations_old, populations_new):
         """Update density array of puma population instance
+
         Method updates entire density array of puma population instance based
         on densities of current populations living in a landscape. Only land
         squares in the density array are updated.
@@ -283,11 +291,12 @@ class PumaPopulation(Population):
 
     def update_density_ij(self, i, j, P, H):
         """Return updated puma density at one (i,j) square
+
         Method implements discrete approximation of the following equation:
         .. math::
             \\frac{\partial P}{\partial t} = bHP-mP+l(\\frac{\partial^2 P} \
                     {\partial x^2} + \\frac{\partial^2 P}{\partial y^2})
-        where,
+        where
         * P = density of pumas
         * H = density of hares
         * b = birth rate of pumas
@@ -298,9 +307,9 @@ class PumaPopulation(Population):
         :param j: density array column number (first column is j=0)
         :type j: int
         :param P: density array of pumas
-        :type P: numpy.ndarray of float type
+        :type P: numpy.ndarray of a float64 type
         :param H: density array of hares
-        :type H: numpy.ndarray of float type
+        :type H: numpy.ndarray of a float64 type
         :return: updated density i, j square
         :rtype: float
         """
@@ -317,6 +326,7 @@ class PumaPopulation(Population):
 
 class HarePopulation(Population):
     """Hare population class with its specific update method
+
     This class represents hare population living in some landscape, therefore it
     requires Landscape object as a parameter. Remaining parameters are set to
     defaults and can be changed later either using provided method load_config
@@ -336,6 +346,7 @@ class HarePopulation(Population):
 
     def update_density(self, populations_old, populations_new):
         """Update density array of hare population instance
+
         Method updates entire density array of hare population instance based
         on densities of current populations living in a landscape. Only land
         squares in the density array are updated.
@@ -356,11 +367,12 @@ class HarePopulation(Population):
 
     def update_density_ij(self, i, j, P, H):
         """Return updated hare density at one (ij) square
+
         Method implements discrete approximation of the following equation:
         .. math::
             \\frac{\partial H}{\partial t} = rH-aHP+k(\\frac{\partial^2 H} \
             {\partial x^2} + \\frac{\partial^2 H}{\partial y^2})
-        where,
+        where
         * P = density of pumas
         * H = density of hares
         * r = birth rate of hares

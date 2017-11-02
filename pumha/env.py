@@ -12,7 +12,7 @@ class Landscape(object):
 
     Class checks that a valid landscape file exists, then loads it into a
     numpy array. The array will be padded with zeros around the
-    given landscape. The number of land (represented by 1) squares around
+    given landscape. The number of land squares (represented by 1) around
     every square is then calculated for each array element and this
     information is saved into a new numpy array, so this can be used in future
     calculations.
@@ -39,13 +39,12 @@ class Landscape(object):
         """Load the landscape as a numpy array from a file
 
         Loads an array of 1-s for land and 0-s for water in to a numpy
-        array, from the parsed filename. The array should start on the
-        second line of the file (the first line contains the size but
-        that is irrelevant in our implementation, so the first line is
-        skipped in the loading). Pads the array with a border of
+        array from the parsed filename. The array should start on the
+        second line of the file (the first line contains the size, so it is
+        skipped in the loading). The method pads the array with a border of
         0-s, so that the land is always surrounded by water.
 
-        Before loading the landscape, the function checks that the file can be
+        Before loading the landscape, the mehtod checks that the file can be
         loaded as a numpy array and then ensures that all entries are either 1
         or 0. If either of these checks fails, the simulation will terminate.
 

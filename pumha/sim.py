@@ -28,18 +28,18 @@ class Simulation(object):
     """Simulate time and space evolution of populations
 
     Only populations added to a populations list are simulated. If no
-    populations are added the simulation will run using density arrays of
+    populations are added, the simulation will run using density arrays of
     zeroes. If only one population is added but its update method requires
-    existance of another population the simulation will still run using zeros
+    existence of another population, the simulation will still run using zero
     density array for missing population.
 
     This can be interpreted as follows:
 
     Lets add only hare population; its update method requires puma population,
-    if there are no pumas hares death rate is 0 so they only increase in
+    if there are no pumas, since hare death rate is 0, they only increase in
     numbers until they rule a land!
 
-    Similarly for pumas only - if there is no hares they all starve to death.
+    Similarly, if there is no hares, pumas will all starve to death.
 
     :Example:
 
@@ -94,16 +94,16 @@ class Simulation(object):
             pop.update_density(populations_old, populations_new)
 
     def run(self, num_steps, save_freq):
-        """Run a simulation over given number of steps and save ppm output
+        """Run a simulation over given number of steps and save an output to PPM
 
         Instance population list is updated every second iteration. At the end
         of a simulation it is updated with the latest version.
         The method invokes save_density_grid_interface() every save_freq step
-        in attempt to save ppm output.
+        in attempt to save output to a ppm file.
         At the end of the simulation rescale_ppm_files() method is invoked to
         rescale all ppm files using highest value of the density.
-        Method also provides simple timer for a loop which prints total elapsed
-        time at the end of a simulation to the standard output.
+        Method also includes a simple timer for a loop which prints the
+        total elapsed time at the end of a simulation to the standard output.
 
         :param num_steps: Number of steps for a simulation
         :type num_steps: int
@@ -143,11 +143,11 @@ class Simulation(object):
         print("Simulation time: %.2f s" % (end - start))
 
     def rescale_ppm_files(self, max_density):
-        """Rescale all ppm files using common ppm color value (Maxval)
+        """Rescale all PPM files using common PPM color value (Maxval)
 
-        The method takes highest recorded density from the enntire simulation
-        and use it as common scalling factor for all ppm files. In this way the
-        whole simulation is scalled properly.
+        The method takes the highest recorded density from the entire simulation
+        and uses it as common scaling factor for all PPM files. In this way the
+        whole simulation is scaled properly.
 
         :param max_density: maximum density for a single square from the run
         :type max_density: int, float
@@ -173,10 +173,10 @@ class Simulation(object):
     def save_density_grid_interface(self, i):
         """Simple interface to save_density_grid method
 
-        Provides extandable interface to potential group of save_density_grid
-        methods each one to cover specific case for a simulation. This is
-        mostly because of the limitation of the ppm file format. Currently only
-        the case of simulation containing pumas and hares population is
+        Provides extendable interface to potential group of save_density_grid
+        methods, each one to cover specific case for a simulation. This is
+        mostly because of the limitation of the PPM file format. Currently only
+        the case of simulation containing puma and hare populations is
         implemented.
 
         :param timestep: the timestep to which the density \
@@ -184,10 +184,10 @@ class Simulation(object):
         :type timestep: int
         """
         info = '''
-        Save to ppm file method requires exactly 2 populations
-        in a simulation. One of hares and one of pumas.
+        Save to PPM file method requires exactly 2 populations
+        in a simulation, one of hares and one of pumas.
         Other cases are not yet implemented. In fact they will never be.
-        The simulation will continue without ppm visualisation
+        The simulation will continue without PPM visualisation.
 
         Current population(s):
         '''
@@ -203,16 +203,19 @@ class Simulation(object):
             self._print_info = False
 
     def save_density_grid(self, timestep):
-        """Write the densities on each landscape square to a plain ppm file
+        """Write the densities on each landscape square to a plain PPM file
 
-        The function writes the density of a population to a file in the folder
-        'densities' which has a name in a format 't = *timestep*_plain.ppm
-        All the squares with water are assigned blue RGB value (0 0, 225).
+        The method writes the density of a population to a file in the output
+        folder. The name of a file is in a format 't = *timestep*_plain.ppm.
 
         The files are in a plain PPM format - each line is separated into
-        a group of 3 values correpsonding to a pixel, each value in those
-        triplets represents either red, green or blue value. The dimension
-        of the landscape is given in the head of the file.
+        a group of 3 values corresponding to a pixel, each value in those
+        triplets represents either red, green or blue. The dimension
+        of the landscape is given in the head of the file. The value after
+        the dimensions is a scaling factor which is updated in every file
+        in the end of the simulation, based on the highest maximum density
+        encountered in the simulation. That is done with the
+        rescale_ppm_files method.
 
         Example:
 
@@ -237,7 +240,7 @@ class Simulation(object):
         :type timestep: int
 
         """
-        # find puma and hare densities and scaling
+        # find puma and hare densities
         for pop in self.populations:
             if isinstance(pop, HarePopulation):
                 hare_pop = pop.density
@@ -260,8 +263,8 @@ class Simulation(object):
 
         # writing pixels on a file in a plain ppm format
         with open(density_file, 'w+') as out:
-            out.write('P3'+'\n')
-            out.write('#da plain ppm file'+'\n')
+            out.write('P3' + '\n')
+            out.write('#da plain ppm file' + '\n')
             rows, cols = hare_pop.shape
             out.write('%s %s\n' % (cols, rows))
             out.write('5\n')
@@ -274,7 +277,7 @@ class Simulation(object):
             out.write('\n')
 
     def save_average_density(self, timestep):
-        """Claculate the average density of animals in the whole landscape
+        """Calculate the average density of animals in the whole landscape
 
         The average population is found by summing all the densities in
         the grid and dividing it by the numbers of squares in the grid.
@@ -302,11 +305,11 @@ class Simulation(object):
 
 
 def create_output_dir():
-    """Create directory for output ppm and dat files
+    """Create directory for output PPM and dat files
 
-    Directory is created using current date and time. All symulation output
-    files are saved into it. The ouput directory is created where the script is
-    running.  The naming convention is as follows:
+    Directory is created using current date and time. All simulation output
+    files are saved into this folder. The output directory is created in the
+    directory where the script is running. The naming convention is as follows:
 
         PumHa_out_%Y-%m-%d-%H-%M-%S
     """
