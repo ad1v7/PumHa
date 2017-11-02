@@ -67,6 +67,10 @@ you can export it running
     
 You may want to add above line to ``~/.profile`` so ``~/.local/bin`` is added to the path at login.
 
+::
+
+If you want to use the package with python 3 you might need to run pip3 in place of pip for above commands.
+
 
 How to use
 ==========
