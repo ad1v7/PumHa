@@ -17,14 +17,14 @@ How to install
 To install PumHa package on a Linux machine (see `System compatibility and requirements`_ for known compatibility):
 
 1. Change directory to your install directory (or create one).
-2a. Copy repository from Github by running the command::
+2. Copy repository from Github by running the command::
 
     git clone https://github.com/ad1v7/PumHa
 
 
 Alternatively, if you are lucky to have a tar.gz package in your computer (in fact you would be very lucky because only 4 people out of 7+ billions have it!), you can do the following:
 
-2b. Extract archive content using
+3. Extract archive content using
 ::
     
      tar zxvf pumha.tar.gz
@@ -33,7 +33,7 @@ Alternatively, if you are lucky to have a tar.gz package in your computer (in fa
 where pumha.tar.gz is replaced with your archive name
 
 
-3. Make sure you are in a directory which contains setup.py
+4. Make sure you are in a directory which contains setup.py
 and use `pip <http://pip-installer.org>`_::
 
     pip install .
