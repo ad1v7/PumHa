@@ -1,19 +1,13 @@
 '''Population module
-
 The module contains two classes::
-
     Configuration
     Population
-
 and two subclasses of the Population class::
-
     HarePopulation(Population)
     PumaPopulation(Population)
-
 The Configuration class consists of several methods for handling and parsing
 the input files and Population class with its subclasses are responsible
 for doing all the maths in the density change dynamics.
-
 '''
 
 
@@ -32,13 +26,11 @@ from collections import OrderedDict
 
 class Configuration():
     """ Class for loading simulation parameters
-
     Class checks that a valid configuration file has been parsed as an
     argument and if not, creates a default one. If a config file is given by
     the user, it is checks if it contains a valid JSON object for the
     simulation, then loads it as the configuration data and does few more data
     validation checks.
-
     :ivar filename: name of file holding the configuration JSON
     :type filename: string
     """
@@ -58,6 +50,11 @@ class Configuration():
             print("\nDefault config file loaded:\n%s\n" % default_file)
 
         else:
+            #ensure the file has isn't empty.
+            if os.stat(config_file).st_size==0:
+                print("No configuration found in file.")
+                sys.exit(1)
+
             try:
                 self.valid_config(config_file)
                 config = self.load_from_file(config_file)
@@ -71,7 +68,6 @@ class Configuration():
     def load_from_file(self, config_file):
         """Load the configuration file as a JSON object and check
         that the loaded object has all the correct keys.
-
         :param config_file: Name of file containing coniguration
         :type config_file: String
         """
@@ -105,12 +101,10 @@ class Configuration():
 
     def create_config(self, config_file):
         """Create a default configuration file with some standard values
-
         This method is primarily used as a default when no file
         is parsed to a simulation, but is also called when a config
         file is passed with an error, so users will have a working 
         file which they can edit with their own settings.
-
         :param config_file: Name of file containing coniguration
         :type config_file: String
         """
@@ -137,7 +131,6 @@ class Configuration():
     def valid_config(self, config_file):
         """Checks that the configuration file is a JSON file in
         the correct format by comparing it to an expected schema.
-
         :param config_file: Name of file containing coniguration
         :type config_file: String
         """
@@ -168,7 +161,6 @@ class Configuration():
 
 class Population(object):
     """ Base class for creating specific population classes
-
     Class stores instance attributes and provides methods which can be used by
     for derived subclasses. It is not intended to be used on its own, but
     should be extended by specific population subclasses (e.g. PumaPopulation)
@@ -204,7 +196,6 @@ class Population(object):
 
     def random_density(self, landscape_inp):
         """Assign a random density between min_ro and max_ro to every land square
-
         Returns a grid with a random density assigned
         between minimum and maximum densities for every land square.
         :param landscape_inp: Instance of a Landscape object
@@ -222,7 +213,6 @@ class Population(object):
 
     def load_config(self, birth, death, diffusion, dt):
         """Set instance attributes using provided parameters
-
         :param birth: birth rate of a given population
         :type birth: float
         :param death: death rate of a given population
@@ -239,7 +229,6 @@ class Population(object):
 
     def find_density_arr(self, pop_class, pop_list):
         """Return required population density array from a list of populations
-
         Returns density array of a first found element matching pop_class from
         a list of provided populations. If no element is found, it returns
         matrix of zeros.
@@ -258,12 +247,10 @@ class Population(object):
 
 class PumaPopulation(Population):
     """Puma population class with its specific update method
-
     This class represents puma population living in some landscape, therefore it
     requires Landscape object as a parameter. Remaining parameters are set to
     defaults and can be changed later by either using provided method load_config
     or by simply assigning required values to instance attributes.
-
     :Example:
         Create puma population using default values
         >>> from pumha.pop import PumaPopulation
@@ -275,7 +262,6 @@ class PumaPopulation(Population):
         >>> from pumha.env import Landscape
         >>> land = Landscape('my_land_file.dat')
         >>> puma = PumaPopulation(land, birth=0.03, death=0.01)
-
     :See Also:
     pumha.pop.Population
     """
@@ -289,7 +275,6 @@ class PumaPopulation(Population):
 
     def update_density(self, populations_old, populations_new):
         """Update density array of puma population instance
-
         Method updates entire density array of puma population instance based
         on densities of current populations living in a landscape. Only land
         squares in the density array are updated.
@@ -310,7 +295,6 @@ class PumaPopulation(Population):
 
     def update_density_ij(self, i, j, P, H):
         """Return updated puma density at one (i,j) square
-
         Method implements discrete approximation of the following equation:
         .. math::
             \\frac{\partial P}{\partial t} = bHP-mP+l(\\frac{\partial^2 P} \
@@ -345,7 +329,6 @@ class PumaPopulation(Population):
 
 class HarePopulation(Population):
     """Hare population class with its specific update method
-
     This class represents hare population living in some landscape, therefore it
     requires Landscape object as a parameter. Remaining parameters are set to
     defaults and can be changed later either using provided method load_config
@@ -365,7 +348,6 @@ class HarePopulation(Population):
 
     def update_density(self, populations_old, populations_new):
         """Update density array of hare population instance
-
         Method updates entire density array of hare population instance based
         on densities of current populations living in a landscape. Only land
         squares in the density array are updated.
@@ -386,7 +368,6 @@ class HarePopulation(Population):
 
     def update_density_ij(self, i, j, P, H):
         """Return updated hare density at one (ij) square
-
         Method implements discrete approximation of the following equation:
         .. math::
             \\frac{\partial H}{\partial t} = rH-aHP+k(\\frac{\partial^2 H} \
@@ -417,4 +398,4 @@ class HarePopulation(Population):
         h_ij = H[i][j] + dt * (r * H[i][j] - a * H[i][j] * P[i][j]
                                + k * ((H[i - 1][j] + H[i + 1][j] + H[i][j - 1]
                                        + H[i][j + 1]) - N[i][j] * H[i][j]))
-        return h_ij if h_ij > 0 else 0.
+return h_ij if h_ij > 0 else 0.
