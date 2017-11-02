@@ -1,6 +1,3 @@
-*****
-PumHa
-*****
 PumHa package simulates the population dynamics of hares and pumas in a user-specified landscape. The population densities depend on a number of parameters, such as birth, death and diffusion rates, also on a rate at which pumas eat hares. For more in-depth mathematical formulation, see PumaPopulation and HarePopulation classes in the pumha.pop module.
 
 PumHa is written in Python programming language, it is compatible with any version of Python 2.7 or higher. Provided the package is correctly installed (see `How to install`_), it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). 
@@ -187,7 +184,7 @@ Class structure
 
 The code is modular and loosely coupled and it is hence easy to extend it and make changes locally, without having to rewrite methods in different modules or classes. With the choice of variable names, the code aims to be as self-documenting as possible.
 
-The modular structure and use of inheritance in the pumha.pop module allows modules and classes to be used in different projects. The population class has methods relevant to all populations, a user can create their own subclass with corresponding methods (that perhaps use different mathematical formalism). Setting up a simulation is very simple, requiring at the least a landscape file and one population to be specified. Hence it is to create custom tailored simulations. 
+The modular structure and use of inheritance in the pumha.pop module allows modules and classes to be used in different projects. The population class has methods relevant to all populations, a user can create their own subclass with corresponding methods (that perhaps use different mathematical formalism). Setting up a simulation is very simple, requiring only at the least a landscape file and one population to be specified. Hence it is simple to create custom tailored simulations. 
 
 Though it is possible to extend the code to include several populations, the output functions are specific to the case of two populations. There is a function that checks the number of populations in the simulation and if it is other than two, it displays a message and continues the simulation without providing output. 
 
