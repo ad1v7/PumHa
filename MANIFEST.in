@@ -3,6 +3,9 @@ include README.rst
 # Include the data files
 recursive-include pumha/data *
 
+# Include the data files
+recursive-include pumha/test *
+
 #misc
 include LICENSE
 

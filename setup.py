@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='PumHa',
-    version='0.6.1',
+    version='1.0.0',
     description='Modelling pumas and hares in a landscape',
     long_description=long_description,
     url='https://github.com/ad1v7/PumHa',
@@ -23,9 +23,10 @@ setup(
         'License :: OSI Approved :: MIT License'
     ],
     package_data={
-        'data': ['config.dat',
+        'data': ['default.dat',
                 'island2.dat',
-                'islands.dat'],
+                'islands.dat',
+                'map1.dat'],
     },
     install_requires=[
         'numpy>=1.9.2',
