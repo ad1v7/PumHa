@@ -2,7 +2,8 @@ from unittest import TestCase
 import numpy as np
 from pumha.env import Landscape
 from pumha.pop import (PumaPopulation,
-                       HarePopulation)
+                       HarePopulation,
+                       Configuration)
 
 
 land_arr = np.array([[0, 0, 0, 0],
@@ -154,4 +155,52 @@ class TestPopulation(TestCase):
 # return True if all matrix perimeter (boundary) elements are zeros
 def zero_surrounded(array):
     return not (array[0, :].any() or array[-1, :].any() or array[:, 0].any()
-                or array[:, -1].any())
+or array[:, -1].any())
+
+default = {
+    'Hare_birth': 0.08,
+    'Hare_predation': 0.04,
+    'Hare_diffusion': 0.2,
+    'Puma_birth': 0.02,
+    'Puma_mortality': 0.06,
+    'Puma_diffusion': 0.2,
+    'Time_step': 0.4,
+    'Steps': 100,
+    'Output_interval': 8
+}
+
+config = Configuration('pumha/test/data/config.dat')
+
+class Test_Configuration(TestCase):
+    def test_load_from_file(self):
+        #Test a properly formatted config loads properly
+        self.assertEqual(config.hare_birth, default["Hare_birth"])	
+        self.assertEqual(config.hare_predation, default["Hare_predation"])
+        self.assertEqual(config.hare_diffusion, default["Hare_diffusion"])
+        self.assertEqual(config.puma_birth, default["Puma_birth"])
+        self.assertEqual(config.puma_mortality, default["Puma_mortality"])
+        self.assertEqual(config.puma_diffusion, default["Puma_diffusion"])
+        self.assertEqual(config.time_step, default["Time_step"])
+        self.assertEqual(config.steps, default["Steps"])
+        self.assertEqual(config.output_interval, default["Output_interval"])
+        
+        #Test empty config input
+        with self.assertRaises(SystemExit) as cm:
+            config2 = Configuration('pumha/test/data/config_empty.dat')
+        self.assertEqual(cm.exception.code, 1)
+
+        #Test broken key name
+        with self.assertRaises(SystemExit) as cm:
+            config2 = Configuration('pumha/test/data/config_keytest.dat')
+        self.assertEqual(cm.exception.code, 1)
+
+        #Test missing key name
+        with self.assertRaises(SystemExit) as cm:
+            config2 = Configuration('pumha/test/data/config_missingkey.dat')
+        self.assertEqual(cm.exception.code, 1)
+        '''
+        #Test invalid key value
+        with self.assertRaises(SystemExit) as cm:
+            config2 = Configuration('pumha/test/data/config_valuetest.dat')
+        self.assertEqual(cm.exception.code, 1)
+        '''
