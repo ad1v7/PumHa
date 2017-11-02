@@ -1,3 +1,22 @@
+'''Population module
+
+The module contains two classes::
+
+    Configuration
+    Population
+
+and two subclasses of the Population class::
+
+    HarePopulation(Population)
+    PumaPopulation(Population)
+
+The Configuration class consists of several methods for handling and parsing
+the input files and Population class with its subclasses are responsible
+for doing all the maths in the density change dynamics.
+
+'''
+
+
 from __future__ import (absolute_import,
                         division,
                         print_function,

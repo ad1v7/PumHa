@@ -1,3 +1,16 @@
+'''Environment module
+
+The module contains one class::
+
+    Landscape
+
+The module creates a Landscape object which holds all the landscape-related
+information, such as the actual landscape grid array, information about
+the number of neighbouring dry squares to each square and indices of land
+squares.
+'''
+
+
 from __future__ import (absolute_import,
                         division,
                         print_function,

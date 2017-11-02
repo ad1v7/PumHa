@@ -9,9 +9,9 @@ and one function::
     create_output_dir
 
 The module is used to build new simulations using
-extended Population classes
+extended Population classes and create the output data.
 
-To run a simulation use run() method.
+To run a simulation, use run() method.
 """
 from __future__ import (absolute_import,
                         division,
