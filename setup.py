@@ -30,9 +30,9 @@ setup(
     install_requires=[
         'numpy>=1.9.2',
         'simplejson>=3.8.1',
-        'scipy>=0.15.1',
+        'scipy>=0.14.1',
         'tqdm>=4.19.4',
-        'jsonschema>=2.6.0',
+        'jsonschema>=2.4.0',
         'docopt>=0.6.2'
     ],
     test_suite='nose.collector',
