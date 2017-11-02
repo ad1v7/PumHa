@@ -2,7 +2,7 @@ PumHa package simulates the population dynamics of hares and pumas in a user-spe
 
 PumHa is written in Python programming language, it is compatible with any version of Python 2.7 or higher. Provided the package is correctly installed (see `How to install`_), it can be run in variety of operating systems (see `System compatibility and requirements`_ for a list of operating systems in which the package has been tested). 
 
-The package was developed using `GitHub`_ revision control mechanism and the tests were created using Python's `unittest`_ framework. The code complies with `PEP 257`_ and `PEP 8`_ conventions.
+The package was developed using `GitHub`_ revision control mechanism and the tests were created using Python's `unittest`_ framework. The code complies with `PEP 257`_ and `PEP 8`_ conventions. The documentation was generated using Sphinx and it is located in the ``docs`` folder inside the project directory.
 
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/ 
 .. _PEP 8: https://www.python.org/dev/peps/pep-0008/
