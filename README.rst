@@ -183,6 +183,8 @@ The package has nice buit-in mechanisms for handling invalid input data:
 
 * The program will display an error message and terminate if no landscape file is provided or if the landscape file is not in a correct format, since there is no point in running a simulation on a landscape that is not the one user wanted to simulate.
 
+[Is all this correct? What else should be mentioned?]
+
 Class structure
 ---------------
 
