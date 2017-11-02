@@ -1,0 +1,410 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pumha.sim &#8212; PumHa 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pumha.sim</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Simulation module</span>
+
+<span class="sd">Module contains only one class::</span>
+
+<span class="sd">    Simulation</span>
+
+<span class="sd">and one function::</span>
+
+<span class="sd">    create_output_dir</span>
+
+<span class="sd">The module is used to build new simulations using</span>
+<span class="sd">extended Population classes and create the output data.</span>
+
+<span class="sd">To run a simulation, use run() method.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span>
+                        <span class="n">division</span><span class="p">,</span>
+                        <span class="n">print_function</span><span class="p">,</span>
+                        <span class="n">unicode_literals</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="n">Population</span><span class="p">,</span> <span class="n">HarePopulation</span>
+
+
+<div class="viewcode-block" id="Simulation"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation">[docs]</a><span class="k">class</span> <span class="nc">Simulation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulate time and space evolution of populations</span>
+
+<span class="sd">    Only populations added to a populations list are simulated. If no</span>
+<span class="sd">    populations are added, the simulation will run using density arrays of</span>
+<span class="sd">    zeroes. If only one population is added but its update method requires</span>
+<span class="sd">    existence of another population, the simulation will still run using zero</span>
+<span class="sd">    density array for missing population.</span>
+
+<span class="sd">    This can be interpreted as follows:</span>
+
+<span class="sd">    Lets add only hare population; its update method requires puma population,</span>
+<span class="sd">    if there are no pumas, since hare death rate is 0, they only increase in</span>
+<span class="sd">    numbers until they rule a land!</span>
+
+<span class="sd">    Similarly, if there is no hares, pumas will all starve to death.</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">        Create new simulation with two populations: puma, hare</span>
+
+<span class="sd">        Each population is of extended puma.pop.Population type</span>
+
+<span class="sd">        Run a population over 500 steps and save ppm output every 4th step</span>
+
+<span class="sd">        &gt;&gt;&gt; from pumha.sim import Simulation</span>
+<span class="sd">        &gt;&gt;&gt; sim = Simulation(puma, hare)</span>
+<span class="sd">        &gt;&gt;&gt; sim.run(500, 4)</span>
+
+<span class="sd">    :ivar populations: List of populations in a simulation</span>
+<span class="sd">    :vartype populations: list of pumha.pop.Population types</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c1"># create populations list but ignore args which are not populations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populations</span> <span class="o">=</span> <span class="p">[</span><span class="n">pop</span> <span class="k">for</span> <span class="n">pop</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">Population</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_info</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">create_output_dir</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># redefined in run()</span>
+
+<div class="viewcode-block" id="Simulation.add_population"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.add_population">[docs]</a>    <span class="k">def</span> <span class="nf">add_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pop</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add population object to a simulation</span>
+
+<span class="sd">        :param pop: a population to be added to a simulation</span>
+<span class="sd">        :type pop: pumha.pop.Population</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">Population</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Object is not of Population type&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Simulation.remove_population"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.remove_population">[docs]</a>    <span class="k">def</span> <span class="nf">remove_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pop</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove population from a simulation</span>
+
+<span class="sd">        :param pop: apopulation to be removed from a simulation</span>
+<span class="sd">        :type pop: pumha.pop.Population</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">kind</span> <span class="o">+</span> <span class="s1">&#39; removed&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;No such a population in a list: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">ve</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">msg</span></div>
+
+<div class="viewcode-block" id="Simulation.update"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;One step update for all populations in a simulation</span>
+
+<span class="sd">        :param populations_old: list of populations at time t</span>
+<span class="sd">        :param populations_new: list of populations at time t+dt</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">:</span>
+            <span class="n">pop</span><span class="o">.</span><span class="n">update_density</span><span class="p">(</span><span class="n">populations_old</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Simulation.run"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">,</span> <span class="n">save_freq</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run a simulation over given number of steps and save an output to PPM</span>
+
+<span class="sd">        Instance population list is updated every second iteration. At the end</span>
+<span class="sd">        of a simulation it is updated with the latest version.</span>
+<span class="sd">        The method invokes save_density_grid_interface() every save_freq step</span>
+<span class="sd">        in attempt to save output to a ppm file.</span>
+<span class="sd">        At the end of the simulation rescale_ppm_files() method is invoked to</span>
+<span class="sd">        rescale all ppm files using highest value of the density.</span>
+<span class="sd">        Method also includes a simple timer for a loop which prints the</span>
+<span class="sd">        total elapsed time at the end of a simulation to the standard output.</span>
+
+<span class="sd">        :param num_steps: Number of steps for a simulation</span>
+<span class="sd">        :type num_steps: int</span>
+<span class="sd">        :param save_freq: Number of time steps between outputs</span>
+<span class="sd">        :type save_freq: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span> <span class="o">=</span> <span class="n">num_steps</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">              Running simulation over </span><span class="si">%s</span><span class="s1"> steps</span><span class="se">\n</span><span class="s1"></span>
+<span class="s1">              ppm output is saved every </span><span class="si">%s</span><span class="s1"> steps</span><span class="se">\n</span><span class="s1">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_steps</span><span class="p">,</span> <span class="n">save_freq</span><span class="p">))</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">populations_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">)</span>
+        <span class="c1"># tqdm is used to provide progress bar</span>
+        <span class="n">max_density</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">populations_old</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">)</span>
+            <span class="c1"># saving ppm file every T steps</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">save_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># save output</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_density_grid_interface</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_average_density</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="c1"># find max value of density</span>
+                <span class="n">new_max_ro</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">density</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">new_max_ro</span> <span class="o">&gt;</span> <span class="n">max_density</span><span class="p">:</span>
+                    <span class="n">max_density</span> <span class="o">=</span> <span class="n">new_max_ro</span>
+
+        <span class="c1"># use max density value to rescale all ppm files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rescale_ppm_files</span><span class="p">(</span><span class="n">max_density</span><span class="p">)</span>
+
+        <span class="c1"># make sure we return last updated array</span>
+        <span class="k">if</span> <span class="n">num_steps</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">populations_old</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Simulation time: </span><span class="si">%.2f</span><span class="s2"> s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Simulation.rescale_ppm_files"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.rescale_ppm_files">[docs]</a>    <span class="k">def</span> <span class="nf">rescale_ppm_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_density</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Rescale all PPM files using common PPM color value (Maxval)</span>
+
+<span class="sd">        The method takes the highest recorded density from the entire</span>
+<span class="sd">        simulation and uses it as common scaling factor for all PPM files.</span>
+<span class="sd">        In this way the whole simulation is scaled properly.</span>
+
+<span class="sd">        :param max_density: maximum density for a single square from the run</span>
+<span class="sd">        :type max_density: int, float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">max_density</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_density</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">ppm_maxval</span> <span class="o">=</span> <span class="mi">65536</span>  <span class="c1"># maxmimum allowed color value for ppm format</span>
+        <span class="n">colorline</span> <span class="o">=</span> <span class="mi">3</span>   <span class="c1"># 4th line in a file is a color max value</span>
+
+        <span class="c1"># make sure color value is below ppm format allowed maximum</span>
+        <span class="k">if</span> <span class="n">max_density</span> <span class="o">&gt;</span> <span class="n">ppm_maxval</span><span class="p">:</span>
+            <span class="n">max_density</span> <span class="o">=</span> <span class="n">ppm_maxval</span>
+
+        <span class="c1"># list all files, open, edit color value line and save</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.ppm&quot;</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">my_file</span><span class="p">:</span>
+                    <span class="n">filedata</span> <span class="o">=</span> <span class="n">my_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                    <span class="n">filedata</span><span class="p">[</span><span class="n">colorline</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">max_density</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">my_file</span><span class="p">:</span>
+                    <span class="n">my_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">filedata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Simulation.save_density_grid_interface"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.save_density_grid_interface">[docs]</a>    <span class="k">def</span> <span class="nf">save_density_grid_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simple interface to save_density_grid method</span>
+
+<span class="sd">        Provides extendable interface to potential group of save_density_grid</span>
+<span class="sd">        methods, each one to cover specific case for a simulation. This is</span>
+<span class="sd">        mostly because of the limitation of the PPM file format. Currently only</span>
+<span class="sd">        the case of simulation containing puma and hare populations is</span>
+<span class="sd">        implemented.</span>
+
+<span class="sd">        :param timestep: the timestep to which the density \</span>
+<span class="sd">                matrix corresponds to</span>
+<span class="sd">        :type timestep: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        Save to PPM file method requires exactly 2 populations</span>
+<span class="s1">        in a simulation, one of hares and one of pumas.</span>
+<span class="s1">        Other cases are not yet implemented. In fact they will never be.</span>
+<span class="s1">        The simulation will continue without PPM visualisation.</span>
+
+<span class="s1">        Current population(s):</span>
+<span class="s1">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_info</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_density_grid</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">UnboundLocalError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_print_info</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_info</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_info</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Simulation.save_density_grid"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.save_density_grid">[docs]</a>    <span class="k">def</span> <span class="nf">save_density_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestep</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write the densities on each landscape square to a plain PPM file</span>
+
+<span class="sd">        The method writes the density of a population to a file in the output</span>
+<span class="sd">        folder. The name of a file is in a format timestep.ppm.</span>
+
+<span class="sd">        The files are in a plain PPM format - each line is separated into</span>
+<span class="sd">        a group of 3 values corresponding to a pixel, each value in those</span>
+<span class="sd">        triplets represents either red, green or blue. The dimension</span>
+<span class="sd">        of the landscape is given in the head of the file. The value after</span>
+<span class="sd">        the dimensions is a scaling factor which is updated in every file</span>
+<span class="sd">        in the end of the simulation, based on the highest maximum density</span>
+<span class="sd">        encountered in the simulation. That is done with the</span>
+<span class="sd">        rescale_ppm_files method.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            P3</span>
+<span class="sd">            # some comment</span>
+<span class="sd">            4 4</span>
+<span class="sd">            255</span>
+<span class="sd">            0 0 255  0 0 255  0 0 255  0 0 255</span>
+<span class="sd">            0 0 255  34 56 255  28 60 255  0 0 255</span>
+<span class="sd">            0 0 255  30 50 255  30 57 225  0 0 255</span>
+<span class="sd">            0 0 255  0 0 255  0 0 255  0 0 255</span>
+
+<span class="sd">        This PPM file represents a small island surrounded by water.</span>
+<span class="sd">        Since lines in a PPM file must be no longer than 70 characters,</span>
+<span class="sd">        the function creates an array of strings, every string representing</span>
+<span class="sd">        a pixel and then writes those strings to a file.</span>
+
+<span class="sd">        :param timestep: the timestep to which the density matrix \</span>
+<span class="sd">                corresponds to</span>
+<span class="sd">        :type timestep: int</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># find puma and hare densities</span>
+        <span class="k">for</span> <span class="n">pop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">HarePopulation</span><span class="p">):</span>
+                <span class="n">hare_pop</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">density</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">puma_pop</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">density</span>
+
+        <span class="c1"># get nicely formatted step number for printing</span>
+        <span class="n">time_st</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">timestep</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span><span class="p">)))</span>
+        <span class="c1"># get output file name</span>
+        <span class="n">density_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">time_st</span><span class="o">+</span><span class="s1">&#39;.ppm&#39;</span><span class="p">)</span>
+
+        <span class="n">density_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">hare_pop</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rows</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">puma_pop_ij</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">puma_pop</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
+                <span class="n">hare_pop_ij</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">hare_pop</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
+                <span class="n">density_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">puma_pop_ij</span><span class="p">)</span> <span class="o">+</span>
+                                   <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hare_pop_ij</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 255&#39;</span><span class="p">)</span>
+
+        <span class="c1"># writing pixels on a file in a plain ppm format</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">density_file</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;P3&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#da plain ppm file&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cols</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">rows</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;5</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">density_arr</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">segment</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Simulation.save_average_density"><a class="viewcode-back" href="../../pumha.html#pumha.sim.Simulation.save_average_density">[docs]</a>    <span class="k">def</span> <span class="nf">save_average_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestep</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the average density of animals in the whole landscape</span>
+
+<span class="sd">        The average population is found by summing all the densities in</span>
+<span class="sd">        the grid and dividing it by the numbers of squares in the grid.</span>
+<span class="sd">        The density is saved to a file &#39;average_densities.txt&#39;, where the first</span>
+<span class="sd">        column gives the timestep and second and third columns hare and puma</span>
+<span class="sd">        densities at that time step respectively.</span>
+
+<span class="sd">        :param timestep: timestep at which the averages are calculated.</span>
+<span class="sd">        :type timestep: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">populations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">HarePopulation</span><span class="p">):</span>
+                <span class="n">hare_pop</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">density</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">puma_pop</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">density</span>
+
+        <span class="n">populations</span> <span class="o">=</span> <span class="p">[</span><span class="n">hare_pop</span><span class="p">,</span> <span class="n">puma_pop</span><span class="p">]</span>
+        <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s1">&#39;average_densities.dat&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">timestep</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;           &#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pop</span> <span class="ow">in</span> <span class="n">populations</span><span class="p">:</span>
+                <span class="n">average_pop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">average_pop</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;          &#39;</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="create_output_dir"><a class="viewcode-back" href="../../pumha.html#pumha.sim.create_output_dir">[docs]</a><span class="k">def</span> <span class="nf">create_output_dir</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Create directory for output PPM and dat files</span>
+
+<span class="sd">    Directory is created using current date and time. All simulation output</span>
+<span class="sd">    files are saved into this folder. The output directory is created in the</span>
+<span class="sd">    directory where the script is running. The naming convention is as follows:</span>
+
+<span class="sd">        PumHa_out_%Y-%m-%d-%H-%M-%S</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timestr</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S&quot;</span><span class="p">)</span>
+    <span class="n">new_dir_name</span> <span class="o">=</span> <span class="s1">&#39;PumHa_out_&#39;</span> <span class="o">+</span> <span class="n">timestr</span>
+    <span class="n">new_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">new_dir_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Creating new output directory:</span><span class="se">\n</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">new_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">new_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_dir</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Chloe Sumner, Elen Kalda, Marcin Kirsz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

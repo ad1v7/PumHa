@@ -1,0 +1,536 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pumha.pop &#8212; PumHa 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pumha.pop</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Population module.</span>
+
+<span class="sd">The module contains two classes::</span>
+
+<span class="sd">    Configuration</span>
+<span class="sd">    Population</span>
+
+<span class="sd">and two subclasses of the Population class::</span>
+
+<span class="sd">    HarePopulation(Population)</span>
+<span class="sd">    PumaPopulation(Population)</span>
+
+<span class="sd">The Configuration class consists of several methods for handling and parsing</span>
+<span class="sd">the input files and Population class with its subclasses are responsible</span>
+<span class="sd">for doing all the maths in the density change dynamics.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span>
+                        <span class="n">division</span><span class="p">,</span>
+                        <span class="n">print_function</span><span class="p">,</span>
+                        <span class="n">unicode_literals</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">jsonschema.exceptions</span> <span class="k">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">validate</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">simplejson</span> <span class="k">as</span> <span class="nn">json</span>
+
+
+<div class="viewcode-block" id="Configuration"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Configuration">[docs]</a><span class="k">class</span> <span class="nc">Configuration</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for loading simulation parameters.</span>
+
+<span class="sd">    Class checks that a valid configuration file has been parsed as an</span>
+<span class="sd">    argument and if not, creates a default one. If a config file is given by</span>
+<span class="sd">    the user, it is checks if it contains a valid JSON object for the</span>
+<span class="sd">    simulation, then loads it as the configuration data and does few more data</span>
+<span class="sd">    validation checks.</span>
+
+<span class="sd">    :ivar filename: name of file holding the configuration JSON</span>
+<span class="sd">    :vartype filename: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">config_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+            <span class="n">default_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;data/default.dat&quot;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="n">default_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">No default config file found&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_config</span><span class="p">(</span><span class="n">default_file</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="n">default_file</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Default config file loaded:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">default_file</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># ensure the file has isn&#39;t empty.</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No configuration found in file.&quot;</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">valid_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Config file loaded:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span>
+                      <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">config_file</span><span class="p">))</span>
+
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Config file does not exist:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span>
+                      <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">config_file</span><span class="p">))</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Configuration.load_from_file"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Configuration.load_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load json config file.</span>
+
+<span class="sd">        Load the configuration file as a JSON object and check</span>
+<span class="sd">        that the loaded object has all the correct keys.</span>
+
+<span class="sd">        :param config_file: Name of file containing coniguration</span>
+<span class="sd">        :type config_file: String</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># Check is config file valid json format</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Config file is not of json type&quot;</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;{} ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hare_birth</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Hare_birth&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hare_predation</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Hare_predation&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hare_diffusion</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Hare_diffusion&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">puma_birth</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Puma_birth&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">puma_mortality</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Puma_mortality&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">puma_diffusion</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Puma_diffusion&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Time_step&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Steps&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_interval</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Output_interval&quot;</span><span class="p">]</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wrong key name in a config file:</span><span class="se">\n</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Try </span><span class="se">\&#39;</span><span class="s1">pumha --help</span><span class="se">\&#39;</span><span class="s1"> for help&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Configuration.create_config"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Configuration.create_config">[docs]</a>    <span class="k">def</span> <span class="nf">create_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a default configuration file with some standard values.</span>
+
+<span class="sd">        This method is primarily used as a default when no file</span>
+<span class="sd">        is parsed to a simulation, but is also called when a config</span>
+<span class="sd">        file is passed with an error, so users will have a working</span>
+<span class="sd">        file which they can edit with their own settings.</span>
+
+<span class="sd">        :param config_file: Name of file containing coniguration</span>
+<span class="sd">        :type config_file: String</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Hare_birth&#39;</span><span class="p">:</span> <span class="mf">0.08</span><span class="p">,</span>
+            <span class="s1">&#39;Hare_predation&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span>
+            <span class="s1">&#39;Hare_diffusion&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+            <span class="s1">&#39;Puma_birth&#39;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>
+            <span class="s1">&#39;Puma_mortality&#39;</span><span class="p">:</span> <span class="mf">0.06</span><span class="p">,</span>
+            <span class="s1">&#39;Puma_diffusion&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+            <span class="s1">&#39;Time_step&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
+            <span class="s1">&#39;Steps&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="s1">&#39;Output_interval&#39;</span><span class="p">:</span> <span class="mi">8</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="o">*</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;New config file created:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config_file</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Something went wrong...&quot;</span><span class="p">)</span>
+            <span class="k">raise</span></div>
+
+<div class="viewcode-block" id="Configuration.valid_config"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Configuration.valid_config">[docs]</a>    <span class="k">def</span> <span class="nf">valid_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate format of configuration file.</span>
+
+<span class="sd">        Checks that the configuration file is a JSON file in</span>
+<span class="sd">        the correct format by comparing it to an expected schema.</span>
+
+<span class="sd">        :param config_file: Name of file containing coniguration</span>
+<span class="sd">        :type config_file: String</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;Hare_birth&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Hare_predation&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Hare_diffusion&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Puma_birth&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Puma_mortality&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Puma_diffusion&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Time_step&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Steps&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;Output_interval&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validate</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid configuration file format.:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">ve</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Try </span><span class="se">\&#39;</span><span class="s1">pumha --help</span><span class="se">\&#39;</span><span class="s1"> for help&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Population"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Population">[docs]</a><span class="k">class</span> <span class="nc">Population</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">r&quot;&quot;&quot;Base class for creating specific population classes.</span>
+
+<span class="sd">    Class stores instance attributes and provides methods which can be used by</span>
+<span class="sd">    for derived subclasses. It is not intended to be used on its own, but</span>
+<span class="sd">    should be extended by specific population subclasses (e.g. PumaPopulation)</span>
+
+<span class="sd">    :ivar min_ro: minimum density per ij square in the density array</span>
+<span class="sd">    :vartype min_ro: float</span>
+<span class="sd">    :ivar max_ro: maximum density per ij square in the density array</span>
+<span class="sd">    :vartype max_ro: float</span>
+<span class="sd">    :ivar birth: birth rate for a given population</span>
+<span class="sd">    :vartype birth: float</span>
+<span class="sd">    :ivar death: death rate for a given population</span>
+<span class="sd">    :vartype death: float</span>
+<span class="sd">    :ivar diffusion: diffusion rate for a given population</span>
+<span class="sd">    :vartype diffusion: float</span>
+<span class="sd">    :ivar dt: time step in arbitrary units</span>
+<span class="sd">    :vartype dt: float</span>
+<span class="sd">    :ivar density: population density in a given landscape \</span>
+<span class="sd">            initialized at random</span>
+<span class="sd">    :vartype density: numpy.ndarray containing data with float type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">landscape_inp</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span>
+                 <span class="n">diffusion</span><span class="p">,</span> <span class="n">min_ro</span><span class="p">,</span> <span class="n">max_ro</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_ro</span> <span class="o">=</span> <span class="n">min_ro</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_ro</span> <span class="o">=</span> <span class="n">max_ro</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">birth</span> <span class="o">=</span> <span class="n">birth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">death</span> <span class="o">=</span> <span class="n">death</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_density</span><span class="p">(</span><span class="n">landscape_inp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">landscape_inp</span><span class="o">.</span><span class="n">dry_squares</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_landscape</span> <span class="o">=</span> <span class="n">landscape_inp</span><span class="o">.</span><span class="n">landscape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_land_idx</span> <span class="o">=</span> <span class="n">landscape_inp</span><span class="o">.</span><span class="n">land_indices</span>
+
+<div class="viewcode-block" id="Population.random_density"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Population.random_density">[docs]</a>    <span class="k">def</span> <span class="nf">random_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">landscape_inp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign a random density between min and max ro to every land square.</span>
+
+<span class="sd">        Returns a grid with a random density assigned</span>
+<span class="sd">        between minimum and maximum densities for every land square.</span>
+
+<span class="sd">        :param landscape_inp: Instance of a Landscape object</span>
+<span class="sd">        :type landscape_inp: Landscape</span>
+<span class="sd">        :return: a 2D array of random densities</span>
+<span class="sd">        :rtype: numpy.ndarray of float type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_ro</span>
+        <span class="n">max_ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_ro</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">landscape_inp</span><span class="o">.</span><span class="n">landscape</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># assigning a random density to every land square</span>
+        <span class="n">grid</span><span class="p">[</span><span class="n">grid</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_ro</span><span class="p">,</span> <span class="n">max_ro</span><span class="p">,</span>
+                                            <span class="n">grid</span><span class="p">[</span><span class="n">grid</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid</span></div>
+
+<div class="viewcode-block" id="Population.load_config"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Population.load_config">[docs]</a>    <span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span> <span class="n">diffusion</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set instance attributes using provided parameters.</span>
+
+<span class="sd">        :param birth: birth rate of a given population</span>
+<span class="sd">        :type birth: float</span>
+<span class="sd">        :param death: death rate of a given population</span>
+<span class="sd">        :type death: float</span>
+<span class="sd">        :param diffusion: diffusion rate of a given population</span>
+<span class="sd">        :type diffusion: float</span>
+<span class="sd">        :param dt: timestep in arbitrary units</span>
+<span class="sd">        :type dt: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">birth</span> <span class="o">=</span> <span class="n">birth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">death</span> <span class="o">=</span> <span class="n">death</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span></div>
+
+<div class="viewcode-block" id="Population.find_density_arr"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Population.find_density_arr">[docs]</a>    <span class="k">def</span> <span class="nf">find_density_arr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pop_class</span><span class="p">,</span> <span class="n">pop_list</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;Get required population density array from a list of populations.</span>
+
+<span class="sd">        Returns density array of a first found element matching pop_class from</span>
+<span class="sd">        a list of provided populations. If no element is found, it returns</span>
+<span class="sd">        matrix of zeros.</span>
+
+<span class="sd">        :param pop_class: required population object</span>
+<span class="sd">        :type pop_class: extended Population class</span>
+<span class="sd">        :param pop_list: list of all populations</span>
+<span class="sd">        :type pop_list: list</span>
+<span class="sd">        :return: required population density array\</span>
+<span class="sd">                (array of zeros if not found)</span>
+<span class="sd">        :rtype: numpy.ndarray of float type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">p</span><span class="o">.</span><span class="n">density</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pop_list</span> <span class="k">if</span>
+                     <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">pop_class</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">),</span>
+                                                         <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="PumaPopulation"><a class="viewcode-back" href="../../pumha.html#pumha.pop.PumaPopulation">[docs]</a><span class="k">class</span> <span class="nc">PumaPopulation</span><span class="p">(</span><span class="n">Population</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Puma population class with its specific update method.</span>
+
+<span class="sd">    This class represents puma population living in some landscape,</span>
+<span class="sd">    therefore it requires Landscape object as a parameter.</span>
+<span class="sd">    Remaining parameters are set to defaults and can be changed later</span>
+<span class="sd">    by either using provided method load_config or by simply assigning</span>
+<span class="sd">    required values to instance attributes.</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">        Create puma population using default values</span>
+
+<span class="sd">        &gt;&gt;&gt; from pumha.pop import PumaPopulation</span>
+<span class="sd">        &gt;&gt;&gt; from pumha.env import Landscape</span>
+<span class="sd">        &gt;&gt;&gt; land = Landscape(&#39;my_land_file.dat&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; puma = PumaPopulation(land)</span>
+
+<span class="sd">        Create puma population using specifig values</span>
+
+<span class="sd">        &gt;&gt;&gt; from pumha.pop import PumaPopulation</span>
+<span class="sd">        &gt;&gt;&gt; from pumha.env import Landscape</span>
+<span class="sd">        &gt;&gt;&gt; land = Landscape(&#39;my_land_file.dat&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; puma = PumaPopulation(land, birth=0.03, death=0.01)</span>
+
+<span class="sd">    :See Also:</span>
+
+<span class="sd">    pumha.pop.Population</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="o">=.</span><span class="mi">02</span><span class="p">,</span> <span class="n">death</span><span class="o">=.</span><span class="mi">06</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=.</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">min_ro</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_ro</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">dt</span><span class="o">=.</span><span class="mi">4</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PumaPopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span>
+                                             <span class="n">diffusion</span><span class="p">,</span> <span class="n">min_ro</span><span class="p">,</span> <span class="n">max_ro</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;PumaPopulation&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Puma population created&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PumaPopulation.update_density"><a class="viewcode-back" href="../../pumha.html#pumha.pop.PumaPopulation.update_density">[docs]</a>    <span class="k">def</span> <span class="nf">update_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;Update density array of puma population instance.</span>
+
+<span class="sd">        Method updates entire density array of puma population instance based</span>
+<span class="sd">        on densities of current populations living in a landscape. Only land</span>
+<span class="sd">        squares in the density array are updated.</span>
+
+<span class="sd">        :param populations_old: list of populations at current timestep</span>
+<span class="sd">        :type populations_old: list of Population type</span>
+<span class="sd">        :param populations_new: list of populations with updated \</span>
+<span class="sd">                density array at t+dt</span>
+<span class="sd">        :type populations_new: list of Population type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># extract required populations density arrays for update</span>
+        <span class="n">P_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_density_arr</span><span class="p">(</span><span class="n">PumaPopulation</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_density_arr</span><span class="p">(</span><span class="n">PumaPopulation</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">)</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_density_arr</span><span class="p">(</span><span class="n">HarePopulation</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">)</span>
+
+        <span class="c1"># update all landscape ij</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_land_idx</span><span class="p">:</span>
+            <span class="n">P_new</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_density_ij</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PumaPopulation.update_density_ij"><a class="viewcode-back" href="../../pumha.html#pumha.pop.PumaPopulation.update_density_ij">[docs]</a>    <span class="k">def</span> <span class="nf">update_density_ij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return updated puma density at one (i,j) square.</span>
+
+<span class="sd">        Method implements discrete approximation of the following equation:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \\frac{\partial P}{\partial t} = bHP-mP+l(\\frac{\partial^2 P} \</span>
+<span class="sd">                    {\partial x^2} + \\frac{\partial^2 P}{\partial y^2})</span>
+
+<span class="sd">        where</span>
+
+<span class="sd">        * P = density of pumas</span>
+<span class="sd">        * H = density of hares</span>
+<span class="sd">        * b = birth rate of pumas</span>
+<span class="sd">        * m = death rate of pumas</span>
+<span class="sd">        * l = diffusion rate of pumas</span>
+
+<span class="sd">        :param i: density array row number (first row is i=0)</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :param j: density array column number (first column is j=0)</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param P: density array of pumas</span>
+<span class="sd">        :type P: numpy.ndarray of a float type</span>
+<span class="sd">        :param H: density array of hares</span>
+<span class="sd">        :type H: numpy.ndarray of a float type</span>
+<span class="sd">        :return: updated density i, j square</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">birth</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">death</span>
+        <span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
+        <span class="n">p_ij</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span> <span class="o">*</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span>
+                               <span class="n">el</span> <span class="o">*</span> <span class="p">((</span><span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                                      <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">p_ij</span> <span class="k">if</span> <span class="n">p_ij</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span></div></div>
+
+
+<div class="viewcode-block" id="HarePopulation"><a class="viewcode-back" href="../../pumha.html#pumha.pop.HarePopulation">[docs]</a><span class="k">class</span> <span class="nc">HarePopulation</span><span class="p">(</span><span class="n">Population</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Hare population class with its specific update method.</span>
+
+<span class="sd">    This class represents hare population living in some landscape, therefore</span>
+<span class="sd">    it requires Landscape object as a parameter. Remaining parameters are set</span>
+<span class="sd">    to defaults and can be changed later either using provided method</span>
+<span class="sd">    load_config or by simply assigning required values to instance attributes.</span>
+<span class="sd">    For example use see PumaPopulation.</span>
+
+<span class="sd">    *See Also*</span>
+
+<span class="sd">        * pumha.pop.Population</span>
+<span class="sd">        * pumha.pop.PumaPopulation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="o">=.</span><span class="mi">08</span><span class="p">,</span> <span class="n">death</span><span class="o">=.</span><span class="mi">04</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=.</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">min_ro</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_ro</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">dt</span><span class="o">=.</span><span class="mi">4</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HarePopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span>
+                                             <span class="n">diffusion</span><span class="p">,</span> <span class="n">min_ro</span><span class="p">,</span> <span class="n">max_ro</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hare population created&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;HarePopulation&#39;</span>
+
+<div class="viewcode-block" id="HarePopulation.update_density"><a class="viewcode-back" href="../../pumha.html#pumha.pop.HarePopulation.update_density">[docs]</a>    <span class="k">def</span> <span class="nf">update_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;Update density array of hare population instance.</span>
+
+<span class="sd">        Method updates entire density array of hare population instance based</span>
+<span class="sd">        on densities of current populations living in a landscape. Only land</span>
+<span class="sd">        squares in the density array are updated.</span>
+
+<span class="sd">        :param populations_old: list of populations at current timestep</span>
+<span class="sd">        :type populations_old: list of Population type</span>
+<span class="sd">        :param populations_new: list of populations with updated \</span>
+<span class="sd">                density array at t+dt</span>
+<span class="sd">        :type populations_new: list of Extended Population type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># extract required populations density arrays for update</span>
+        <span class="n">H_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_density_arr</span><span class="p">(</span><span class="n">HarePopulation</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_density_arr</span><span class="p">(</span><span class="n">PumaPopulation</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">)</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_density_arr</span><span class="p">(</span><span class="n">HarePopulation</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">)</span>
+
+        <span class="c1"># update all landscape ij</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_land_idx</span><span class="p">:</span>
+            <span class="n">H_new</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_density_ij</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HarePopulation.update_density_ij"><a class="viewcode-back" href="../../pumha.html#pumha.pop.HarePopulation.update_density_ij">[docs]</a>    <span class="k">def</span> <span class="nf">update_density_ij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return updated hare density at one (ij) square.</span>
+
+<span class="sd">        Method implements discrete approximation of the following equation:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \\frac{\partial H}{\partial t} = rH-aHP+k(\\frac{\partial^2 H} \</span>
+<span class="sd">            {\partial x^2} + \\frac{\partial^2 H}{\partial y^2})</span>
+
+<span class="sd">        where</span>
+
+<span class="sd">        * P = density of pumas</span>
+<span class="sd">        * H = density of hares</span>
+<span class="sd">        * r = birth rate of hares</span>
+<span class="sd">        * a = death rate of hares</span>
+<span class="sd">        * k = diffusion rate of hares</span>
+
+<span class="sd">        :param i: density array row number (first row is i=0)</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :param j: density array column number (first column is j=0)</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param P: density array of pumas</span>
+<span class="sd">        :type P: numpy.ndarray of float type</span>
+<span class="sd">        :param H: density array of hares</span>
+<span class="sd">        :type H: numpy.ndarray of float type</span>
+<span class="sd">        :return: updated density ij square</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">birth</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">death</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
+        <span class="n">h_ij</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span>
+                               <span class="n">k</span> <span class="o">*</span> <span class="p">((</span><span class="n">H</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                                     <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">h_ij</span> <span class="k">if</span> <span class="n">h_ij</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Chloe Sumner, Elen Kalda, Marcin Kirsz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

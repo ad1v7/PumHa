@@ -1,0 +1,164 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pumha.main &#8212; PumHa 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pumha.main</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Pumas and hares simulation.</span>
+
+<span class="sd">Usage: pumha &lt;landscape_file&gt; [&lt;config_file&gt;]</span>
+<span class="sd">       pumha (-h | --help | --version)</span>
+
+<span class="sd">The program requires landscape file in the following format::</span>
+
+<span class="sd">    4 3</span>
+
+<span class="sd">    0 1 1 0</span>
+<span class="sd">    0 1 0 0</span>
+<span class="sd">    0 1 1 0</span>
+
+<span class="sd">The first line in the input file specifies size of the landscape grid.</span>
+<span class="sd">Land is represented by 1 and water by 0. The program can simulate arbitrary</span>
+<span class="sd">size grids subject to hardware restrictions.</span>
+
+<span class="sd">If config file is not provided, the program will display warning</span>
+<span class="sd">and will continue using default values.</span>
+
+<span class="sd">Arguments::</span>
+
+<span class="sd">    landscape_file  required argument</span>
+<span class="sd">    config_file     optional config file</span>
+
+<span class="sd">Options::</span>
+
+<span class="sd">    -h --help    Show this screen and exit.</span>
+<span class="sd">    --version    Print current version</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span>
+                        <span class="n">division</span><span class="p">,</span>
+                        <span class="n">print_function</span><span class="p">,</span>
+                        <span class="n">unicode_literals</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">docopt</span> <span class="k">import</span> <span class="n">docopt</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="p">(</span><span class="n">Configuration</span><span class="p">,</span>
+                       <span class="n">PumaPopulation</span><span class="p">,</span>
+                       <span class="n">HarePopulation</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pumha.env</span> <span class="k">import</span> <span class="n">Landscape</span>
+<span class="kn">from</span> <span class="nn">pumha.sim</span> <span class="k">import</span> <span class="n">Simulation</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../pumha.html#pumha.main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Entry point function for the PumHa program.</span>
+
+<span class="sd">    The function parses user input from the terminal and then sets up,</span>
+<span class="sd">    configures and runs simulation using values in the config file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get version from setup.py</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s2">&quot;PumHa&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">version</span>
+    <span class="c1"># taking user input</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="n">docopt</span><span class="p">(</span><span class="n">__doc__</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">config_file</span> <span class="o">=</span> <span class="n">arguments</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&lt;config_file&gt;&quot;</span><span class="p">)</span>
+    <span class="n">map_file</span> <span class="o">=</span> <span class="n">arguments</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;&lt;landscape_file&gt;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># creating new simulation</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+
+    <span class="n">env</span> <span class="o">=</span> <span class="n">Landscape</span><span class="p">(</span><span class="n">map_file</span><span class="p">)</span>
+
+    <span class="n">puma_pop</span> <span class="o">=</span> <span class="n">PumaPopulation</span><span class="p">(</span><span class="n">env</span><span class="p">,</span>
+                              <span class="n">birth</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">puma_birth</span><span class="p">,</span>
+                              <span class="n">death</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">puma_mortality</span><span class="p">,</span>
+                              <span class="n">diffusion</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">puma_diffusion</span><span class="p">,</span>
+                              <span class="n">dt</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">time_step</span><span class="p">)</span>
+
+    <span class="n">hare_pop</span> <span class="o">=</span> <span class="n">HarePopulation</span><span class="p">(</span><span class="n">env</span><span class="p">,</span>
+                              <span class="n">birth</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hare_birth</span><span class="p">,</span>
+                              <span class="n">death</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hare_predation</span><span class="p">,</span>
+                              <span class="n">diffusion</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hare_diffusion</span><span class="p">,</span>
+                              <span class="n">dt</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">time_step</span><span class="p">)</span>
+
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">puma_pop</span><span class="p">,</span> <span class="n">hare_pop</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">output_interval</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Chloe Sumner, Elen Kalda, Marcin Kirsz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,829 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pumha package &#8212; PumHa 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to PumHa’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pumha-package">
+<h1>pumha package<a class="headerlink" href="#pumha-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pumha.env">
+<span id="pumha-env-module"></span><h2>pumha.env module<a class="headerlink" href="#module-pumha.env" title="Permalink to this headline">¶</a></h2>
+<p>Environment module.</p>
+<p>The module contains one class:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">Landscape</span>
+</pre></div>
+</div>
+<p>The module creates a Landscape object which holds all the landscape-related
+information, such as the actual landscape grid array, information about
+the number of neighbouring dry squares to each square and indices of land
+squares.</p>
+<dl class="class">
+<dt id="pumha.env.Landscape">
+<em class="property">class </em><code class="descclassname">pumha.env.</code><code class="descname">Landscape</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/env.html#Landscape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.env.Landscape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class for instantiating a simulation landscape.</p>
+<p>Class checks that a valid landscape file exists, then loads it into a
+numpy array. The array will be padded with zeros around the
+given landscape. The number of land squares (represented by 1) around
+every square is then calculated for each array element and this
+information is saved into a new numpy array, so this can be used in future
+calculations.
+Finally, a list of indices is provided for land elements. When updating
+the population densities, this list of indices is used to avoid having to
+loop over water squares.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) – name of file holding the landscape array</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pumha.env.Landscape.find_dry_squares">
+<code class="descname">find_dry_squares</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/env.html#Landscape.find_dry_squares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.env.Landscape.find_dry_squares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the number of dry squares around each array element.</p>
+<p>Assigns to every element of an array a value equal to the sum of it’s
+neighbours multiplied by the kernel (see example). Since land squares
+have value 1 and water squares have value 0,  multiplying cardinal
+neighbours by one and summing gives the total land in the cardinal
+directions.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">Land</span><span class="p">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>    <span class="n">Kernel</span><span class="p">:</span>    <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+        <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span>               <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span>
+        <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>               <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>For entry (1,1), the kernel will multiply elements
+(0,1), (1,0), (1,2), (2,1) by 1 (from the kernel)
+and everything else by 0.
+In the land this corresponds to:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>We calculate this value just once and store it to reduce computation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of summed neighbours</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">integer array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.env.Landscape.find_land_squares_indices">
+<code class="descname">find_land_squares_indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/env.html#Landscape.find_land_squares_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.env.Landscape.find_land_squares_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return tuples of all non-zero elements of landscape.</p>
+<p>Find the non-zero elements of the landscape array and then
+transpose them in to an array of tuples.  This allows for just
+iterating over the land elements in later calculations,
+significantly reducing the computation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) – name of file containing land array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of indices for zon-zero (land) landscape array elements</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[int, int] list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.env.Landscape.load_landscape">
+<code class="descname">load_landscape</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/env.html#Landscape.load_landscape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.env.Landscape.load_landscape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the landscape as a numpy array from a file.</p>
+<p>Loads an array of 1-s for land and 0-s for water in to a numpy
+array from the parsed filename. The array should start on the
+second line of the file (the first line contains the size, so it is
+skipped in the loading). The method pads the array with a border of
+0-s, so that the land is always surrounded by water.
+Before loading the landscape, the mehtod checks that the file can be
+loaded as a numpy array and then ensures that all entries are either 1
+or 0. If either of these checks fails, the simulation will terminate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) – name of file containing land array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">padded landscape array</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">integer array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pumha.main">
+<span id="pumha-main-module"></span><h2>pumha.main module<a class="headerlink" href="#module-pumha.main" title="Permalink to this headline">¶</a></h2>
+<p>Pumas and hares simulation.</p>
+<dl class="docutils">
+<dt>Usage: pumha &lt;landscape_file&gt; [&lt;config_file&gt;]</dt>
+<dd>pumha (-h | –help | –version)</dd>
+</dl>
+<p>The program requires landscape file in the following format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="mi">4</span> <span class="mi">3</span>
+
+<span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span>
+<span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>The first line in the input file specifies size of the landscape grid.
+Land is represented by 1 and water by 0. The program can simulate arbitrary
+size grids subject to hardware restrictions.</p>
+<p>If config file is not provided, the program will display warning
+and will continue using default values.</p>
+<p>Arguments:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">landscape_file</span>  <span class="n">required</span> <span class="n">argument</span>
+<span class="n">config_file</span>     <span class="n">optional</span> <span class="n">config</span> <span class="n">file</span>
+</pre></div>
+</div>
+<p>Options:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="o">-</span><span class="n">h</span> <span class="o">--</span><span class="n">help</span>    <span class="n">Show</span> <span class="n">this</span> <span class="n">screen</span> <span class="ow">and</span> <span class="n">exit</span><span class="o">.</span>
+<span class="o">--</span><span class="n">version</span>    <span class="n">Print</span> <span class="n">current</span> <span class="n">version</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="pumha.main.main">
+<code class="descclassname">pumha.main.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.main.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point function for the PumHa program.</p>
+<p>The function parses user input from the terminal and then sets up,
+configures and runs simulation using values in the config file.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pumha.pop">
+<span id="pumha-pop-module"></span><h2>pumha.pop module<a class="headerlink" href="#module-pumha.pop" title="Permalink to this headline">¶</a></h2>
+<p>Population module.</p>
+<p>The module contains two classes:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">Configuration</span>
+<span class="n">Population</span>
+</pre></div>
+</div>
+<p>and two subclasses of the Population class:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">HarePopulation</span><span class="p">(</span><span class="n">Population</span><span class="p">)</span>
+<span class="n">PumaPopulation</span><span class="p">(</span><span class="n">Population</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The Configuration class consists of several methods for handling and parsing
+the input files and Population class with its subclasses are responsible
+for doing all the maths in the density change dynamics.</p>
+<dl class="class">
+<dt id="pumha.pop.Configuration">
+<em class="property">class </em><code class="descclassname">pumha.pop.</code><code class="descname">Configuration</code><span class="sig-paren">(</span><em>config_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class for loading simulation parameters.</p>
+<p>Class checks that a valid configuration file has been parsed as an
+argument and if not, creates a default one. If a config file is given by
+the user, it is checks if it contains a valid JSON object for the
+simulation, then loads it as the configuration data and does few more data
+validation checks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) – name of file holding the configuration JSON</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pumha.pop.Configuration.create_config">
+<code class="descname">create_config</code><span class="sig-paren">(</span><em>config_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Configuration.create_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Configuration.create_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a default configuration file with some standard values.</p>
+<p>This method is primarily used as a default when no file
+is parsed to a simulation, but is also called when a config
+file is passed with an error, so users will have a working
+file which they can edit with their own settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_file</strong> (<em>String</em>) – Name of file containing coniguration</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.pop.Configuration.load_from_file">
+<code class="descname">load_from_file</code><span class="sig-paren">(</span><em>config_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Configuration.load_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Configuration.load_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load json config file.</p>
+<p>Load the configuration file as a JSON object and check
+that the loaded object has all the correct keys.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_file</strong> (<em>String</em>) – Name of file containing coniguration</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.pop.Configuration.valid_config">
+<code class="descname">valid_config</code><span class="sig-paren">(</span><em>config_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Configuration.valid_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Configuration.valid_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate format of configuration file.</p>
+<p>Checks that the configuration file is a JSON file in
+the correct format by comparing it to an expected schema.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_file</strong> (<em>String</em>) – Name of file containing coniguration</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pumha.pop.HarePopulation">
+<em class="property">class </em><code class="descclassname">pumha.pop.</code><code class="descname">HarePopulation</code><span class="sig-paren">(</span><em>Landscape</em>, <em>birth=0.08</em>, <em>death=0.04</em>, <em>diffusion=0.2</em>, <em>min_ro=0.0</em>, <em>max_ro=5.0</em>, <em>dt=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#HarePopulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.HarePopulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pumha.pop.Population" title="pumha.pop.Population"><code class="xref py py-class docutils literal"><span class="pre">pumha.pop.Population</span></code></a></p>
+<p>Hare population class with its specific update method.</p>
+<p>This class represents hare population living in some landscape, therefore
+it requires Landscape object as a parameter. Remaining parameters are set
+to defaults and can be changed later either using provided method
+load_config or by simply assigning required values to instance attributes.
+For example use see PumaPopulation.</p>
+<p><em>See Also</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>pumha.pop.Population</li>
+<li>pumha.pop.PumaPopulation</li>
+</ul>
+</div></blockquote>
+<dl class="method">
+<dt id="pumha.pop.HarePopulation.update_density">
+<code class="descname">update_density</code><span class="sig-paren">(</span><em>populations_old</em>, <em>populations_new</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#HarePopulation.update_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.HarePopulation.update_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update density array of hare population instance.</p>
+<p>Method updates entire density array of hare population instance based
+on densities of current populations living in a landscape. Only land
+squares in the density array are updated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>populations_old</strong> (<em>list of Population type</em>) – list of populations at current timestep</li>
+<li><strong>populations_new</strong> (<em>list of Extended Population type</em>) – list of populations with updated density array at t+dt</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.pop.HarePopulation.update_density_ij">
+<code class="descname">update_density_ij</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>P</em>, <em>H</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#HarePopulation.update_density_ij"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.HarePopulation.update_density_ij" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return updated hare density at one (ij) square.</p>
+<p>Method implements discrete approximation of the following equation:</p>
+<div class="math">
+\[\frac{\partial H}{\partial t} = rH-aHP+k(\frac{\partial^2 H}             {\partial x^2} + \frac{\partial^2 H}{\partial y^2})\]</div>
+<p>where</p>
+<ul class="simple">
+<li>P = density of pumas</li>
+<li>H = density of hares</li>
+<li>r = birth rate of hares</li>
+<li>a = death rate of hares</li>
+<li>k = diffusion rate of hares</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>i</strong> (<em>int</em>) – density array row number (first row is i=0)</li>
+<li><strong>j</strong> (<em>int</em>) – density array column number (first column is j=0)</li>
+<li><strong>P</strong> (<em>numpy.ndarray of float type</em>) – density array of pumas</li>
+<li><strong>H</strong> (<em>numpy.ndarray of float type</em>) – density array of hares</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">updated density ij square</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pumha.pop.Population">
+<em class="property">class </em><code class="descclassname">pumha.pop.</code><code class="descname">Population</code><span class="sig-paren">(</span><em>landscape_inp</em>, <em>birth</em>, <em>death</em>, <em>diffusion</em>, <em>min_ro</em>, <em>max_ro</em>, <em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for creating specific population classes.</p>
+<p>Class stores instance attributes and provides methods which can be used by
+for derived subclasses. It is not intended to be used on its own, but
+should be extended by specific population subclasses (e.g. PumaPopulation)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>min_ro</strong> (<em>float</em>) – minimum density per ij square in the density array</li>
+<li><strong>max_ro</strong> (<em>float</em>) – maximum density per ij square in the density array</li>
+<li><strong>birth</strong> (<em>float</em>) – birth rate for a given population</li>
+<li><strong>death</strong> (<em>float</em>) – death rate for a given population</li>
+<li><strong>diffusion</strong> (<em>float</em>) – diffusion rate for a given population</li>
+<li><strong>dt</strong> (<em>float</em>) – time step in arbitrary units</li>
+<li><strong>density</strong> (<em>numpy.ndarray containing data with float type</em>) – population density in a given landscape initialized at random</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pumha.pop.Population.find_density_arr">
+<code class="descname">find_density_arr</code><span class="sig-paren">(</span><em>pop_class</em>, <em>pop_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Population.find_density_arr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Population.find_density_arr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get required population density array from a list of populations.</p>
+<p>Returns density array of a first found element matching pop_class from
+a list of provided populations. If no element is found, it returns
+matrix of zeros.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pop_class</strong> (<em>extended Population class</em>) – required population object</li>
+<li><strong>pop_list</strong> (<em>list</em>) – list of all populations</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">required population density array(array of zeros if not found)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray of float type</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.pop.Population.load_config">
+<code class="descname">load_config</code><span class="sig-paren">(</span><em>birth</em>, <em>death</em>, <em>diffusion</em>, <em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Population.load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Population.load_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set instance attributes using provided parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>birth</strong> (<em>float</em>) – birth rate of a given population</li>
+<li><strong>death</strong> (<em>float</em>) – death rate of a given population</li>
+<li><strong>diffusion</strong> (<em>float</em>) – diffusion rate of a given population</li>
+<li><strong>dt</strong> (<em>float</em>) – timestep in arbitrary units</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.pop.Population.random_density">
+<code class="descname">random_density</code><span class="sig-paren">(</span><em>landscape_inp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#Population.random_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.Population.random_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign a random density between min and max ro to every land square.</p>
+<p>Returns a grid with a random density assigned
+between minimum and maximum densities for every land square.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>landscape_inp</strong> (<a class="reference internal" href="#pumha.env.Landscape" title="pumha.env.Landscape"><em>Landscape</em></a>) – Instance of a Landscape object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a 2D array of random densities</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray of float type</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pumha.pop.PumaPopulation">
+<em class="property">class </em><code class="descclassname">pumha.pop.</code><code class="descname">PumaPopulation</code><span class="sig-paren">(</span><em>Landscape</em>, <em>birth=0.02</em>, <em>death=0.06</em>, <em>diffusion=0.2</em>, <em>min_ro=0.0</em>, <em>max_ro=5.0</em>, <em>dt=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#PumaPopulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.PumaPopulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pumha.pop.Population" title="pumha.pop.Population"><code class="xref py py-class docutils literal"><span class="pre">pumha.pop.Population</span></code></a></p>
+<p>Puma population class with its specific update method.</p>
+<p>This class represents puma population living in some landscape,
+therefore it requires Landscape object as a parameter.
+Remaining parameters are set to defaults and can be changed later
+by either using provided method load_config or by simply assigning
+required values to instance attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><p class="first">Create puma population using default values</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="n">PumaPopulation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.env</span> <span class="k">import</span> <span class="n">Landscape</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">land</span> <span class="o">=</span> <span class="n">Landscape</span><span class="p">(</span><span class="s1">&#39;my_land_file.dat&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">puma</span> <span class="o">=</span> <span class="n">PumaPopulation</span><span class="p">(</span><span class="n">land</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create puma population using specifig values</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="n">PumaPopulation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.env</span> <span class="k">import</span> <span class="n">Landscape</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">land</span> <span class="o">=</span> <span class="n">Landscape</span><span class="p">(</span><span class="s1">&#39;my_land_file.dat&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">puma</span> <span class="o">=</span> <span class="n">PumaPopulation</span><span class="p">(</span><span class="n">land</span><span class="p">,</span> <span class="n">birth</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">death</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">See Also:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>pumha.pop.Population</p>
+<dl class="method">
+<dt id="pumha.pop.PumaPopulation.update_density">
+<code class="descname">update_density</code><span class="sig-paren">(</span><em>populations_old</em>, <em>populations_new</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#PumaPopulation.update_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.PumaPopulation.update_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update density array of puma population instance.</p>
+<p>Method updates entire density array of puma population instance based
+on densities of current populations living in a landscape. Only land
+squares in the density array are updated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>populations_old</strong> (<em>list of Population type</em>) – list of populations at current timestep</li>
+<li><strong>populations_new</strong> (<em>list of Population type</em>) – list of populations with updated density array at t+dt</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.pop.PumaPopulation.update_density_ij">
+<code class="descname">update_density_ij</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>P</em>, <em>H</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/pop.html#PumaPopulation.update_density_ij"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.pop.PumaPopulation.update_density_ij" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return updated puma density at one (i,j) square.</p>
+<p>Method implements discrete approximation of the following equation:</p>
+<div class="math">
+\[\frac{\partial P}{\partial t} = bHP-mP+l(\frac{\partial^2 P}                     {\partial x^2} + \frac{\partial^2 P}{\partial y^2})\]</div>
+<p>where</p>
+<ul class="simple">
+<li>P = density of pumas</li>
+<li>H = density of hares</li>
+<li>b = birth rate of pumas</li>
+<li>m = death rate of pumas</li>
+<li>l = diffusion rate of pumas</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>i</strong> (<em>int</em>) – density array row number (first row is i=0)</li>
+<li><strong>j</strong> (<em>int</em>) – density array column number (first column is j=0)</li>
+<li><strong>P</strong> (<em>numpy.ndarray of a float type</em>) – density array of pumas</li>
+<li><strong>H</strong> (<em>numpy.ndarray of a float type</em>) – density array of hares</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">updated density i, j square</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pumha.sim">
+<span id="pumha-sim-module"></span><h2>pumha.sim module<a class="headerlink" href="#module-pumha.sim" title="Permalink to this headline">¶</a></h2>
+<p>Simulation module</p>
+<p>Module contains only one class:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">Simulation</span>
+</pre></div>
+</div>
+<p>and one function:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">create_output_dir</span>
+</pre></div>
+</div>
+<p>The module is used to build new simulations using
+extended Population classes and create the output data.</p>
+<p>To run a simulation, use run() method.</p>
+<dl class="class">
+<dt id="pumha.sim.Simulation">
+<em class="property">class </em><code class="descclassname">pumha.sim.</code><code class="descname">Simulation</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Simulate time and space evolution of populations</p>
+<p>Only populations added to a populations list are simulated. If no
+populations are added, the simulation will run using density arrays of
+zeroes. If only one population is added but its update method requires
+existence of another population, the simulation will still run using zero
+density array for missing population.</p>
+<p>This can be interpreted as follows:</p>
+<p>Lets add only hare population; its update method requires puma population,
+if there are no pumas, since hare death rate is 0, they only increase in
+numbers until they rule a land!</p>
+<p>Similarly, if there is no hares, pumas will all starve to death.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><p class="first">Create new simulation with two populations: puma, hare</p>
+<p>Each population is of extended puma.pop.Population type</p>
+<p>Run a population over 500 steps and save ppm output every 4th step</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.sim</span> <span class="k">import</span> <span class="n">Simulation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">puma</span><span class="p">,</span> <span class="n">hare</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>populations</strong> (<em>list of pumha.pop.Population types</em>) – List of populations in a simulation</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pumha.sim.Simulation.add_population">
+<code class="descname">add_population</code><span class="sig-paren">(</span><em>pop</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.add_population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.add_population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add population object to a simulation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<a class="reference internal" href="#pumha.pop.Population" title="pumha.pop.Population"><em>pumha.pop.Population</em></a>) – a population to be added to a simulation</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.sim.Simulation.remove_population">
+<code class="descname">remove_population</code><span class="sig-paren">(</span><em>pop</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.remove_population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.remove_population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove population from a simulation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pop</strong> (<a class="reference internal" href="#pumha.pop.Population" title="pumha.pop.Population"><em>pumha.pop.Population</em></a>) – apopulation to be removed from a simulation</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.sim.Simulation.rescale_ppm_files">
+<code class="descname">rescale_ppm_files</code><span class="sig-paren">(</span><em>max_density</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.rescale_ppm_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.rescale_ppm_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rescale all PPM files using common PPM color value (Maxval)</p>
+<p>The method takes the highest recorded density from the entire
+simulation and uses it as common scaling factor for all PPM files.
+In this way the whole simulation is scaled properly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>max_density</strong> (<em>int</em><em>, </em><em>float</em>) – maximum density for a single square from the run</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.sim.Simulation.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>num_steps</em>, <em>save_freq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a simulation over given number of steps and save an output to PPM</p>
+<p>Instance population list is updated every second iteration. At the end
+of a simulation it is updated with the latest version.
+The method invokes save_density_grid_interface() every save_freq step
+in attempt to save output to a ppm file.
+At the end of the simulation rescale_ppm_files() method is invoked to
+rescale all ppm files using highest value of the density.
+Method also includes a simple timer for a loop which prints the
+total elapsed time at the end of a simulation to the standard output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_steps</strong> (<em>int</em>) – Number of steps for a simulation</li>
+<li><strong>save_freq</strong> (<em>int</em>) – Number of time steps between outputs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.sim.Simulation.save_average_density">
+<code class="descname">save_average_density</code><span class="sig-paren">(</span><em>timestep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.save_average_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.save_average_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the average density of animals in the whole landscape</p>
+<p>The average population is found by summing all the densities in
+the grid and dividing it by the numbers of squares in the grid.
+The density is saved to a file ‘average_densities.txt’, where the first
+column gives the timestep and second and third columns hare and puma
+densities at that time step respectively.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestep</strong> (<em>int</em>) – timestep at which the averages are calculated.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.sim.Simulation.save_density_grid">
+<code class="descname">save_density_grid</code><span class="sig-paren">(</span><em>timestep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.save_density_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.save_density_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the densities on each landscape square to a plain PPM file</p>
+<p>The method writes the density of a population to a file in the output
+folder. The name of a file is in a format timestep.ppm.</p>
+<p>The files are in a plain PPM format - each line is separated into
+a group of 3 values corresponding to a pixel, each value in those
+triplets represents either red, green or blue. The dimension
+of the landscape is given in the head of the file. The value after
+the dimensions is a scaling factor which is updated in every file
+in the end of the simulation, based on the highest maximum density
+encountered in the simulation. That is done with the
+rescale_ppm_files method.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">P3</span>
+<span class="c1"># some comment</span>
+<span class="mi">4</span> <span class="mi">4</span>
+<span class="mi">255</span>
+<span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>
+<span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">34</span> <span class="mi">56</span> <span class="mi">255</span>  <span class="mi">28</span> <span class="mi">60</span> <span class="mi">255</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>
+<span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">30</span> <span class="mi">50</span> <span class="mi">255</span>  <span class="mi">30</span> <span class="mi">57</span> <span class="mi">225</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>
+<span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">255</span>
+</pre></div>
+</div>
+<p>This PPM file represents a small island surrounded by water.
+Since lines in a PPM file must be no longer than 70 characters,
+the function creates an array of strings, every string representing
+a pixel and then writes those strings to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestep</strong> (<em>int</em>) – the timestep to which the density matrix                 corresponds to</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.sim.Simulation.save_density_grid_interface">
+<code class="descname">save_density_grid_interface</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.save_density_grid_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.save_density_grid_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple interface to save_density_grid method</p>
+<p>Provides extendable interface to potential group of save_density_grid
+methods, each one to cover specific case for a simulation. This is
+mostly because of the limitation of the PPM file format. Currently only
+the case of simulation containing puma and hare populations is
+implemented.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestep</strong> (<em>int</em>) – the timestep to which the density                 matrix corresponds to</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pumha.sim.Simulation.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>populations_old</em>, <em>populations_new</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#Simulation.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.Simulation.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>One step update for all populations in a simulation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>populations_old</strong> – list of populations at time t</li>
+<li><strong>populations_new</strong> – list of populations at time t+dt</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pumha.sim.create_output_dir">
+<code class="descclassname">pumha.sim.</code><code class="descname">create_output_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pumha/sim.html#create_output_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pumha.sim.create_output_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create directory for output PPM and dat files</p>
+<p>Directory is created using current date and time. All simulation output
+files are saved into this folder. The output directory is created in the
+directory where the script is running. The naming convention is as follows:</p>
+<blockquote>
+<div>PumHa_out_%Y-%m-%d-%H-%M-%S</div></blockquote>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to PumHa’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Chloe Sumner, Elen Kalda, Marcin Kirsz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/pumha.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
