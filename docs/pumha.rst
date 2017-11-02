@@ -1,13 +1,18 @@
 pumha package
 =============
 
-Submodules
-----------
-
 pumha\.env module
 -----------------
 
 .. automodule:: pumha.env
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pumha\.main module
+------------------
+
+.. automodule:: pumha.main
     :members:
     :undoc-members:
     :show-inheritance:
@@ -20,14 +25,6 @@ pumha\.pop module
     :undoc-members:
     :show-inheritance:
 
-pumha\.main module
-----------------------
-
-.. automodule:: pumha.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pumha\.sim module
 -----------------
 
@@ -36,10 +33,3 @@ pumha\.sim module
     :undoc-members:
     :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: pumha
-    :members:
-    :undoc-members:
-    :show-inheritance:

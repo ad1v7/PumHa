@@ -1,4 +1,5 @@
-"""Environment module
+"""Environment module.
+
 The module contains one class::
 
     Landscape
@@ -20,7 +21,7 @@ from scipy.ndimage import convolve
 
 
 class Landscape(object):
-    """ Class for instantiating a simulation landscape
+    """Class for instantiating a simulation landscape.
 
     Class checks that a valid landscape file exists, then loads it into a
     numpy array. The array will be padded with zeros around the
@@ -33,8 +34,9 @@ class Landscape(object):
     loop over water squares.
 
     :ivar filename: name of file holding the landscape array
-    :type filename: string
+    :vartype filename: string
     """
+
     def __init__(self, filename):
         # Check if the landscape exists.
         try:
@@ -48,7 +50,7 @@ class Landscape(object):
         self.land_indices = self.find_land_squares_indices()
 
     def load_landscape(self, filename):
-        """Load the landscape as a numpy array from a file
+        """Load the landscape as a numpy array from a file.
 
         Loads an array of 1-s for land and 0-s for water in to a numpy
         array from the parsed filename. The array should start on the
@@ -67,7 +69,7 @@ class Landscape(object):
         print('Loading landscape')
 
         # ensure the file has isn't empty.
-        with open(filename) as f:
+        with open(filename):
             linecount = sum(1 for line in open(filename))
             if linecount < 2:
                 print("No landscape found")
@@ -96,7 +98,7 @@ class Landscape(object):
         return new_map
 
     def find_dry_squares(self):
-        """Counts the number of dry squares around each array element
+        """Count the number of dry squares around each array element.
 
         Assigns to every element of an array a value equal to the sum of it's
         neighbours multiplied by the kernel (see example). Since land squares
@@ -113,8 +115,10 @@ class Landscape(object):
         For entry (1,1), the kernel will multiply elements
         (0,1), (1,0), (1,2), (2,1) by 1 (from the kernel)
         and everything else by 0.
-        In the land this corresponds to \
-        (1*1), (0*1), (1*1), (0*1) = 1 + 0 + 1 + 0 = 2 \
+        In the land this corresponds to::
+
+            (1*1), (0*1), (1*1), (0*1) = 1 + 0 + 1 + 0 = 2
+
         We calculate this value just once and store it to reduce computation.
 
         :return: array of summed neighbours
@@ -125,7 +129,7 @@ class Landscape(object):
         return convolve(self.landscape, kernel, mode='constant')
 
     def find_land_squares_indices(self):
-        """Return tuples of all non-zero elements of landscape
+        """Return tuples of all non-zero elements of landscape.
 
         Find the non-zero elements of the landscape array and then
         transpose them in to an array of tuples.  This allows for just

@@ -37,23 +37,18 @@ You might need to run above command as super user (root)::
 
     sudo pip install .
     
-If you can't run it as a root, you can try
-::
+If you can't run it as a root, you can try::
 
     pip install --user .
     
-In that case pip will install command line script into
-::
+In that case pip will install command line script into::
 
     ~/.local/bin
     
 directory. This is the case for Scientific Linux and Ubuntu.
 
-::
 
-If ``~/.local/bin`` is not in your ``$PATH`` (run ``echo $PATH`` to check it),
-you can export it running 
-::
+If ``~/.local/bin`` is not in your ``$PATH`` (run ``echo $PATH`` to check it), you can export it running::
 
     export PATH=$PATH:~/.local/bin
     
@@ -65,10 +60,9 @@ If you want to use the package with python 3 you might need to run pip3 in place
 How to use
 ==========
 
-Once you have correctly installed the package, you can run the simulation from any directory by typing into the command line
-::
-    pumha <landscape_file> [<config_file>]
+Once you have correctly installed the package, you can run the simulation from any directory by typing into the command line::
 
+    pumha <landscape_file> [<config_file>]
 
 ``<config_file>`` is a JSON type configuration file that contains all the information about the parameter values. You are welcome to play around with those values! You can find the default configuration file ``default.dat`` in  ``...installation_path/pumha/data`` directory (you can copy-paste it into your simulation directory, if you want).
 
@@ -76,15 +70,15 @@ If configuration file is not provided, the program will display warning and will
    
         pumha <landscape_file>
 
-Therefore the simulation can be run without specifying a configuration file, but you must provide a ``<landscape_file>``. This file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example,
-::
-  5 7
+Therefore the simulation can be run without specifying a configuration file, but you must provide a ``<landscape_file>``. This file must be a bitmask ASCII file with the first row giving the dimensions of the landscape and rest of the rows representing landscape (1 for land square and 0 for water), as an example::
 
-  1 1 1 1 1 1 1
-  1 1 1 1 0 0 1
-  1 0 0 0 0 0 0
-  1 1 0 0 0 1 1 
-  1 1 0 0 0 1 1
+    5 7
+
+    1 1 1 1 1 1 1
+    1 1 1 1 0 0 1
+    1 0 0 0 0 0 0
+    1 1 0 0 0 1 1 
+    1 1 0 0 0 1 1
 
 There are some example landscapes in the ``...installation_path/pumha/data`` directory.
 

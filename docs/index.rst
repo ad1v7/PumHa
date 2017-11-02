@@ -1,5 +1,5 @@
 .. PumHa documentation master file, created by
-   sphinx-quickstart on Mon Oct 30 10:13:39 2017.
+   sphinx-quickstart on Thu Nov  2 21:13:32 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -10,9 +10,8 @@ Welcome to PumHa's documentation!
 .. include:: modules.rst
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
-
 
 
 

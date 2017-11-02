@@ -22,12 +22,7 @@ setup(
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License'
     ],
-    package_data={
-        'data': ['default.dat',
-                'island2.dat',
-                'islands.dat',
-                'map1.dat'],
-    },
+    include_package_data=True,
     install_requires=[
         'numpy>=1.9.2',
         'simplejson>=3.8.1',

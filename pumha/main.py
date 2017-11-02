@@ -1,4 +1,4 @@
-"""Pumas and hares simulation
+"""Pumas and hares simulation.
 
 Usage: pumha <landscape_file> [<config_file>]
        pumha (-h | --help | --version)
@@ -18,12 +18,12 @@ size grids subject to hardware restrictions.
 If config file is not provided, the program will display warning
 and will continue using default values.
 
-Arguments:
+Arguments::
 
     landscape_file  required argument
     config_file     optional config file
 
-Options:
+Options::
 
     -h --help    Show this screen and exit.
     --version    Print current version
@@ -43,7 +43,7 @@ from pumha.sim import Simulation
 
 
 def main():
-    """Entry point function for the PumHa program
+    """Entry point function for the PumHa program.
 
     The function parses user input from the terminal and then sets up,
     configures and runs simulation using values in the config file.

@@ -54,7 +54,7 @@ class Simulation(object):
         >>> sim.run(500, 4)
 
     :ivar populations: List of populations in a simulation
-    :type populations: list of pumha.pop.Population types
+    :vartype populations: list of pumha.pop.Population types
     """
 
     def __init__(self, *args):
@@ -113,7 +113,7 @@ class Simulation(object):
         :param num_steps: Number of steps for a simulation
         :type num_steps: int
         :param save_freq: Number of time steps between outputs
-        :type num_steps: int
+        :type save_freq: int
         """
         self.num_steps = num_steps
         print('''
@@ -227,7 +227,7 @@ class Simulation(object):
             P3
             # some comment
             4 4
-
+            255
             0 0 255  0 0 255  0 0 255  0 0 255
             0 0 255  34 56 255  28 60 255  0 0 255
             0 0 255  30 50 255  30 57 225  0 0 255
@@ -288,6 +288,7 @@ class Simulation(object):
         densities at that time step respectively.
 
         :param timestep: timestep at which the averages are calculated.
+        :type timestep: int
         """
         for pop in self.populations:
             if isinstance(pop, HarePopulation):

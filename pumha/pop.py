@@ -1,4 +1,4 @@
-"""Population module
+"""Population module.
 
 The module contains two classes::
 
@@ -22,15 +22,15 @@ from __future__ import (absolute_import,
                         unicode_literals)
 import sys
 import os
-import jsonschema
-from jsonschema import validate
 from collections import OrderedDict
+from jsonschema.exceptions import ValidationError
+from jsonschema import validate
 import numpy as np
 import simplejson as json
 
 
-class Configuration():
-    """ Class for loading simulation parameters
+class Configuration(object):
+    """Class for loading simulation parameters.
 
     Class checks that a valid configuration file has been parsed as an
     argument and if not, creates a default one. If a config file is given by
@@ -39,8 +39,9 @@ class Configuration():
     validation checks.
 
     :ivar filename: name of file holding the configuration JSON
-    :type filename: string
+    :vartype filename: string
     """
+
     def __init__(self, config_file):
 
         if config_file is None:
@@ -74,7 +75,7 @@ class Configuration():
                 sys.exit(1)
 
     def load_from_file(self, config_file):
-        """Load json config file
+        """Load json config file.
 
         Load the configuration file as a JSON object and check
         that the loaded object has all the correct keys.
@@ -111,7 +112,7 @@ class Configuration():
             sys.exit(1)
 
     def create_config(self, config_file):
-        """Create a default configuration file with some standard values
+        """Create a default configuration file with some standard values.
 
         This method is primarily used as a default when no file
         is parsed to a simulation, but is also called when a config
@@ -142,7 +143,7 @@ class Configuration():
             raise
 
     def valid_config(self, config_file):
-        """Validate format of configuration file
+        """Validate format of configuration file.
 
         Checks that the configuration file is a JSON file in
         the correct format by comparing it to an expected schema.
@@ -169,34 +170,34 @@ class Configuration():
             config = json.load(f, object_pairs_hook=OrderedDict)
         try:
             validate(config, schema)
-        except jsonschema.exceptions.ValidationError as ve:
+        except ValidationError as ve:
             print('Invalid configuration file format.:\n%s' % str(ve))
             print('Try \'pumha --help\' for help')
             sys.exit(1)
 
 
 class Population(object):
-    """ Base class for creating specific population classes
+    r"""Base class for creating specific population classes.
 
     Class stores instance attributes and provides methods which can be used by
     for derived subclasses. It is not intended to be used on its own, but
     should be extended by specific population subclasses (e.g. PumaPopulation)
 
     :ivar min_ro: minimum density per ij square in the density array
-    :type min_ro: float
+    :vartype min_ro: float
     :ivar max_ro: maximum density per ij square in the density array
-    :type max_ro: float
+    :vartype max_ro: float
     :ivar birth: birth rate for a given population
-    :type birth: float
+    :vartype birth: float
     :ivar death: death rate for a given population
-    :type death: float
+    :vartype death: float
     :ivar diffusion: diffusion rate for a given population
-    :type diffusion: float
+    :vartype diffusion: float
     :ivar dt: time step in arbitrary units
-    :type dt: float
+    :vartype dt: float
     :ivar density: population density in a given landscape \
             initialized at random
-    :type density: numpy.ndarray containing data with float64 type
+    :vartype density: numpy.ndarray containing data with float type
     """
 
     def __init__(self, landscape_inp, birth, death,
@@ -213,7 +214,7 @@ class Population(object):
         self._land_idx = landscape_inp.land_indices
 
     def random_density(self, landscape_inp):
-        """Assign a random density between min_ro and max_ro to every land square
+        """Assign a random density between min and max ro to every land square.
 
         Returns a grid with a random density assigned
         between minimum and maximum densities for every land square.
@@ -221,7 +222,7 @@ class Population(object):
         :param landscape_inp: Instance of a Landscape object
         :type landscape_inp: Landscape
         :return: a 2D array of random densities
-        :rtype: numpy.ndarray of float64 type
+        :rtype: numpy.ndarray of float type
         """
         min_ro = self.min_ro
         max_ro = self.max_ro
@@ -232,7 +233,7 @@ class Population(object):
         return grid
 
     def load_config(self, birth, death, diffusion, dt):
-        """Set instance attributes using provided parameters
+        """Set instance attributes using provided parameters.
 
         :param birth: birth rate of a given population
         :type birth: float
@@ -249,7 +250,7 @@ class Population(object):
         self.dt = dt
 
     def find_density_arr(self, pop_class, pop_list):
-        """Return required population density array from a list of populations
+        r"""Get required population density array from a list of populations.
 
         Returns density array of a first found element matching pop_class from
         a list of provided populations. If no element is found, it returns
@@ -261,7 +262,7 @@ class Population(object):
         :type pop_list: list
         :return: required population density array\
                 (array of zeros if not found)
-        :rtype: numpy.ndarray of float64 type
+        :rtype: numpy.ndarray of float type
         """
         rows, cols = self.density.shape
         return next((p.density for p in pop_list if
@@ -270,7 +271,7 @@ class Population(object):
 
 
 class PumaPopulation(Population):
-    """Puma population class with its specific update method
+    """Puma population class with its specific update method.
 
     This class represents puma population living in some landscape,
     therefore it requires Landscape object as a parameter.
@@ -281,11 +282,14 @@ class PumaPopulation(Population):
     :Example:
 
         Create puma population using default values
+
         >>> from pumha.pop import PumaPopulation
         >>> from pumha.env import Landscape
         >>> land = Landscape('my_land_file.dat')
         >>> puma = PumaPopulation(land)
+
         Create puma population using specifig values
+
         >>> from pumha.pop import PumaPopulation
         >>> from pumha.env import Landscape
         >>> land = Landscape('my_land_file.dat')
@@ -304,7 +308,7 @@ class PumaPopulation(Population):
         print('Puma population created')
 
     def update_density(self, populations_old, populations_new):
-        """Update density array of puma population instance
+        r"""Update density array of puma population instance.
 
         Method updates entire density array of puma population instance based
         on densities of current populations living in a landscape. Only land
@@ -326,7 +330,7 @@ class PumaPopulation(Population):
             P_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
-        """Return updated puma density at one (i,j) square
+        """Return updated puma density at one (i,j) square.
 
         Method implements discrete approximation of the following equation:
 
@@ -347,9 +351,9 @@ class PumaPopulation(Population):
         :param j: density array column number (first column is j=0)
         :type j: int
         :param P: density array of pumas
-        :type P: numpy.ndarray of a float64 type
+        :type P: numpy.ndarray of a float type
         :param H: density array of hares
-        :type H: numpy.ndarray of a float64 type
+        :type H: numpy.ndarray of a float type
         :return: updated density i, j square
         :rtype: float
         """
@@ -365,7 +369,7 @@ class PumaPopulation(Population):
 
 
 class HarePopulation(Population):
-    """Hare population class with its specific update method
+    """Hare population class with its specific update method.
 
     This class represents hare population living in some landscape, therefore
     it requires Landscape object as a parameter. Remaining parameters are set
@@ -387,7 +391,7 @@ class HarePopulation(Population):
         self.kind = 'HarePopulation'
 
     def update_density(self, populations_old, populations_new):
-        """Update density array of hare population instance
+        r"""Update density array of hare population instance.
 
         Method updates entire density array of hare population instance based
         on densities of current populations living in a landscape. Only land
@@ -409,7 +413,7 @@ class HarePopulation(Population):
             H_new[i][j] = self.update_density_ij(i, j, P, H)
 
     def update_density_ij(self, i, j, P, H):
-        """Return updated hare density at one (ij) square
+        """Return updated hare density at one (ij) square.
 
         Method implements discrete approximation of the following equation:
 
@@ -436,7 +440,6 @@ class HarePopulation(Population):
         :return: updated density ij square
         :rtype: float
         """
-
         r = self.birth
         a = self.death
         k = self.diffusion

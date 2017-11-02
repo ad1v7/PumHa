@@ -24,6 +24,7 @@ class TestSimulation(TestCase):
         self.assertTrue(len(sim.populations) == 1)
         sim.add_population(puma)
         self.assertTrue(len(sim.populations) == 2)
+        os.rmdir(sim.out_dir)
 
     def test_remove_population(self):
         sim = Simulation(hare, puma)
@@ -37,3 +38,4 @@ class TestSimulation(TestCase):
         if "No such a population in" in text:
             test = True
         self.assertTrue(test)
+        os.rmdir(sim.out_dir)
