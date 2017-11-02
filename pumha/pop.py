@@ -98,12 +98,12 @@ class Configuration():
             self.steps = config["Steps"]
             self.output_interval = config["Output_interval"]
 
-        except KeyError, e:
+        except KeyError as e:
             print("Wrong key name in a config file:\n %s" % str(e))
             print('Try \'pumha --help\' for help')
             sys.exit(1)
 
-   def create_config(self, config_file):
+    def create_config(self, config_file):
         """Create a default configuration file with some standard values
 
         This method is primarily used as a default when no file
