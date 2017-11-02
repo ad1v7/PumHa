@@ -127,15 +127,14 @@ class TestPopulation(TestCase):
         P = puma.density
         H = hare.density
         H_new_ij = hare.update_density_ij(1, 2, P, H)
-        H_test = 2.4+dt*(r*2.4-a*2.4*1.9+k*((3.1)-1*2.4))
+        H_test = 2.4 + dt * (r * 2.4 - a * 2.4 * 1.9 + k *((3.1) - 1 * 2.4))
         self.assertAlmostEqual(H_new_ij, H_test)
         # test 1,1 : 2nd row, 2nd column
         H_new_ij = hare.update_density_ij(1, 1, P, H)
-        H_test = 3.1+dt*(r*3.1-a*3.1*1.1+k*((2.4+3.1)-2*3.1))
+        H_test = 3.1 + dt * (r * 3.1 - a * 3.1 * 1.1 + k * ((2.4 + 3.1) -
+                                                            2 * 3.1))
         self.assertAlmostEqual(H_new_ij, H_test)
 
-
-    #Elen's comment
     def test_random_density(self):
         for pop in pop_list:
             # check that grids are numpy arrays
@@ -152,7 +151,7 @@ class TestPopulation(TestCase):
                 pop.random_density(env) != 0].all() <= pop.max_ro)
 
 
-# return True if all matrix perimeter (boundary) elements are zeroes
+# return True if all matrix perimeter (boundary) elements are zeros
 def zero_surrounded(array):
     return not (array[0, :].any() or array[-1, :].any() or array[:, 0].any()
                 or array[:, -1].any())

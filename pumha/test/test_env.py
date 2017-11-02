@@ -26,6 +26,7 @@ land_indices = [(1,1),
 
 env = Landscape('pumha/test/data/test_land.dat')
 
+
 class TestLandscape(TestCase):
 
     def test_load_landscape(self):
