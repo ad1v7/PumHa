@@ -23,9 +23,7 @@ To install PumHa package on a Linux machine (see `System compatibility and requi
 
 Alternatively, if you are lucky to have a tar.gz package in your computer (in fact you would be very lucky because only 4 people out of 7+ billions have it!), you can do the following:
 
-3. Extract archive content using
-
-::
+3. Extract archive content using::
     
      tar zxvf pumha.tar.gz      
         
