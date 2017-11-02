@@ -1,0 +1,11 @@
+{
+    "Hare_birth": a,
+    "Hare_diffusion": 0.2,
+    "Hare_predation": 0.04,
+    "Output_interval": 8,
+    "Puma_birth": 0.02,
+    "Puma_diffusion": 0.2,
+    "Puma_mortality": 0.06,
+    "Steps": 1,
+    "Time_step": 0.4
+}
