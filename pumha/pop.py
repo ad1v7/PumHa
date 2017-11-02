@@ -398,4 +398,4 @@ class HarePopulation(Population):
         h_ij = H[i][j] + dt * (r * H[i][j] - a * H[i][j] * P[i][j]
                                + k * ((H[i - 1][j] + H[i + 1][j] + H[i][j - 1]
                                        + H[i][j + 1]) - N[i][j] * H[i][j]))
-return h_ij if h_ij > 0 else 0.
+        return h_ij if h_ij > 0 else 0.
