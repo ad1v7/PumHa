@@ -20,8 +20,7 @@ How to install
 To install PumHa package on a Linux machine (see `System compatibility and requirements`_ for known compatibility):
 
 1. Change directory to your install directory (or create one).
-2. Copy repository from Github by running the command
-::
+2. Copy repository from Github by running the command::
 
     git clone https://github.com/ad1v7/PumHa
 
