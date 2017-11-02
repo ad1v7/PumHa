@@ -192,7 +192,6 @@ Output and visualisation
 
 The output file that lists average densities at given timesteps has the timestep value, hare density and puma density written as three columns respectively, making it simple to plot. 
 
-In out visualisation implementation, both puma and hare densities on a given time step are shown on one PPM file, one pixel corresponding to one square on a grid, blue without any red or green representing water, green hare density and red puma density (for more information about the output, see `How to use`_). The RGB values representing the puma and hare densities are equal to the actual value of the density at the square.
+In out visualisation implementation, both puma and hare densities on a given time step are shown on one PPM file, one pixel corresponding to one square on a grid, blue without any red or green representing water, green hare density and red puma density (for more information about the output, see `How to use`_). The RGB values representing the puma and hare densities are equal to the actual value of the density at the square. The colours are scaled using the maximum value of the density found during the simulation.
 
 Since a line in a plain PPM file must be no longer than 70 characters, all the RGB values are written into an array of strings, each element in an array corresponging to a pixel. Those strings are then written on a file, four pixels per line (since that is the maximum amount of pixels that could fit to one line if both puma and hare densities are 5-digit numbers).
-
