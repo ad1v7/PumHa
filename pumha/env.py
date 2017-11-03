@@ -57,7 +57,7 @@ class Landscape(object):
         second line of the file (the first line contains the size, so it is
         skipped in the loading). The method pads the array with a border of
         0-s, so that the land is always surrounded by water.
-        Before loading the landscape, the mehtod checks that the file can be
+        Before loading the landscape, the method checks that the file can be
         loaded as a numpy array and then ensures that all entries are either 1
         or 0. If either of these checks fails, the simulation will terminate.
 
