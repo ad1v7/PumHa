@@ -15,7 +15,7 @@ The first line in the input file specifies size of the landscape grid.
 Land is represented by 1 and water by 0. The program can simulate arbitrary
 size grids subject to hardware restrictions.
 
-If config file is not provided, the program will display warning
+If config_file is not provided, the program will display a warning
 and will continue using default values.
 
 Arguments::
