@@ -155,7 +155,7 @@ class TestPopulation(TestCase):
 # return True if all matrix perimeter (boundary) elements are zeros
 def zero_surrounded(array):
     return not (array[0, :].any() or array[-1, :].any() or array[:, 0].any()
-or array[:, -1].any())
+                or array[:, -1].any())
 
 default = {
     'Hare_birth': 0.08,
@@ -171,10 +171,11 @@ default = {
 
 config = Configuration('pumha/test/data/config.dat')
 
+
 class Test_Configuration(TestCase):
     def test_load_from_file(self):
         #Test a properly formatted config loads properly
-        self.assertEqual(config.hare_birth, default["Hare_birth"])	
+        self.assertEqual(config.hare_birth, default["Hare_birth"])
         self.assertEqual(config.hare_predation, default["Hare_predation"])
         self.assertEqual(config.hare_diffusion, default["Hare_diffusion"])
         self.assertEqual(config.puma_birth, default["Puma_birth"])
@@ -183,24 +184,18 @@ class Test_Configuration(TestCase):
         self.assertEqual(config.time_step, default["Time_step"])
         self.assertEqual(config.steps, default["Steps"])
         self.assertEqual(config.output_interval, default["Output_interval"])
-        
+
         #Test empty config input
         with self.assertRaises(SystemExit) as cm:
-            config2 = Configuration('pumha/test/data/config_empty.dat')
+            Configuration('pumha/test/data/config_empty.dat')
         self.assertEqual(cm.exception.code, 1)
 
         #Test broken key name
         with self.assertRaises(SystemExit) as cm:
-            config2 = Configuration('pumha/test/data/config_keytest.dat')
+            Configuration('pumha/test/data/config_keytest.dat')
         self.assertEqual(cm.exception.code, 1)
 
         #Test missing key name
         with self.assertRaises(SystemExit) as cm:
-            config2 = Configuration('pumha/test/data/config_missingkey.dat')
+            Configuration('pumha/test/data/config_missingkey.dat')
         self.assertEqual(cm.exception.code, 1)
-        '''
-        #Test invalid key value
-        with self.assertRaises(SystemExit) as cm:
-            config2 = Configuration('pumha/test/data/config_valuetest.dat')
-        self.assertEqual(cm.exception.code, 1)
-        '''
