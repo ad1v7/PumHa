@@ -37,9 +37,9 @@ class Simulation(object):
 
     Lets add only hare population; its update method requires puma population,
     if there are no pumas, since hare death rate is 0, they only increase in
-    numbers until they rule a land!
+    numbers until they rule the land!
 
-    Similarly, if there is no hares, pumas will all starve to death.
+    Similarly, if there are no hares, pumas will all starve to death.
 
     :Example:
 
@@ -181,7 +181,7 @@ class Simulation(object):
         Provides extendable interface to potential group of save_density_grid
         methods, each one to cover specific case for a simulation. This is
         mostly because of the limitation of the PPM file format. Currently only
-        the case of simulation containing puma and hare populations is
+        the case of a simulation containing both a puma and hare population is
         implemented.
 
         :param timestep: the timestep to which the density \
@@ -284,8 +284,8 @@ class Simulation(object):
         The average population is found by summing all the densities in
         the grid and dividing it by the numbers of squares in the grid.
         The density is saved to a file 'average_densities.txt', where the first
-        column gives the timestep and second and third columns hare and puma
-        densities at that time step respectively.
+        column gives the timestep.  The second and third columns
+        give hare and puma densities at that time step respectively.
 
         :param timestep: timestep at which the averages are calculated.
         :type timestep: int
