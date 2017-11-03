@@ -40,7 +40,7 @@
           <div class="body" role="main">
             
   <h1>Source code for pumha.sim</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;Simulation module</span>
+<span></span><span class="sd">&quot;&quot;&quot;Simulation module</span>
 
 <span class="sd">Module contains only one class::</span>
 
@@ -79,9 +79,9 @@
 
 <span class="sd">    Lets add only hare population; its update method requires puma population,</span>
 <span class="sd">    if there are no pumas, since hare death rate is 0, they only increase in</span>
-<span class="sd">    numbers until they rule a land!</span>
+<span class="sd">    numbers until they rule the land!</span>
 
-<span class="sd">    Similarly, if there is no hares, pumas will all starve to death.</span>
+<span class="sd">    Similarly, if there are no hares, pumas will all starve to death.</span>
 
 <span class="sd">    :Example:</span>
 
@@ -223,7 +223,7 @@
 <span class="sd">        Provides extendable interface to potential group of save_density_grid</span>
 <span class="sd">        methods, each one to cover specific case for a simulation. This is</span>
 <span class="sd">        mostly because of the limitation of the PPM file format. Currently only</span>
-<span class="sd">        the case of simulation containing puma and hare populations is</span>
+<span class="sd">        the case of a simulation containing both a puma and hare population is</span>
 <span class="sd">        implemented.</span>
 
 <span class="sd">        :param timestep: the timestep to which the density \</span>
@@ -326,8 +326,8 @@
 <span class="sd">        The average population is found by summing all the densities in</span>
 <span class="sd">        the grid and dividing it by the numbers of squares in the grid.</span>
 <span class="sd">        The density is saved to a file &#39;average_densities.txt&#39;, where the first</span>
-<span class="sd">        column gives the timestep and second and third columns hare and puma</span>
-<span class="sd">        densities at that time step respectively.</span>
+<span class="sd">        column gives the timestep.  The second and third columns</span>
+<span class="sd">        give hare and puma densities at that time step respectively.</span>
 
 <span class="sd">        :param timestep: timestep at which the averages are calculated.</span>
 <span class="sd">        :type timestep: int</span>

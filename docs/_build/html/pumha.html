@@ -46,7 +46,7 @@
 <span id="pumha-env-module"></span><h2>pumha.env module<a class="headerlink" href="#module-pumha.env" title="Permalink to this headline">¶</a></h2>
 <p>Environment module.</p>
 <p>The module contains one class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">Landscape</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Landscape</span>
 </pre></div>
 </div>
 <p>The module creates a Landscape object which holds all the landscape-related
@@ -85,7 +85,7 @@ have value 1 and water squares have value 0,  multiplying cardinal
 neighbours by one and summing gives the total land in the cardinal
 directions.</p>
 <p>Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">Land</span><span class="p">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>    <span class="n">Kernel</span><span class="p">:</span>    <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Land</span><span class="p">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>    <span class="n">Kernel</span><span class="p">:</span>    <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
         <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span>               <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span>
         <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>               <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
 </pre></div>
@@ -94,7 +94,7 @@ directions.</p>
 (0,1), (1,0), (1,2), (2,1) by 1 (from the kernel)
 and everything else by 0.
 In the land this corresponds to:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">=</span> <span class="mi">2</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 </div>
 <p>We calculate this value just once and store it to reduce computation.</p>
@@ -141,7 +141,7 @@ array from the parsed filename. The array should start on the
 second line of the file (the first line contains the size, so it is
 skipped in the loading). The method pads the array with a border of
 0-s, so that the land is always surrounded by water.
-Before loading the landscape, the mehtod checks that the file can be
+Before loading the landscape, the method checks that the file can be
 loaded as a numpy array and then ensures that all entries are either 1
 or 0. If either of these checks fails, the simulation will terminate.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -169,7 +169,7 @@ or 0. If either of these checks fails, the simulation will terminate.</p>
 <dd>pumha (-h | –help | –version)</dd>
 </dl>
 <p>The program requires landscape file in the following format:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="mi">4</span> <span class="mi">3</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">4</span> <span class="mi">3</span>
 
 <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span>
 <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
@@ -179,15 +179,15 @@ or 0. If either of these checks fails, the simulation will terminate.</p>
 <p>The first line in the input file specifies size of the landscape grid.
 Land is represented by 1 and water by 0. The program can simulate arbitrary
 size grids subject to hardware restrictions.</p>
-<p>If config file is not provided, the program will display warning
+<p>If config_file is not provided, the program will display a warning
 and will continue using default values.</p>
 <p>Arguments:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">landscape_file</span>  <span class="n">required</span> <span class="n">argument</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">landscape_file</span>  <span class="n">required</span> <span class="n">argument</span>
 <span class="n">config_file</span>     <span class="n">optional</span> <span class="n">config</span> <span class="n">file</span>
 </pre></div>
 </div>
 <p>Options:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="o">-</span><span class="n">h</span> <span class="o">--</span><span class="n">help</span>    <span class="n">Show</span> <span class="n">this</span> <span class="n">screen</span> <span class="ow">and</span> <span class="n">exit</span><span class="o">.</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">h</span> <span class="o">--</span><span class="n">help</span>    <span class="n">Show</span> <span class="n">this</span> <span class="n">screen</span> <span class="ow">and</span> <span class="n">exit</span><span class="o">.</span>
 <span class="o">--</span><span class="n">version</span>    <span class="n">Print</span> <span class="n">current</span> <span class="n">version</span>
 </pre></div>
 </div>
@@ -204,17 +204,17 @@ configures and runs simulation using values in the config file.</p>
 <span id="pumha-pop-module"></span><h2>pumha.pop module<a class="headerlink" href="#module-pumha.pop" title="Permalink to this headline">¶</a></h2>
 <p>Population module.</p>
 <p>The module contains two classes:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">Configuration</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Configuration</span>
 <span class="n">Population</span>
 </pre></div>
 </div>
 <p>and two subclasses of the Population class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">HarePopulation</span><span class="p">(</span><span class="n">Population</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">HarePopulation</span><span class="p">(</span><span class="n">Population</span><span class="p">)</span>
 <span class="n">PumaPopulation</span><span class="p">(</span><span class="n">Population</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The Configuration class consists of several methods for handling and parsing
-the input files and Population class with its subclasses are responsible
+the input files and Population class with its subclasses responsible
 for doing all the maths in the density change dynamics.</p>
 <dl class="class">
 <dt id="pumha.pop.Configuration">
@@ -224,7 +224,7 @@ for doing all the maths in the density change dynamics.</p>
 <p>Class checks that a valid configuration file has been parsed as an
 argument and if not, creates a default one. If a config file is given by
 the user, it is checks if it contains a valid JSON object for the
-simulation, then loads it as the configuration data and does few more data
+simulation, then loads as the configuration data and does a few more data
 validation checks.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -472,14 +472,14 @@ required values to instance attributes.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><p class="first">Create puma population using default values</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="n">PumaPopulation</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="n">PumaPopulation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.env</span> <span class="k">import</span> <span class="n">Landscape</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">land</span> <span class="o">=</span> <span class="n">Landscape</span><span class="p">(</span><span class="s1">&#39;my_land_file.dat&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">puma</span> <span class="o">=</span> <span class="n">PumaPopulation</span><span class="p">(</span><span class="n">land</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Create puma population using specifig values</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="n">PumaPopulation</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.pop</span> <span class="k">import</span> <span class="n">PumaPopulation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.env</span> <span class="k">import</span> <span class="n">Landscape</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">land</span> <span class="o">=</span> <span class="n">Landscape</span><span class="p">(</span><span class="s1">&#39;my_land_file.dat&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">puma</span> <span class="o">=</span> <span class="n">PumaPopulation</span><span class="p">(</span><span class="n">land</span><span class="p">,</span> <span class="n">birth</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">death</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
@@ -557,11 +557,11 @@ squares in the density array are updated.</p>
 <span id="pumha-sim-module"></span><h2>pumha.sim module<a class="headerlink" href="#module-pumha.sim" title="Permalink to this headline">¶</a></h2>
 <p>Simulation module</p>
 <p>Module contains only one class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">Simulation</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Simulation</span>
 </pre></div>
 </div>
 <p>and one function:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">create_output_dir</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">create_output_dir</span>
 </pre></div>
 </div>
 <p>The module is used to build new simulations using
@@ -580,8 +580,8 @@ density array for missing population.</p>
 <p>This can be interpreted as follows:</p>
 <p>Lets add only hare population; its update method requires puma population,
 if there are no pumas, since hare death rate is 0, they only increase in
-numbers until they rule a land!</p>
-<p>Similarly, if there is no hares, pumas will all starve to death.</p>
+numbers until they rule the land!</p>
+<p>Similarly, if there are no hares, pumas will all starve to death.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -589,7 +589,7 @@ numbers until they rule a land!</p>
 <tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><p class="first">Create new simulation with two populations: puma, hare</p>
 <p>Each population is of extended puma.pop.Population type</p>
 <p>Run a population over 500 steps and save ppm output every 4th step</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.sim</span> <span class="k">import</span> <span class="n">Simulation</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pumha.sim</span> <span class="k">import</span> <span class="n">Simulation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">puma</span><span class="p">,</span> <span class="n">hare</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 </pre></div>
@@ -679,8 +679,8 @@ total elapsed time at the end of a simulation to the standard output.</p>
 <p>The average population is found by summing all the densities in
 the grid and dividing it by the numbers of squares in the grid.
 The density is saved to a file ‘average_densities.txt’, where the first
-column gives the timestep and second and third columns hare and puma
-densities at that time step respectively.</p>
+column gives the timestep.  The second and third columns
+give hare and puma densities at that time step respectively.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -706,7 +706,7 @@ in the end of the simulation, based on the highest maximum density
 encountered in the simulation. That is done with the
 rescale_ppm_files method.</p>
 <p>Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">P3</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">P3</span>
 <span class="c1"># some comment</span>
 <span class="mi">4</span> <span class="mi">4</span>
 <span class="mi">255</span>
@@ -737,7 +737,7 @@ a pixel and then writes those strings to a file.</p>
 <p>Provides extendable interface to potential group of save_density_grid
 methods, each one to cover specific case for a simulation. This is
 mostly because of the limitation of the PPM file format. Currently only
-the case of simulation containing puma and hare populations is
+the case of a simulation containing both a puma and hare population is
 implemented.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

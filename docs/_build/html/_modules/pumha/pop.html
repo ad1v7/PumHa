@@ -40,7 +40,7 @@
           <div class="body" role="main">
             
   <h1>Source code for pumha.pop</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;Population module.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Population module.</span>
 
 <span class="sd">The module contains two classes::</span>
 
@@ -53,7 +53,7 @@
 <span class="sd">    PumaPopulation(Population)</span>
 
 <span class="sd">The Configuration class consists of several methods for handling and parsing</span>
-<span class="sd">the input files and Population class with its subclasses are responsible</span>
+<span class="sd">the input files and Population class with its subclasses responsible</span>
 <span class="sd">for doing all the maths in the density change dynamics.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -77,7 +77,7 @@
 <span class="sd">    Class checks that a valid configuration file has been parsed as an</span>
 <span class="sd">    argument and if not, creates a default one. If a config file is given by</span>
 <span class="sd">    the user, it is checks if it contains a valid JSON object for the</span>
-<span class="sd">    simulation, then loads it as the configuration data and does few more data</span>
+<span class="sd">    simulation, then loads as the configuration data and does a few more data</span>
 <span class="sd">    validation checks.</span>
 
 <span class="sd">    :ivar filename: name of file holding the configuration JSON</span>
@@ -87,7 +87,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">config_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+            <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
             <span class="n">default_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;data/default.dat&quot;</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -135,7 +135,7 @@
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;{} ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hare_birth</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;Hare_birth&quot;</span><span class="p">]</span>
@@ -219,7 +219,7 @@
 
 
 <div class="viewcode-block" id="Population"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Population">[docs]</a><span class="k">class</span> <span class="nc">Population</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">r&quot;&quot;&quot;Base class for creating specific population classes.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for creating specific population classes.</span>
 
 <span class="sd">    Class stores instance attributes and provides methods which can be used by</span>
 <span class="sd">    for derived subclasses. It is not intended to be used on its own, but</span>
@@ -292,7 +292,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span></div>
 
 <div class="viewcode-block" id="Population.find_density_arr"><a class="viewcode-back" href="../../pumha.html#pumha.pop.Population.find_density_arr">[docs]</a>    <span class="k">def</span> <span class="nf">find_density_arr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pop_class</span><span class="p">,</span> <span class="n">pop_list</span><span class="p">):</span>
-        <span class="sd">r&quot;&quot;&quot;Get required population density array from a list of populations.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get required population density array from a list of populations.</span>
 
 <span class="sd">        Returns density array of a first found element matching pop_class from</span>
 <span class="sd">        a list of provided populations. If no element is found, it returns</span>
@@ -344,13 +344,13 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="o">=.</span><span class="mi">02</span><span class="p">,</span> <span class="n">death</span><span class="o">=.</span><span class="mi">06</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=.</span><span class="mi">2</span><span class="p">,</span>
                  <span class="n">min_ro</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_ro</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">dt</span><span class="o">=.</span><span class="mi">4</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">PumaPopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PumaPopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span>
                                              <span class="n">diffusion</span><span class="p">,</span> <span class="n">min_ro</span><span class="p">,</span> <span class="n">max_ro</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;PumaPopulation&#39;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Puma population created&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PumaPopulation.update_density"><a class="viewcode-back" href="../../pumha.html#pumha.pop.PumaPopulation.update_density">[docs]</a>    <span class="k">def</span> <span class="nf">update_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">):</span>
-        <span class="sd">r&quot;&quot;&quot;Update density array of puma population instance.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update density array of puma population instance.</span>
 
 <span class="sd">        Method updates entire density array of puma population instance based</span>
 <span class="sd">        on densities of current populations living in a landscape. Only land</span>
@@ -427,13 +427,13 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="o">=.</span><span class="mi">08</span><span class="p">,</span> <span class="n">death</span><span class="o">=.</span><span class="mi">04</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=.</span><span class="mi">2</span><span class="p">,</span>
                  <span class="n">min_ro</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_ro</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">dt</span><span class="o">=.</span><span class="mi">4</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">HarePopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HarePopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">Landscape</span><span class="p">,</span> <span class="n">birth</span><span class="p">,</span> <span class="n">death</span><span class="p">,</span>
                                              <span class="n">diffusion</span><span class="p">,</span> <span class="n">min_ro</span><span class="p">,</span> <span class="n">max_ro</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hare population created&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;HarePopulation&#39;</span>
 
 <div class="viewcode-block" id="HarePopulation.update_density"><a class="viewcode-back" href="../../pumha.html#pumha.pop.HarePopulation.update_density">[docs]</a>    <span class="k">def</span> <span class="nf">update_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">populations_old</span><span class="p">,</span> <span class="n">populations_new</span><span class="p">):</span>
-        <span class="sd">r&quot;&quot;&quot;Update density array of hare population instance.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update density array of hare population instance.</span>
 
 <span class="sd">        Method updates entire density array of hare population instance based</span>
 <span class="sd">        on densities of current populations living in a landscape. Only land</span>
