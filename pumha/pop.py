@@ -11,7 +11,7 @@ and two subclasses of the Population class::
     PumaPopulation(Population)
 
 The Configuration class consists of several methods for handling and parsing
-the input files and Population class with its subclasses are responsible
+the input files and Population class with its subclasses responsible
 for doing all the maths in the density change dynamics.
 """
 
@@ -35,7 +35,7 @@ class Configuration(object):
     Class checks that a valid configuration file has been parsed as an
     argument and if not, creates a default one. If a config file is given by
     the user, it is checks if it contains a valid JSON object for the
-    simulation, then loads it as the configuration data and does few more data
+    simulation, then loads as the configuration data and does a few more data
     validation checks.
 
     :ivar filename: name of file holding the configuration JSON
